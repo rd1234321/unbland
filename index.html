@@ -124,7 +124,7 @@
   .pub-row .btn { padding: 13px 18px; text-decoration: none; color: inherit; font-size: 15px; }
   .building #publish { display: none; }
   .auth-x { position: absolute; top: 10px; right: 12px; border: 0; background: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--muted); }
-  .building #undo, .building #edit { display: none; }
+  .building #undo, .building #edit, .building #logo { display: none; }
   .btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
   .btn[disabled] { opacity: .4; cursor: default; }
   .edit-hint { margin: 0; padding: 8px 16px; font-size: 13px; background: #FFE9DF; border-bottom: 1px solid var(--ink); }
@@ -228,6 +228,7 @@
     <button class="btn quiet" type="button" id="again">New site</button>
     <button class="btn quiet" type="button" id="undo" disabled>Undo</button>
     <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
+    <button class="btn" type="button" id="logo">Add logo</button>
     <button class="btn" type="button" id="restyle" title="Designs the same business again in a different style. Uses one of today's builds.">Try another style</button>
     <button class="btn" type="button" id="open">Open full size</button>
     <button class="btn" type="button" id="download">Download</button>
@@ -246,6 +247,7 @@
     <div class="frame-wrap" id="wrap"><iframe id="frame" title="Your site"></iframe></div>
   </div>
   <input type="file" id="photo" accept="image/*" hidden>
+  <input type="file" id="logo-file" accept="image/*" hidden>
 </div>
 
 <!-- My sites: everything the signed-in person has built -->
@@ -523,6 +525,36 @@
     ask(text);
   });
   chatInput.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("chat-form").requestSubmit(); } });
+
+  // Add or replace the logo: the uploaded image takes the place of the business name at the top of the site.
+  $("logo").onclick = () => { if (busy || !site.html) return; $("logo-file").value = ""; $("logo-file").click(); };
+  $("logo-file").addEventListener("change", () => {
+    const file = $("logo-file").files[0];
+    if (!file || !source) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const im = new Image();
+      im.onerror = () => bubble("bot", "That file couldn't be read as an image. Try a PNG, JPG or SVG.", "bad");
+      im.onload = () => {
+        // Shrink to a sensible logo size. PNG keeps a transparent background.
+        const scale = Math.min(1, 520 / im.width, 220 / im.height);
+        const c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(im.width * scale)); c.height = Math.max(1, Math.round(im.height * scale));
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+        const url = c.toDataURL("image/png");
+        const spot = source.querySelector('header img[alt*="logo" i], header [class*="brand" i], header [class*="logo" i], [class*="brand" i], [class*="logo" i], header a[href="#top"], header a, nav a');
+        if (!spot) { bubble("bot", "I couldn't find where the business name sits at the top of this site, so the logo wasn't added. Ask in this chat to add a spot for a logo in the header, then try again.", "bad"); return; }
+        const name = siteName().split(/[|·—–]/)[0].trim().replace(/"/g, "");
+        if (spot.tagName === "IMG") { spot.setAttribute("src", url); spot.removeAttribute("srcset"); }
+        else spot.innerHTML = `<img src="${url}" alt="${name} logo" style="height:44px;width:auto;max-width:220px;display:block;object-fit:contain">`;
+        setEditing(false);
+        setSite(plain());
+        bubble("bot", "Your logo is now at the top of the site, in place of the name. Press Undo if it doesn't look right, or ask me here to make it bigger, smaller, or to show the name beside it.");
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
 
   function setEditing(on) {
     editing = on;
