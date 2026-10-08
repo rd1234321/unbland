@@ -83,6 +83,39 @@
   .status .meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .4s linear; }
   .building #sizes, .building #restyle, .building #open, .building #download { display: none; }
   .note { font-size: 13px; color: var(--error); }
+  .top-right { display: inline-flex; align-items: center; gap: 10px; }
+  .acct { font-size: 13px; font-weight: 600; color: #F3F1EC; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+  .acct:hover { border-color: var(--accent); }
+  .acct.quiet { background: transparent; border-color: transparent; color: #B4B0A8; }
+  .saved { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .building [data-act], .building .saved { display: none; }
+  .mine { min-height: 100%; }
+  .mine-head { display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid var(--ink); }
+  .who { font-size: 13px; color: var(--muted); }
+  .mine-main { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+  .mine-main h1 { font: 400 clamp(40px, 6vw, 68px)/1 var(--serif); letter-spacing: -.02em; margin-bottom: 8px; }
+  .mine-note { color: var(--muted); min-height: 22px; margin-bottom: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+  .card { border: 1px solid var(--ink); border-radius: 8px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+  .thumb { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #E2E0D9; border-bottom: 1px solid var(--ink); cursor: pointer; }
+  .thumb iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 800px; border: 0; border-radius: 0; transform-origin: 0 0; pointer-events: none; }
+  .card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .card-body b { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-body small { color: var(--muted); font-size: 12.5px; }
+  .card-foot { display: flex; gap: 8px; padding: 0 16px 16px; }
+  .auth { margin: auto; border: 1px solid var(--ink); border-radius: 12px; padding: 0; width: min(420px, calc(100vw - 32px)); background: var(--bg); color: var(--ink); }
+  .auth::backdrop { background: rgba(8, 9, 11, .6); backdrop-filter: blur(3px); }
+  .auth form { position: relative; display: grid; gap: 6px; padding: 30px 28px 24px; }
+  .auth h2 { font: 400 36px/1 var(--serif); }
+  .auth-sub { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+  .auth label { margin: 8px 0 0; }
+  .auth input { width: 100%; background: #fff; border: 1px solid var(--ink); border-radius: 6px; padding: 10px 12px; font-size: 15px; }
+  .auth .go { justify-content: center; margin-top: 12px; box-shadow: none; }
+  .auth-msg { min-height: 20px; font-size: 13.5px; color: var(--error); }
+  .auth-msg.ok { color: #1F6F54; }
+  .auth-switch { font-size: 13.5px; color: var(--muted); text-align: center; margin-top: 6px; }
+  .auth-switch button { border: 0; background: none; text-decoration: underline; cursor: pointer; padding: 0; }
+  .auth-x { position: absolute; top: 10px; right: 12px; border: 0; background: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--muted); }
   .building #undo, .building #edit { display: none; }
   .btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
   .btn[disabled] { opacity: .4; cursor: default; }
@@ -154,7 +187,7 @@
   </div>
   <div class="veil" aria-hidden="true"></div>
   <div class="spot" aria-hidden="true"></div>
-  <header><a class="logo" href="./">unbland<span>.</span></a><span class="chip">Free in early access</span></header>
+  <header><a class="logo" href="./">unbland<span>.</span></a><span class="top-right"><span class="chip">Free in early access</span><button class="acct" type="button" data-act="mine" hidden>My sites</button><button class="acct" type="button" data-act="signin">Sign in</button><button class="acct quiet" type="button" data-act="signout" hidden>Sign out</button></span></header>
   <main class="ask">
     <h1><span class="ln"><span>Describe the business.</span></span><span class="ln"><span><em>Get the site.</em></span></span></h1>
     <p>One message in. A finished, animated website out, in about fifteen seconds.</p>
@@ -181,7 +214,10 @@
       <button type="button" data-size="phone" aria-pressed="false">Phone</button>
     </div>
     <span class="spacer"></span>
-    <button class="btn quiet" type="button" id="again">Start over</button>
+    <span class="saved" id="saved" role="status" aria-live="polite"></span>
+    <button class="btn quiet" type="button" data-act="mine" hidden>My sites</button>
+    <button class="btn" type="button" data-act="signin">Sign in to save</button>
+    <button class="btn quiet" type="button" id="again">New site</button>
     <button class="btn quiet" type="button" id="undo" disabled>Undo</button>
     <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
     <button class="btn" type="button" id="restyle" title="Designs the same business again in a different style. Uses one of today's builds.">Try another style</button>
@@ -202,6 +238,38 @@
   </div>
   <input type="file" id="photo" accept="image/*" hidden>
 </div>
+
+<!-- My sites: everything the signed-in person has built -->
+<div class="mine" id="mine" hidden>
+  <header class="mine-head">
+    <a class="logo" href="./">unbland<span>.</span></a>
+    <span class="spacer"></span>
+    <span class="who" id="who"></span>
+    <button class="btn quiet" type="button" data-act="signout">Sign out</button>
+    <button class="btn primary" type="button" id="mine-new">New site</button>
+  </header>
+  <main class="mine-main">
+    <h1>My sites</h1>
+    <p class="mine-note" id="mine-note" role="status" aria-live="polite"></p>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+<!-- Sign in or create an account -->
+<dialog class="auth" id="auth" aria-labelledby="auth-title">
+  <form id="auth-form" method="dialog">
+    <h2 id="auth-title">Sign in</h2>
+    <p class="auth-sub" id="auth-sub">Save your sites and come back to them from any device.</p>
+    <label for="auth-email">Email</label>
+    <input id="auth-email" type="email" autocomplete="email" required>
+    <label for="auth-pass">Password</label>
+    <input id="auth-pass" type="password" autocomplete="current-password" minlength="8" required>
+    <p class="auth-msg" id="auth-msg" role="status" aria-live="polite"></p>
+    <button class="go" type="submit" id="auth-go">Sign in</button>
+    <p class="auth-switch"><span id="auth-q">New here?</span> <button type="button" id="auth-toggle">Create an account</button></p>
+    <button class="auth-x" type="button" id="auth-close" aria-label="Close">×</button>
+  </form>
+</dialog>
 
 <script type="module">
   const FUNCTIONS_URL = "https://clssxldrgtpiajwqgghl.supabase.co/functions/v1";
@@ -225,8 +293,8 @@
 
   const pretty = name => name.replace(/-/g, " ").replace(/^./, c => c.toUpperCase());
   const say = (text, bad) => { msg.textContent = text; msg.classList.toggle("err", !!bad); msg.classList.remove("dots"); };
-  const show = done => { startEl.hidden = done; result.hidden = !done; };
-  const save = () => { try { sessionStorage.setItem(SAVE_KEY, JSON.stringify(site)); } catch { /* storage unavailable */ } };
+  const show = done => { startEl.hidden = done; result.hidden = !done; $("mine").hidden = true; };
+  const save = () => { try { sessionStorage.setItem(SAVE_KEY, JSON.stringify(site)); } catch { /* storage unavailable */ } queueCloudSave(); };
 
   // In-page links must scroll inside the preview. Left alone, they load this whole page into the frame.
   function tameLinks() {
@@ -416,6 +484,7 @@
     } finally {
       $("chat-send").disabled = false;
       busy = false;
+      queueCloudSave();
     }
   }
   $("chat-form").addEventListener("submit", e => {
@@ -507,6 +576,7 @@
       $("meter").style.width = "0";
       go.disabled = false;
       busy = false;
+      queueCloudSave();
     }
   }
 
@@ -547,7 +617,7 @@
   // Bar controls
   const sizeBtns = [...document.querySelectorAll("[data-size]")];
   sizeBtns.forEach(b => b.onclick = () => { $("wrap").classList.toggle("phone", b.dataset.size === "phone"); sizeBtns.forEach(x => x.setAttribute("aria-pressed", x === b)); });
-  $("again").onclick = () => { if (busy) return; try { sessionStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } site = { html: "", prompt: "", used: [] }; history.length = 0; setEditing(false); show(false); promptBox.focus(); };
+  $("again").onclick = () => newSite();
   $("restyle").onclick = () => { if (site.prompt) design(site.prompt, site.used); };
   $("edit").onclick = () => setEditing(!editing);
   $("undo").onclick = () => { if (!history.length || busy) return; const prev = history.pop(); setSite(prev, false); };
@@ -562,6 +632,158 @@
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 1000);
   };
+
+  // ---- Accounts: sign in to keep sites, and a page listing them. The builder works without an account.
+  const SUPABASE_URL = "https://clssxldrgtpiajwqgghl.supabase.co";
+  const PUBLISHABLE_KEY = "sb_publishable_tSFjjjClxBrIPpc3j0gFyA_JuQhSiJS";   // public by design; row-level rules protect the data
+  let sb = null, user = null, cloudTimer = null, authMode = "signin", ready = Promise.resolve();
+  const acts = name => document.querySelectorAll(`[data-act="${name}"]`);
+  const siteName = () => (site.html.match(/<title>([^<]*)<\/title>/i)?.[1] || "Untitled site").replace(/&amp;/g, "&").trim().slice(0, 120);
+
+  function accountUI() {
+    acts("signin").forEach(b => b.hidden = !!user);
+    acts("mine").forEach(b => b.hidden = !user);
+    acts("signout").forEach(b => b.hidden = !user);
+    $("who").textContent = user?.email || "";
+    if (!user) $("saved").textContent = "";
+  }
+
+  function queueCloudSave() {
+    if (!sb || !user || !site.html || busy) return;
+    clearTimeout(cloudTimer);
+    $("saved").textContent = "Saving…";
+    cloudTimer = setTimeout(cloudSave, 1200);
+  }
+  async function cloudSave() {
+    if (!sb || !user || !site.html) return;
+    const row = { name: siteName(), prompt: site.prompt || null, direction: site.used?.[site.used.length - 1] || null, html: site.html, chat: site.chat || [] };
+    const q = site.id ? sb.from("sites").update(row).eq("id", site.id).select("id") : sb.from("sites").insert(row).select("id");
+    const { data, error } = await q;
+    if (error || !data?.length) {
+      // A site opened from another account, or deleted elsewhere, is saved as a new one next time.
+      if (site.id && !error) { site.id = null; return queueCloudSave(); }
+      $("saved").textContent = row.html.length > 3900000 ? "Too large to save. Use smaller photos." : "Couldn't save. Will retry on your next change.";
+      return;
+    }
+    site.id = data[0].id;
+    try { sessionStorage.setItem(SAVE_KEY, JSON.stringify(site)); } catch { /* ignore */ }
+    $("saved").textContent = "Saved";
+  }
+
+  // Sign-in window
+  const auth = $("auth");
+  async function openAuth(mode = "signin") {
+    await ready;   // the accounts library may still be loading on a slow connection
+    if (!sb) { alert("Accounts aren't available right now. Your site is still here; download it to keep a copy."); return; }
+    authMode = mode;
+    const up = mode === "signup";
+    $("auth-title").textContent = up ? "Create your account" : "Sign in";
+    $("auth-go").textContent = up ? "Create account" : "Sign in";
+    $("auth-q").textContent = up ? "Already have an account?" : "New here?";
+    $("auth-toggle").textContent = up ? "Sign in" : "Create an account";
+    $("auth-pass").autocomplete = up ? "new-password" : "current-password";
+    $("auth-msg").textContent = ""; $("auth-msg").className = "auth-msg";
+    if (!auth.open) auth.showModal();
+  }
+  $("auth-toggle").onclick = () => openAuth(authMode === "signup" ? "signin" : "signup");
+  $("auth-close").onclick = () => auth.close();
+  $("auth-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const email = $("auth-email").value.trim(), password = $("auth-pass").value;
+    const m = $("auth-msg");
+    m.className = "auth-msg";
+    if (password.length < 8) { m.textContent = "Use a password of at least 8 characters."; return; }
+    $("auth-go").disabled = true;
+    m.textContent = "";
+    try {
+      if (authMode === "signup") {
+        const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } });
+        if (error) throw error;
+        if (!data.session) { m.className = "auth-msg ok"; m.textContent = "Check your email and click the link to finish, then sign in here."; return; }
+      } else {
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+      }
+      $("auth-pass").value = "";
+      auth.close();
+    } catch (err) {
+      const text = String(err?.message || "");
+      m.textContent = /invalid login/i.test(text) ? "That email and password don't match an account."
+        : /already registered/i.test(text) ? "There's already an account with that email. Sign in instead."
+        : /not confirmed/i.test(text) ? "Confirm your email first: click the link we sent you."
+        : /rate limit/i.test(text) ? "Too many attempts. Wait a few minutes and try again."
+        : text || "Something went wrong. Try again.";
+    } finally {
+      $("auth-go").disabled = false;
+    }
+  });
+
+  // My sites page
+  const fmt = d => new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  async function openMine() {
+    if (!user || busy) return;
+    setEditing(false);
+    startEl.hidden = true; result.hidden = true; $("mine").hidden = false;
+    const grid = $("grid"), note = $("mine-note");
+    grid.textContent = "";
+    note.textContent = "Loading your sites…";
+    const { data, error } = await sb.from("sites").select("id, name, direction, updated_at, html").order("updated_at", { ascending: false }).limit(60);
+    if (error) { note.textContent = "Couldn't load your sites. Check your connection and try again."; return; }
+    note.textContent = data.length ? `${data.length} site${data.length === 1 ? "" : "s"}. Changes save automatically while you're signed in.` : "Nothing here yet. Build a site and it will be saved automatically.";
+    for (const row of data) {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `<div class="thumb" title="Open"><iframe loading="lazy" tabindex="-1" sandbox="" title=""></iframe></div><div class="card-body"><b></b><small></small></div><div class="card-foot"><button class="btn primary" type="button">Open</button><button class="btn quiet" type="button">Delete</button></div>`;
+      const frameEl = card.querySelector("iframe");
+      frameEl.srcdoc = row.html;   // sandboxed: scripts off, so it is a still picture of the page
+      card.querySelector("b").textContent = row.name;
+      card.querySelector("small").textContent = `${row.direction ? pretty(row.direction) + " · " : ""}Edited ${fmt(row.updated_at)}`;
+      const open = async () => {
+        const { data: full, error: e2 } = await sb.from("sites").select("id, prompt, direction, html, chat").eq("id", row.id).single();
+        if (e2 || !full) { note.textContent = "Couldn't open that site. Try again."; return; }
+        history.length = 0;
+        site = { id: full.id, html: "", prompt: full.prompt || "", used: full.direction ? [full.direction] : [], chat: Array.isArray(full.chat) ? full.chat : [] };
+        show(true);
+        setSite(full.html, false);
+        drawChat();
+        $("saved").textContent = "Saved";
+      };
+      card.querySelector(".thumb").onclick = open;
+      const [openBtn, delBtn] = card.querySelectorAll("button");
+      openBtn.onclick = open;
+      delBtn.onclick = async () => {
+        if (!confirm(`Delete "${row.name}"? This can't be undone.`)) return;
+        const { error: e3 } = await sb.from("sites").delete().eq("id", row.id);
+        if (e3) { note.textContent = "Couldn't delete that site. Try again."; return; }
+        if (site.id === row.id) site.id = null;
+        card.remove();
+      };
+      grid.append(card);
+      const scale = () => { frameEl.style.transform = `scale(${frameEl.parentElement.clientWidth / 1280})`; };
+      scale(); new ResizeObserver(scale).observe(frameEl.parentElement);
+    }
+  }
+  const newSite = () => { if (busy) return; try { sessionStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } site = { html: "", prompt: "", used: [] }; history.length = 0; setEditing(false); promptBox.value = ""; show(false); promptBox.focus(); };
+  $("mine-new").onclick = newSite;
+  acts("signin").forEach(b => b.onclick = () => openAuth("signin"));
+  acts("mine").forEach(b => b.onclick = openMine);
+  acts("signout").forEach(b => b.onclick = async () => { await sb?.auth.signOut(); if (!$("mine").hidden) show(!!site.html); });
+
+  // Load the accounts library last and separately, so the builder still works if it can't be reached.
+  ready = (async () => {
+    try {
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+      sb = createClient(SUPABASE_URL, PUBLISHABLE_KEY);
+      sb.auth.onAuthStateChange((_event, session) => {
+        const was = user?.id;
+        user = session?.user || null;
+        accountUI();
+        if (user && user.id !== was && site.html) queueCloudSave();   // keep the site they just built
+        if (!user) site.id = null;
+      });
+    } catch { /* accounts unavailable; everything else carries on */ }
+    accountUI();
+  })();
 
   // Bring back the last site after a refresh, so a reload never costs another build.
   try {
