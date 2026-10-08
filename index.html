@@ -307,7 +307,7 @@
   const TYPICAL_SIZE = 17000;   // characters in a finished site, for the progress meter
   const EXAMPLES = {
     "Mobile detailer": "Shine Lab Detailing is a one-man mobile detailing business in Portland, OR. I come to your driveway and bring my own water and power. Reset wash is $149, Deep clean is $289, and paint correction with ceramic coating starts at $790. Open Monday to Friday 8am to 6pm and Saturday 9am to 4pm. Text (503) 555-0142.",
-    "Neighbourhood cafe": "Northside Roasters is a small-batch coffee roaster with a cafe at 42 Northside Avenue in Portland. We roast every week behind the counter. House Blend is $18 a bag, the Ethiopian single origin is $22, and decaf is $20. Open weekdays 7am to 4pm and weekends 8am to 2pm. hello@northside.example",
+    "Neighborhood cafe": "Northside Roasters is a small-batch coffee roaster with a cafe at 42 Northside Avenue in Portland. We roast every week behind the counter. House Blend is $18 a bag, the Ethiopian single origin is $22, and decaf is $20. Open weekdays 7am to 4pm and weekends 8am to 2pm. hello@northside.example",
     "Landscaper": "Greenline Gardens does lawn care, planting and patio builds for homes around Raleigh, NC. Family run. We give free on-site quotes and handle everything from weekly mowing to full garden redesigns. Call (919) 555-0117 or email quotes@greenline.example."
   };
 
@@ -445,7 +445,7 @@
 
   // ---- Chat: ask for a change in words; the server answers with exact edits to apply.
   const chatLog = $("chat-log"), chatInput = $("chat-input");
-  const SUGGESTIONS = ["Make the headline shorter", "Change the main colour to navy", "Add a section about gift cards"];
+  const SUGGESTIONS = ["Make the headline shorter", "Change the main color to navy", "Add a section about gift cards"];
   function bubble(role, text, extra = "") {
     const el = document.createElement("div");
     el.className = `bubble ${role === "user" ? "user" : "bot"} ${extra}`;
