@@ -543,11 +543,14 @@
     const started = Date.now();
     let timer;
     try {
-      const res = await fetch(`${FUNCTIONS_URL}/design-site`, {
+      const request = fresh => fetch(`${FUNCTIONS_URL}/design-site`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${ANON_KEY}`, apikey: ANON_KEY },
-        body: JSON.stringify({ prompt, avoid })
+        body: JSON.stringify({ prompt, avoid, fresh })
       });
+      let res = await request(false);
+      // A design from the library sometimes doesn't fit; the server then asks for a brand new one instead.
+      if (res.status === 409) res = await request(true);
       if (!res.ok || !res.body) {
         const data = await res.json().catch(() => ({}));
         throw new Error(data.error || "Something went wrong starting the design. Try again.");
