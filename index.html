@@ -803,6 +803,16 @@
     } catch { /* accounts unavailable; everything else carries on */ }
     accountUI();
   })();
+  // A failed sign-in comes back as an error in the address. Say so instead of silently showing "Sign in" again.
+  ready.then(async () => {
+    const back = new URLSearchParams(location.hash.slice(1) || location.search);
+    if (!back.get("error") && !back.get("error_description")) return;
+    console.warn("Sign-in error:", back.get("error_description") || back.get("error"));
+    window.history.replaceState(null, "", location.pathname);
+    await openAuth("signin");
+    $("auth-msg").className = "auth-msg";
+    $("auth-msg").textContent = "Sign-in didn't complete. Please try again, or use email and password.";
+  });
 
   // Bring back the last site after a refresh, so a reload never costs another build.
   try {
