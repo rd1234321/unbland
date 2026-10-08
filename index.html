@@ -839,7 +839,7 @@
     const grid = $("grid"), note = $("mine-note");
     grid.textContent = "";
     note.textContent = "Loading your sites…";
-    const { data, error } = await sb.from("sites").select("id, name, direction, updated_at, html").order("updated_at", { ascending: false }).limit(60);
+    const { data, error } = await sb.from("sites").select("id, name, direction, updated_at, html").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(60);
     if (error) { note.textContent = "Couldn't load your sites. Check your connection and try again."; return; }
     note.textContent = data.length ? `${data.length} site${data.length === 1 ? "" : "s"}. Changes save automatically while you're signed in.` : "Nothing here yet. Build a site and it will be saved automatically.";
     for (const row of data) {

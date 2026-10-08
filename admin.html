@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Design library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #F4F3EF; --ink: #141414; --muted: #5E5C57; --rule: #D4D1C8; --accent: #FF4F1A; --ok: #1F6F54; --error: #B3261E; }
+  * { box-sizing: border-box; margin: 0; }
+  body { background: var(--bg); color: var(--ink); font: 400 15px/1.5 "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  header { display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid var(--ink); }
+  .logo { font: 400 24px "Instrument Serif", Georgia, serif; text-decoration: none; color: inherit; }
+  .logo span { color: var(--accent); }
+  .spacer { flex: 1; }
+  .who { font-size: 13px; color: var(--muted); }
+  main { max-width: 1240px; margin: 0 auto; padding: 36px 24px 96px; }
+  h1 { font: 400 clamp(38px, 6vw, 60px)/1 "Instrument Serif", Georgia, serif; letter-spacing: -.02em; margin-bottom: 10px; }
+  h2 { font: 400 32px/1.1 "Instrument Serif", Georgia, serif; margin: 56px 0 6px; }
+  .lede { color: var(--muted); max-width: 68ch; }
+  .note { color: var(--muted); min-height: 22px; margin: 14px 0 20px; }
+  .note.err { color: var(--error); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+  .card { border: 1px solid var(--ink); border-radius: 8px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+  .card.off { opacity: .55; }
+  .thumb { position: relative; display: block; aspect-ratio: 16 / 10; overflow: hidden; background: #E2E0D9; border-bottom: 1px solid var(--ink); cursor: zoom-in; }
+  .thumb iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 800px; border: 0; transform-origin: 0 0; pointer-events: none; }
+  .body { padding: 14px 16px 6px; }
+  .body b { display: block; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .body small { color: var(--muted); font-size: 12.5px; }
+  .foot { display: flex; gap: 8px; padding: 10px 16px 16px; flex-wrap: wrap; }
+  .btn { font-weight: 600; font-size: 13px; padding: 8px 13px; border: 1px solid var(--ink); border-radius: 4px; background: transparent; cursor: pointer; text-decoration: none; color: inherit; }
+  .btn.keep { background: var(--ok); border-color: var(--ok); color: #fff; }
+  .btn.quiet { border-color: transparent; color: var(--muted); }
+  .btn[disabled] { opacity: .5; cursor: progress; }
+  .msg { font-size: 13px; padding: 0 16px 14px; color: var(--muted); }
+  .msg.err { color: var(--error); }
+  .msg.ok { color: var(--ok); }
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="./">unbland<span>.</span></a>
+  <span class="spacer"></span>
+  <span class="who" id="who"></span>
+  <a class="btn" href="./">Back to the builder</a>
+</header>
+<main>
+  <h1>Design library</h1>
+  <p class="lede">Designs you keep are reused for new sites, with the original business's details removed. Reusing a design costs about a third of making a new one. Only keep designs you'd be happy for any customer to receive.</p>
+  <p class="note" id="note" role="status" aria-live="polite">Loading…</p>
+
+  <div id="content" hidden>
+    <h2>Waiting for your decision</h2>
+    <p class="lede">Saved sites that haven't been reviewed. Click a picture to open the full site. Keeping one takes about 20 seconds and a few cents.</p>
+    <p class="note" id="new-note"></p>
+    <div class="grid" id="new"></div>
+
+    <h2>In the library</h2>
+    <p class="lede">Designs currently available for reuse. Switch one off to stop it being used; it isn't deleted.</p>
+    <p class="note" id="lib-note"></p>
+    <div class="grid" id="lib"></div>
+  </div>
+</main>
+
+<script type="module">
+  import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+  const SUPABASE_URL = "https://clssxldrgtpiajwqgghl.supabase.co";
+  const PUBLISHABLE_KEY = "sb_publishable_tSFjjjClxBrIPpc3j0gFyA_JuQhSiJS";   // public by design; row-level rules protect the data
+  const sb = createClient(SUPABASE_URL, PUBLISHABLE_KEY);
+  const $ = id => document.getElementById(id);
+  const pretty = name => String(name || "").replace(/-/g, " ").replace(/^./, c => c.toUpperCase());
+  const fmt = d => new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+
+  // A card with a still picture of a design. Clicking the picture opens the full page in a new tab.
+  function card(title, sub, html) {
+    const el = document.createElement("article");
+    el.className = "card";
+    el.innerHTML = `<a class="thumb" title="Open full size" target="_blank" rel="noopener"><iframe loading="lazy" tabindex="-1" sandbox="" title=""></iframe></a><div class="body"><b></b><small></small></div><div class="foot"></div><p class="msg" hidden></p>`;
+    const frame = el.querySelector("iframe");
+    frame.srcdoc = html;   // sandboxed, so scripts are off and it is a still picture
+    el.querySelector("b").textContent = title;
+    el.querySelector("small").textContent = sub;
+    el.querySelector(".thumb").href = URL.createObjectURL(new Blob([html], { type: "text/html" }));
+    const scale = () => { frame.style.transform = `scale(${frame.parentElement.clientWidth / 1280})`; };
+    requestAnimationFrame(scale);
+    new ResizeObserver(scale).observe(frame.parentElement);
+    el.say = (text, kind = "") => { const m = el.querySelector(".msg"); m.hidden = !text; m.textContent = text; m.className = `msg ${kind}`; };
+    el.button = (label, cls, onClick) => { const b = document.createElement("button"); b.type = "button"; b.className = `btn ${cls}`; b.textContent = label; b.onclick = () => onClick(b); el.querySelector(".foot").append(b); return b; };
+    return el;
+  }
+
+  async function review(siteId, action) {
+    const { data: { session } } = await sb.auth.getSession();
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/review-design`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token || ""}`, apikey: PUBLISHABLE_KEY },
+      body: JSON.stringify({ site_id: siteId, action })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Something went wrong. Try again.");
+    return data;
+  }
+
+  async function loadNew() {
+    const box = $("new"), note = $("new-note");
+    box.textContent = "";
+    const { data, error } = await sb.from("sites").select("id, name, direction, html, updated_at").eq("library_status", "new").order("updated_at", { ascending: false }).limit(40);
+    if (error) { note.className = "note err"; note.textContent = "Couldn't load the sites waiting for review."; return; }
+    note.className = "note";
+    note.textContent = data.length ? `${data.length} to review.` : "Nothing waiting. New sites appear here once they're saved to an account.";
+    for (const row of data) {
+      const c = card(row.name, `${pretty(row.direction)} · saved ${fmt(row.updated_at)}`, row.html);
+      const act = async (btn, action) => {
+        c.querySelectorAll("button").forEach(b => b.disabled = true);
+        c.say(action === "keep" ? "Removing the business details and adding it to the library…" : "");
+        try {
+          const out = await review(row.id, action);
+          if (action === "keep") { c.say(`Added. ${out.removed} identifying details were removed.`, "ok"); c.querySelector(".foot").textContent = ""; loadLibrary(); }
+          else c.remove();
+        } catch (err) {
+          c.say(err.message, "err");
+          c.querySelectorAll("button").forEach(b => b.disabled = false);
+        }
+      };
+      c.button("Keep", "keep", b => act(b, "keep"));
+      c.button("Reject", "quiet", b => act(b, "reject"));
+      box.append(c);
+    }
+  }
+
+  async function loadLibrary() {
+    const box = $("lib"), note = $("lib-note");
+    box.textContent = "";
+    const { data, error } = await sb.from("presets").select("id, direction, label, html, approved, uses, created_at").order("approved", { ascending: false }).order("id", { ascending: false });
+    if (error) { note.className = "note err"; note.textContent = "Couldn't load the library."; return; }
+    const on = data.filter(d => d.approved).length;
+    note.className = "note";
+    note.textContent = `${on} switched on, ${data.length - on} switched off.`;
+    for (const row of data) {
+      const c = card(pretty(row.direction), `Used ${row.uses} time${row.uses === 1 ? "" : "s"} · added ${fmt(row.created_at)}`, row.html);
+      c.classList.toggle("off", !row.approved);
+      const toggle = c.button(row.approved ? "Switch off" : "Switch on", row.approved ? "quiet" : "keep", async b => {
+        b.disabled = true;
+        const { error: e } = await sb.from("presets").update({ approved: !row.approved }).eq("id", row.id);
+        if (e) { c.say("Couldn't change that. Try again.", "err"); b.disabled = false; return; }
+        loadLibrary();
+      });
+      box.append(c);
+    }
+  }
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    $("note").innerHTML = 'You need to sign in first. <a href="./">Go to the builder</a>, sign in, then come back to this page.';
+  } else {
+    $("who").textContent = session.user.email || "";
+    const { data: admin } = await sb.from("admins").select("user_id").eq("user_id", session.user.id).maybeSingle();
+    if (!admin) $("note").textContent = "This page is only for the site owner.";
+    else { $("note").textContent = ""; $("content").hidden = false; loadNew(); loadLibrary(); }
+  }
+</script>
+</body>
+</html>
