@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Loading…</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #fff; }
+  iframe { display: block; width: 100%; height: 100%; border: 0; }
+  .note { font: 400 16px/1.5 system-ui, sans-serif; color: #333; max-width: 32ch; margin: 22vh auto 0; padding: 0 24px; text-align: center; }
+  .note b { display: block; font-size: 22px; margin-bottom: 8px; }
+  .note a { color: inherit; }
+</style>
+</head>
+<body>
+<p class="note" id="note">Loading…</p>
+<script>
+  // Shows a published site. The address is .../s/?the-site-name
+  // The site runs inside a sandboxed frame, so its own scripts cannot reach this page or anyone's sign-in.
+  const SUPABASE_URL = "https://clssxldrgtpiajwqgghl.supabase.co";
+  const PUBLISHABLE_KEY = "sb_publishable_tSFjjjClxBrIPpc3j0gFyA_JuQhSiJS";
+  const note = document.getElementById("note");
+  const missing = () => { document.title = "Site not found"; note.innerHTML = "<b>Site not found</b>This link doesn't point to a published site. It may have been unpublished or renamed."; };
+
+  // Runs inside the frame: keeps same-page links scrolling within the site.
+  const INNER = "<scr" + "ipt>document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^=\"#\"]');if(!a)return;e.preventDefault();var id=a.getAttribute('href').slice(1);var t=id&&document.getElementById(id);if(t)t.scrollIntoView({behavior:'smooth'});});</scr" + "ipt>";
+
+  const slug = decodeURIComponent(location.search.slice(1).split("&")[0] || "").toLowerCase();
+  if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) missing();
+  else fetch(`${SUPABASE_URL}/rest/v1/published?slug=eq.${slug}&select=name,html`, { headers: { apikey: PUBLISHABLE_KEY } })
+    .then(r => r.ok ? r.json() : Promise.reject())
+    .then(rows => {
+      if (!rows.length) return missing();
+      const { name, html } = rows[0];
+      document.title = name;
+      const frame = document.createElement("iframe");
+      frame.title = name;
+      frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation");
+      frame.srcdoc = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, INNER + "</body>") : html + INNER;
+      note.remove();
+      document.body.append(frame);
+    })
+    .catch(() => { note.innerHTML = "<b>Couldn't load this site</b>Check your connection and refresh the page."; });
+</script>
+</body>
+</html>

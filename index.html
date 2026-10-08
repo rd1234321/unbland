@@ -119,6 +119,10 @@
   .auth-msg.ok { color: #1F6F54; }
   .auth-switch { font-size: 13.5px; color: var(--muted); text-align: center; margin-top: 6px; }
   .auth-switch button { border: 0; background: none; text-decoration: underline; cursor: pointer; padding: 0; }
+  .pub-row { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
+  .pub-row .go { flex: 1; margin-top: 0; }
+  .pub-row .btn { padding: 13px 18px; text-decoration: none; color: inherit; font-size: 15px; }
+  .building #publish { display: none; }
   .auth-x { position: absolute; top: 10px; right: 12px; border: 0; background: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--muted); }
   .building #undo, .building #edit { display: none; }
   .btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
@@ -226,7 +230,8 @@
     <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
     <button class="btn" type="button" id="restyle" title="Designs the same business again in a different style. Uses one of today's builds.">Try another style</button>
     <button class="btn" type="button" id="open">Open full size</button>
-    <button class="btn primary" type="button" id="download">Download site</button>
+    <button class="btn" type="button" id="download">Download</button>
+    <button class="btn primary" type="button" id="publish">Publish</button>
   </div>
   <p class="edit-hint" id="edit-hint" hidden>Click any text to change it. Click a photo to replace it. Editing by hand is free and uses no builds.</p>
   <div class="work">
@@ -258,6 +263,20 @@
     <div class="grid" id="grid"></div>
   </main>
 </div>
+
+<!-- Publish: the live link for a site -->
+<dialog class="auth" id="pub" aria-labelledby="pub-title">
+  <form method="dialog">
+    <h2 id="pub-title">Your site is live</h2>
+    <p class="auth-sub" id="pub-sub">Anyone with this link can see it. Press Publish again after you make changes to update it.</p>
+    <label for="pub-link">Link</label>
+    <input id="pub-link" type="text" readonly>
+    <p class="auth-msg ok" id="pub-msg" role="status" aria-live="polite"></p>
+    <div class="pub-row"><button class="go" type="button" id="pub-copy">Copy link</button><a class="btn" id="pub-open" target="_blank" rel="noopener">Open</a></div>
+    <p class="auth-switch"><button type="button" id="pub-off">Take this site offline</button></p>
+    <button class="auth-x" type="button" id="pub-close" aria-label="Close">×</button>
+  </form>
+</dialog>
 
 <!-- Sign in or create an account -->
 <dialog class="auth" id="auth" aria-labelledby="auth-title">
@@ -572,6 +591,7 @@
       if (!/<\/html>\s*$/i.test(html)) throw new Error("The design was cut off before it finished. Try again.");
 
       history.length = 0;
+      $("publish").textContent = "Publish";
       site = { html: "", prompt, used: [...(avoid || []), direction].filter(Boolean) };
       setSite(html, false);   // reload cleanly so entrance animations play from the top
       drawChat();
@@ -737,6 +757,76 @@
     .then(d => { const on = !!d?.external?.google; $("auth-google").hidden = !on; $("auth-or").hidden = !on; })
     .catch(() => { /* leave the button hidden */ });
 
+  // ---- Publishing: put the current site at a public link, update it, or take it offline.
+  const pub = $("pub");
+  const liveUrl = slug => new URL("s/?" + slug, location.origin + location.pathname).href;
+  const slugify = text => (text.split(/[|·—–:]/)[0].toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) || "site");
+  function showPublished(slug, message) {
+    site.slug = slug;
+    $("publish").textContent = "Update live site";
+    $("pub-link").value = liveUrl(slug);
+    $("pub-open").href = liveUrl(slug);
+    $("pub-msg").className = "auth-msg ok";
+    $("pub-msg").textContent = message || "";
+    if (!pub.open) pub.showModal();
+  }
+  async function publish() {
+    await ready;
+    if (!user) { openAuth("signin"); return; }
+    if (busy || !site.html) return;
+    setEditing(false);
+    const btn = $("publish");
+    btn.disabled = true;
+    try {
+      clearTimeout(cloudTimer);
+      await cloudSave();   // a site must be saved before it can be published
+      if (!site.id) throw new Error("Couldn't save the site, so it can't be published yet. Try again in a moment.");
+      const name = siteName();
+      const { data: existing, error: e1 } = await sb.from("published").select("slug").eq("site_id", site.id).maybeSingle();
+      if (e1) throw new Error("Couldn't reach the server. Try again.");
+      if (existing) {
+        const { error } = await sb.from("published").update({ html: site.html, name }).eq("slug", existing.slug);
+        if (error) throw new Error("Couldn't update the live site. Try again.");
+        showPublished(existing.slug, "Updated. The live site now matches what you see here.");
+        return;
+      }
+      // New link: the business name plus a short random ending, retried if that exact link is taken.
+      for (let attempt = 0; attempt < 4; attempt++) {
+        const slug = `${slugify(name)}-${Math.random().toString(36).slice(2, 6)}`;
+        const { error } = await sb.from("published").insert({ slug, site_id: site.id, name, html: site.html });
+        if (!error) { showPublished(slug, "Published."); return; }
+        if (error.code !== "23505") throw new Error("Couldn't publish the site. Try again.");
+      }
+      throw new Error("Couldn't find a free link. Try again.");
+    } catch (err) {
+      alert(err.message);
+    } finally {
+      btn.disabled = false;
+    }
+  }
+  $("publish").onclick = publish;
+  $("pub-close").onclick = () => pub.close();
+  $("pub-copy").onclick = async () => {
+    try { await navigator.clipboard.writeText($("pub-link").value); $("pub-msg").className = "auth-msg ok"; $("pub-msg").textContent = "Link copied."; }
+    catch { $("pub-link").select(); $("pub-msg").textContent = "Press Cmd or Ctrl and C to copy."; }
+  };
+  $("pub-off").onclick = async () => {
+    if (!site.slug || !confirm("Take this site offline? The link will stop working.")) return;
+    const { error } = await sb.from("published").delete().eq("slug", site.slug);
+    if (error) { $("pub-msg").className = "auth-msg"; $("pub-msg").textContent = "Couldn't take it offline. Try again."; return; }
+    site.slug = null;
+    $("publish").textContent = "Publish";
+    pub.close();
+  };
+  // Keeps the Publish button's label right for whichever site is open.
+  async function refreshPublishState() {
+    $("publish").textContent = "Publish";
+    site.slug = null;
+    if (!sb || !user || !site.id) return;
+    const { data } = await sb.from("published").select("slug").eq("site_id", site.id).maybeSingle();
+    if (data?.slug) { site.slug = data.slug; $("publish").textContent = "Update live site"; }
+  }
+
   // My sites page
   const fmt = d => new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
   async function openMine() {
@@ -766,6 +856,7 @@
         setSite(full.html, false);
         drawChat();
         $("saved").textContent = "Saved";
+        refreshPublishState();
       };
       card.querySelector(".thumb").onclick = open;
       const [openBtn, delBtn] = card.querySelectorAll("button");
@@ -782,7 +873,7 @@
       scale(); new ResizeObserver(scale).observe(frameEl.parentElement);
     }
   }
-  const newSite = () => { if (busy) return; try { sessionStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } site = { html: "", prompt: "", used: [] }; history.length = 0; setEditing(false); promptBox.value = ""; show(false); promptBox.focus(); };
+  const newSite = () => { if (busy) return; try { sessionStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } site = { html: "", prompt: "", used: [] }; history.length = 0; setEditing(false); promptBox.value = ""; $("publish").textContent = "Publish"; show(false); promptBox.focus(); };
   $("mine-new").onclick = newSite;
   acts("signin").forEach(b => b.onclick = () => openAuth("signin"));
   acts("mine").forEach(b => b.onclick = openMine);
@@ -798,6 +889,7 @@
         user = session?.user || null;
         accountUI();
         if (user && user.id !== was && site.html) queueCloudSave();   // keep the site they just built
+        if (user && user.id !== was) refreshPublishState();
         if (!user) site.id = null;
       });
     } catch { /* accounts unavailable; everything else carries on */ }
