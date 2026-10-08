@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Unbland — Describe the business, get the site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #F4F3EF; --ink: #141414; --muted: #5E5C57; --rule: #D4D1C8; --accent: #FF4F1A; --error: #B3261E; --serif: "Instrument Serif", Georgia, serif; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--ink); font: 400 15px/1.5 "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .logo { font: 400 26px var(--serif); text-decoration: none; color: inherit; }
+  .logo span { color: var(--accent); }
+  [hidden] { display: none !important; }
+
+  /* Start: one box, on a drifting wall of example sites */
+  @property --spin { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+  .start { position: relative; min-height: 100%; display: flex; flex-direction: column; overflow: hidden; background: #08090B; color: #F3F1EC; isolation: isolate; }
+  .wall { position: absolute; inset: -30% -12%; z-index: -3; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; transform: rotate(-9deg); opacity: .5; }
+  .col { overflow: hidden; }
+  .track { display: grid; gap: 22px; animation: drift 70s linear infinite; }
+  .col:nth-child(even) .track { animation-direction: reverse; animation-duration: 86s; }
+  .track img { display: block; width: 100%; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .14); }
+  @keyframes drift { from { transform: translateY(0); } to { transform: translateY(calc(-50% - 11px)); } }
+  .veil { position: absolute; inset: 0; z-index: -2; background: radial-gradient(ellipse 70% 64% at 50% 50%, rgba(8, 9, 11, .97) 0, rgba(8, 9, 11, .93) 42%, rgba(8, 9, 11, .3) 100%); }
+  .spot { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 40%), rgba(255, 79, 26, .16), transparent 62%); }
+  .start header { display: flex; justify-content: space-between; align-items: center; padding: 22px 32px; }
+  .chip { font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; border: 1px solid rgba(255, 255, 255, .22); border-radius: 999px; padding: 6px 12px; color: #CFCBC3; display: inline-flex; align-items: center; gap: 8px; }
+  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 rgba(255, 79, 26, .7); animation: pulse 2s infinite; }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 9px rgba(255, 79, 26, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 79, 26, 0); } }
+  .ask { flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; max-width: 980px; margin: 0 auto; padding: 24px 24px 88px; }
+  .ask h1 { font: 400 clamp(40px, 7vw, 96px)/.94 var(--serif); letter-spacing: -.025em; margin-bottom: 20px; }
+  .ask h1 .ln { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+  .ask h1 .ln > span { display: block; transform: translateY(105%); animation: rise 1s cubic-bezier(.2, .7, .1, 1) forwards; }
+  .ask h1 .ln:nth-child(2) > span { animation-delay: .14s; }
+  .ask h1 em { background: linear-gradient(100deg, #FF4F1A 10%, #FFB36B 55%, #FF4F1A 90%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 6s linear infinite; padding-right: .08em; }
+  @keyframes rise { to { transform: none; } }
+  @keyframes sheen { to { background-position: -200% 0; } }
+  .ask > p { color: #B4B0A8; font-size: 18px; max-width: 50ch; margin-bottom: 30px; opacity: 0; animation: fade .8s .5s forwards; }
+  @keyframes fade { to { opacity: 1; } }
+  .box { position: relative; border-radius: 14px; background: rgba(18, 20, 24, .86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .8); opacity: 0; animation: fade .8s .65s forwards; }
+  .box::before { content: ""; position: absolute; inset: -1.5px; z-index: -1; border-radius: 15.5px; background: conic-gradient(from var(--spin), rgba(255, 255, 255, .14), #FF4F1A 12%, rgba(255, 255, 255, .14) 26%, rgba(255, 255, 255, .14) 50%, #FFB36B 62%, rgba(255, 255, 255, .14) 76%); animation: spin 7s linear infinite; }
+  .box::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 14px; background: #121418; }
+  .box:focus-within::before { animation-duration: 3s; }
+  @keyframes spin { to { --spin: 360deg; } }
+  .box textarea { display: block; width: 100%; min-height: 150px; border: 0; background: transparent; resize: none; padding: 22px 24px 8px; font-size: 18px; line-height: 1.5; outline: 0; color: #F3F1EC; caret-color: var(--accent); }
+  .box textarea::placeholder { color: #7C7972; }
+  .box-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 10px 14px 14px 24px; }
+  .box-foot span { font-size: 13px; color: #8E8A82; }
+  .go { display: inline-flex; align-items: center; gap: 12px; background: var(--accent); color: #fff; font-weight: 600; font-size: 16px; border: 0; border-radius: 9px; padding: 15px 24px; cursor: pointer; white-space: nowrap; box-shadow: 0 10px 34px -8px rgba(255, 79, 26, .75); transition: transform .2s, box-shadow .2s; }
+  .go:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -8px rgba(255, 79, 26, .9); }
+  .go i { font-style: normal; transition: transform .25s; }
+  .go:hover i { transform: translateX(5px); }
+  .go[disabled] { opacity: .7; cursor: progress; transform: none; }
+  .start :focus-visible { outline-color: #F3F1EC; }
+  .msg { min-height: 22px; margin-top: 14px; font-size: 14px; color: #B4B0A8; }
+  .msg.err { color: #FF9A8A; }
+  .examples { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 16px; font-size: 13px; color: #8E8A82; opacity: 0; animation: fade .8s .85s forwards; }
+  .examples button { border: 1px solid rgba(255, 255, 255, .2); background: rgba(255, 255, 255, .04); color: #DAD6CE; border-radius: 999px; padding: 7px 13px; cursor: pointer; font-size: 13px; transition: border-color .2s, background .2s; }
+  .examples button:hover { border-color: var(--accent); background: rgba(255, 79, 26, .12); }
+  .dots::after { content: ""; animation: dots 1.4s steps(4, end) infinite; }
+  @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+
+  /* Result: the site, with a slim bar */
+  .result { height: 100%; display: flex; flex-direction: column; }
+  .bar { display: flex; align-items: center; gap: 14px; padding: 10px 16px; border-bottom: 1px solid var(--ink); }
+  .bar .spacer { flex: 1; }
+  .seg { display: inline-flex; border: 1px solid var(--ink); border-radius: 4px; overflow: hidden; }
+  .seg button { font-weight: 500; font-size: 13px; padding: 7px 12px; border: 0; background: transparent; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .btn { font-weight: 600; font-size: 13px; padding: 8px 13px; border: 1px solid var(--ink); border-radius: 4px; background: transparent; cursor: pointer; white-space: nowrap; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.quiet { border-color: transparent; color: var(--muted); }
+  .work { flex: 1; min-height: 0; display: flex; }
+  .frame-wrap { flex: 1; min-width: 0; display: flex; justify-content: center; background: #E2E0D9; padding: 16px; }
+  iframe { width: 100%; height: 100%; border: 1px solid var(--ink); border-radius: 6px; background: #fff; transition: width .3s ease; }
+  .phone iframe { width: 390px; }
+
+  /* Optional editing drawer, closed unless asked for */
+  .drawer { width: 380px; border-left: 1px solid var(--ink); overflow-y: auto; padding: 4px 22px 28px; background: var(--bg); }
+  fieldset { border: 0; padding: 20px 0; border-bottom: 1px solid var(--rule); min-width: 0; }
+  fieldset:last-child { border-bottom: 0; }
+  legend { font-weight: 600; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); padding: 0; margin-bottom: 12px; float: left; width: 100%; }
+  legend + * { clear: both; }
+  label { display: block; font-size: 13px; font-weight: 500; margin: 12px 0 5px; }
+  .drawer input, .drawer select, .drawer textarea { width: 100%; background: #fff; border: 1px solid var(--rule); border-radius: 4px; padding: 8px 10px; }
+  .drawer textarea { resize: vertical; min-height: 66px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .service { display: grid; grid-template-columns: 1fr 92px; gap: 8px; margin-bottom: 12px; }
+  .service input:last-child { grid-column: 1 / 3; }
+
+  @media (max-width: 860px) {
+    .start header { padding: 18px 20px; }
+    .ask { padding-bottom: 48px; }
+    .wall { grid-template-columns: repeat(2, 1fr); inset: -20% -40%; }
+    .col:nth-child(n+3) { display: none; }
+    .box-foot { flex-direction: column; align-items: stretch; }
+    .box-foot span { order: 2; }
+    .bar { flex-wrap: wrap; gap: 8px; }
+    .bar .spacer { display: none; }
+    .work { flex-direction: column; }
+    .drawer { width: 100%; border-left: 0; border-top: 1px solid var(--ink); max-height: 55%; }
+    .frame-wrap { padding: 8px; }
+    #sizes { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dots::after { animation: none; content: "..."; }
+    .go, .go i, iframe { transition: none; }
+    .track, .box::before, .chip::before, .ask h1 em { animation: none; }
+    .ask h1 .ln > span { animation: none; transform: none; }
+    .ask > p, .box, .examples { animation: none; opacity: 1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Start screen: one place to type -->
+<div class="start" id="start">
+  <div class="wall" aria-hidden="true">
+    <div class="col"><div class="track"><img src="wall/0.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/1.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/2.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/0.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/1.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/2.jpg" alt="" width="720" height="844" loading="eager"></div></div>
+    <div class="col"><div class="track"><img src="wall/3.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/4.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/5.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/3.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/4.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/5.jpg" alt="" width="720" height="844" loading="eager"></div></div>
+    <div class="col"><div class="track"><img src="wall/2.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/0.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/4.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/2.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/0.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/4.jpg" alt="" width="720" height="844" loading="eager"></div></div>
+    <div class="col"><div class="track"><img src="wall/5.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/3.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/1.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/5.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/3.jpg" alt="" width="720" height="844" loading="eager"><img src="wall/1.jpg" alt="" width="720" height="844" loading="eager"></div></div>
+  </div>
+  <div class="veil" aria-hidden="true"></div>
+  <div class="spot" aria-hidden="true"></div>
+  <header><a class="logo" href="./">unbland<span>.</span></a><span class="chip">Free in early access</span></header>
+  <main class="ask">
+    <h1><span class="ln"><span>Describe the business.</span></span><span class="ln"><span><em>Get the site.</em></span></span></h1>
+    <p>One message in. A finished, animated website out, in about fifteen seconds.</p>
+    <div class="box">
+      <label for="prompt" style="position:absolute;clip:rect(0 0 0 0);margin:0">Describe the business</label>
+      <textarea id="prompt" maxlength="3000" placeholder="Name, what they do, where, prices, hours, phone…"></textarea>
+      <div class="box-foot">
+        <span>Only uses the facts you give it. Nothing made up.</span>
+        <button class="go" id="go" type="button">Build the site <i aria-hidden="true">→</i></button>
+      </div>
+    </div>
+    <p class="msg" id="msg" role="status" aria-live="polite"></p>
+    <div class="examples" id="examples"><span>Try an example:</span></div>
+  </main>
+</div>
+
+<!-- Result screen: the finished site -->
+<div class="result" id="result" hidden>
+  <div class="bar">
+    <a class="logo" href="./" style="font-size:22px">unbland<span>.</span></a>
+    <div class="seg" role="group" aria-label="Style">
+      <button type="button" data-template="dark" aria-pressed="true">Dark</button>
+      <button type="button" data-template="editorial" aria-pressed="false">Editorial</button>
+    </div>
+    <div class="seg" role="group" aria-label="Preview size" id="sizes">
+      <button type="button" data-size="desktop" aria-pressed="true">Desktop</button>
+      <button type="button" data-size="phone" aria-pressed="false">Phone</button>
+    </div>
+    <span class="spacer"></span>
+    <button class="btn quiet" type="button" id="again">Start over</button>
+    <button class="btn" type="button" id="edit" aria-expanded="false" aria-controls="drawer">Edit text</button>
+    <button class="btn" type="button" id="open">Open full size</button>
+    <button class="btn primary" type="button" id="download">Download site</button>
+  </div>
+  <div class="work">
+    <div class="frame-wrap" id="wrap"><iframe id="frame" title="Your site"></iframe></div>
+    <form class="drawer" id="drawer" autocomplete="off" hidden>
+      <fieldset>
+        <legend>The business</legend>
+        <label for="f-name">Business name</label><input id="f-name" name="name" maxlength="60">
+        <div class="two">
+          <div><label for="f-type">Photos for</label>
+            <select id="f-type" name="type">
+              <option value="detailing">Car detailing</option><option value="cafe">Cafe or coffee</option><option value="barber">Barber or salon</option>
+              <option value="landscaping">Landscaping</option><option value="restaurant">Restaurant</option><option value="fitness">Gym or fitness</option>
+              <option value="renovation">Renovation</option><option value="">No photos</option>
+            </select></div>
+          <div><label for="f-area">Town or area</label><input id="f-area" name="area" maxlength="60"></div>
+        </div>
+        <label for="f-heading">Headline</label><input id="f-heading" name="heading" maxlength="70">
+        <label for="f-sub">Intro</label><textarea id="f-sub" name="sub" maxlength="220"></textarea>
+      </fieldset>
+      <fieldset>
+        <legend>Services or products</legend>
+        <label for="f-ih">Section title</label><input id="f-ih" name="itemsHeading" maxlength="40">
+        <label>Name, price and description</label>
+        <div class="service"><input name="s1n" aria-label="Service 1 name" maxlength="40"><input name="s1p" aria-label="Service 1 price" maxlength="16"><input name="s1d" aria-label="Service 1 description" maxlength="140"></div>
+        <div class="service"><input name="s2n" aria-label="Service 2 name" maxlength="40"><input name="s2p" aria-label="Service 2 price" maxlength="16"><input name="s2d" aria-label="Service 2 description" maxlength="140"></div>
+        <div class="service"><input name="s3n" aria-label="Service 3 name" maxlength="40"><input name="s3p" aria-label="Service 3 price" maxlength="16"><input name="s3d" aria-label="Service 3 description" maxlength="140"></div>
+      </fieldset>
+      <fieldset>
+        <legend>About</legend>
+        <label for="f-ah">Heading</label><input id="f-ah" name="aboutHeading" maxlength="70">
+        <label for="f-about">Text</label><textarea id="f-about" name="about" maxlength="600"></textarea>
+      </fieldset>
+      <fieldset>
+        <legend>Contact and hours</legend>
+        <div class="two">
+          <div><label for="f-phone">Phone</label><input id="f-phone" name="phone" maxlength="30"></div>
+          <div><label for="f-email">Email</label><input id="f-email" name="email" maxlength="80"></div>
+        </div>
+        <label for="f-cta">Main button</label><input id="f-cta" name="cta" maxlength="24">
+        <label for="f-hours">Opening hours, one per line</label><textarea id="f-hours" name="hours" maxlength="300"></textarea>
+      </fieldset>
+    </form>
+  </div>
+</div>
+
+<script type="module">
+  import { render as dark } from "./templates/dark.js";
+  import { render as editorial } from "./templates/editorial.js";
+  import { photosFor } from "./photos.js";
+
+  const TEMPLATES = { dark, editorial };
+  const FUNCTIONS_URL = "https://clssxldrgtpiajwqgghl.supabase.co/functions/v1";
+  // Public browser key for the project; it only allows calling the function and inserting sign-ups.
+  const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsc3N4bGRyZ3RwaWFqd3FnZ2hsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0MDYyMTAsImV4cCI6MjEwNjk4MjIxMH0.sKa10fVoqgXD6yCYq5bxo6WryLoJIAU66X0BAQP88s4";
+  const SAVE_KEY = "unbland.site";
+  const EXAMPLES = {
+    "Mobile detailer": "Shine Lab Detailing is a one-man mobile detailing business in Portland, OR. I come to your driveway and bring my own water and power. Reset wash is $149, Deep clean is $289, and paint correction with ceramic coating starts at $790. Open Monday to Friday 8am to 6pm and Saturday 9am to 4pm. Text (503) 555-0142.",
+    "Neighbourhood cafe": "Northside Roasters is a small-batch coffee roaster with a cafe at 42 Northside Avenue in Portland. We roast every week behind the counter. House Blend is $18 a bag, the Ethiopian single origin is $22, and decaf is $20. Open weekdays 7am to 4pm and weekends 8am to 2pm. hello@northside.example",
+    "Landscaper": "Greenline Gardens does lawn care, planting and patio builds for homes around Raleigh, NC. Family run. We give free on-site quotes and handle everything from weekly mowing to full garden redesigns. Call (919) 555-0117 or email quotes@greenline.example."
+  };
+
+  const $ = id => document.getElementById(id);
+  const form = $("drawer");
+  const frame = $("frame");
+  const clean = v => String(v || "").trim().replace(/[ \t]+/g, " ");
+  const field = name => form.elements.namedItem(name);
+  const set = (name, value) => { const el = field(name); if (el) el.value = value ?? ""; };
+
+  let template = "dark";
+  let extra = null;   // AI wording for parts with no edit field: process steps, questions, labels
+  let html = "";
+
+  // Builds what the templates need from the editable fields plus the AI's extra wording.
+  function contentFrom(f) {
+    const x = extra || {};
+    const photos = photosFor(f.type);
+    const name = clean(f.name) || "Your Business";
+    const area = clean(f.area);
+    const cta = clean(f.cta) || "Get in touch";
+    const items = [1, 2, 3].map((n, i) => {
+      const itemName = clean(f[`s${n}n`]);
+      const more = x.items?.list?.find(it => it.name === itemName);
+      return { name: itemName, price: clean(f[`s${n}p`]), description: clean(f[`s${n}d`]), kicker: more?.kicker || "", includes: more?.includes || [], photo: photos?.items[i] };
+    }).filter(it => it.name);
+    const hours = clean(f.hours) ? f.hours.split("\n").map(l => l.trim()).filter(Boolean).map(l => {
+      const i = l.indexOf(":");
+      return i > 0 ? { days: l.slice(0, i).trim(), time: l.slice(i + 1).trim() } : { days: l, time: "" };
+    }) : [];
+    const direct = [clean(f.phone) && { label: "Phone", value: clean(f.phone) }, clean(f.email) && { label: "Email", value: clean(f.email) }].filter(Boolean);
+    const about = clean(f.about);
+
+    return {
+      name,
+      hero: { label: area, heading: clean(f.heading) || name, sub: clean(f.sub), photo: photos?.hero, badge: x.hero?.badge || "", meta: hours.length ? [`${hours[0].days} ${hours[0].time}`.trim()] : [] },
+      about: clean(f.aboutHeading) || about ? { label: x.about?.label || "About", heading: clean(f.aboutHeading) || `About ${name}`, paragraphs: about ? f.about.split(/\n+/).map(clean).filter(Boolean) : [], points: x.about?.points || [], photo: photos?.about } : null,
+      marquee: x.marquee || (items.length > 1 ? items.map(it => it.name).join("  ✳  ") : ""),
+      items: items.length ? { label: x.items?.label || "What we offer", nav: x.items?.nav || "Services", heading: clean(f.itemsHeading) || "What we offer.", intro: x.items?.intro || "", list: items } : null,
+      steps: x.steps?.list?.length ? x.steps : null,
+      gallery: photos ? { label: x.gallery?.label || "Gallery", nav: "Gallery", heading: x.gallery?.heading || "A closer look.", photos: photos.gallery.map(p => ({ ...p, caption: p.alt, meta: "" })) } : null,
+      faq: x.faq?.list?.length ? { label: "Questions", heading: x.faq.heading, list: x.faq.list } : null,
+      visit: area || hours.length ? { label: x.visit?.label || "Find us", heading: x.visit?.heading || (hours.length ? "When and where." : "Where we are."), placeLabel: "Location", hoursLabel: "Hours", address: area ? [area] : [], hours } : null,
+      contact: { label: "Contact", nav: cta, heading: x.contact?.heading || "Get in touch.", text: x.contact?.text || `Send a message and ${name} will get back to you.`, messageLabel: x.contact?.messageLabel || "Message", button: x.contact?.button || "Send message", direct },
+      closer: { label: x.closer?.label || name, text: cta },
+      footer: area
+    };
+  }
+
+  function update() {
+    const f = Object.fromEntries(new FormData(form));
+    html = TEMPLATES[template](contentFrom(f));
+    const y = frame.contentWindow?.scrollY || 0;
+    frame.onload = () => frame.contentWindow.scrollTo(0, y);
+    frame.srcdoc = html;
+    try { sessionStorage.setItem(SAVE_KEY, JSON.stringify({ f, extra, template })); } catch { /* storage unavailable */ }
+  }
+  let timer;
+  form.addEventListener("input", () => { clearTimeout(timer); timer = setTimeout(update, 250); });
+
+  function show(done) {
+    $("start").hidden = done;
+    $("result").hidden = !done;
+  }
+
+  // Puts the AI's result into the editable fields, then shows the site.
+  function apply(c) {
+    extra = c;
+    const b = c.business || {};
+    set("name", b.name);
+    set("type", b.type === "other" ? "" : b.type);
+    set("area", b.area);
+    set("phone", b.phone);
+    set("email", b.email);
+    set("hours", (b.hours || []).map(h => h.time ? `${h.days}: ${h.time}` : h.days).join("\n"));
+    set("heading", c.hero?.heading);
+    set("sub", c.hero?.sub);
+    set("itemsHeading", c.items?.heading);
+    set("aboutHeading", c.about?.heading);
+    set("about", (c.about?.paragraphs || []).join("\n\n"));
+    set("cta", c.contact?.nav);
+    [0, 1, 2].forEach(i => { const it = c.items?.list?.[i]; set(`s${i + 1}n`, it?.name); set(`s${i + 1}p`, it?.price); set(`s${i + 1}d`, it?.description); });
+    show(true);
+    update();
+  }
+
+  const go = $("go"), msg = $("msg"), promptBox = $("prompt");
+  const say = (text, bad) => { msg.textContent = text; msg.classList.toggle("err", !!bad); msg.classList.remove("dots"); };
+
+  async function build() {
+    const prompt = promptBox.value.trim();
+    if (prompt.length < 20) { say("Describe the business in a sentence or two first.", true); promptBox.focus(); return; }
+    go.disabled = true;
+    say("Writing the site. This takes about 15 seconds");
+    msg.classList.add("dots");
+    try {
+      const res = await fetch(`${FUNCTIONS_URL}/write-site`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${ANON_KEY}`, apikey: ANON_KEY },
+        body: JSON.stringify({ prompt })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.copy) throw new Error(data.error || "Something went wrong writing the site. Try again.");
+      say("");
+      apply(data.copy);
+    } catch (err) {
+      say(err.message || "Couldn't reach the server. Check your connection and try again.", true);
+    } finally {
+      go.disabled = false;
+    }
+  }
+  go.onclick = build;
+  promptBox.addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
+
+  for (const [label, text] of Object.entries(EXAMPLES)) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = label;
+    b.onclick = () => { promptBox.value = text; promptBox.focus(); say(""); };
+    $("examples").append(b);
+  }
+
+  // Start screen extras: a glow that follows the cursor, and a placeholder that types example prompts.
+  const startEl = $("start");
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  startEl.addEventListener("pointermove", e => { startEl.style.setProperty("--mx", e.clientX + "px"); startEl.style.setProperty("--my", e.clientY + "px"); });
+  if (!calm) {
+    const lines = ["Fade Room is a three-chair barbershop in Austin. Skin fades $35, beard trims $15…", "Greenline Gardens does lawn care and patio builds around Raleigh. Free quotes…", "Salt & Ember is a forty-seat wood-fire kitchen in Charleston. Open Tuesday to Sunday…"];
+    let li = 0, ci = 0, dir = 1;
+    const tick = () => {
+      if (startEl.hidden || promptBox.value) return setTimeout(tick, 600);
+      ci += dir;
+      promptBox.placeholder = lines[li].slice(0, ci) + (dir > 0 && ci < lines[li].length ? "▍" : "");
+      if (ci >= lines[li].length) { dir = -1; return setTimeout(tick, 2200); }
+      if (ci <= 0) { dir = 1; li = (li + 1) % lines.length; return setTimeout(tick, 400); }
+      setTimeout(tick, dir > 0 ? 34 : 12);
+    };
+    setTimeout(tick, 1400);
+  }
+
+  // Bar controls
+  const press = (group, on) => group.forEach(b => b.setAttribute("aria-pressed", b === on));
+  const styleBtns = [...document.querySelectorAll("[data-template]")];
+  styleBtns.forEach(b => b.onclick = () => { template = b.dataset.template; press(styleBtns, b); update(); });
+  const sizeBtns = [...document.querySelectorAll("[data-size]")];
+  sizeBtns.forEach(b => b.onclick = () => { $("wrap").classList.toggle("phone", b.dataset.size === "phone"); press(sizeBtns, b); });
+  $("edit").onclick = () => { const open = form.hidden; form.hidden = !open; $("edit").setAttribute("aria-expanded", open); $("edit").textContent = open ? "Done editing" : "Edit text"; };
+  $("again").onclick = () => { try { sessionStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } extra = null; form.reset(); show(false); promptBox.focus(); };
+
+  const blobUrl = () => URL.createObjectURL(new Blob([html], { type: "text/html" }));
+  $("open").onclick = () => window.open(blobUrl(), "_blank");
+  $("download").onclick = () => {
+    const a = document.createElement("a");
+    a.href = blobUrl();
+    a.download = (clean(field("name").value) || "site").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") + ".html";
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+
+  // Bring back the last site after a refresh, so a reload never costs another run.
+  try {
+    const saved = JSON.parse(sessionStorage.getItem(SAVE_KEY) || "null");
+    if (saved?.f) {
+      extra = saved.extra || null;
+      template = saved.template === "editorial" ? "editorial" : "dark";
+      press(styleBtns, styleBtns.find(b => b.dataset.template === template));
+      for (const [k, v] of Object.entries(saved.f)) set(k, v);
+      show(true);
+      update();
+    }
+  } catch { /* nothing saved */ }
+</script>
+</body>
+</html>

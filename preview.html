@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Template preview</title>
+<style>html,body{margin:0;height:100%}iframe{display:block;width:100%;height:100%;border:0}</style>
+</head>
+<body>
+<iframe id="frame" title="Site preview"></iframe>
+<script type="module">
+  // Add ?template=editorial to the address to see the other style.
+  const name = new URLSearchParams(location.search).get("template") === "editorial" ? "editorial" : "dark";
+  const { render } = await import(`./templates/${name}.js`);
+
+  // Sample content in the shape the AI will produce. A made-up detailing studio; photos are from Unsplash.
+  const u = (id, w = 1400) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=70`;
+  const sample = {
+    name: "Shine Lab Detailing",
+    hero: {
+      label: "Mobile detailing · Portland, OR",
+      heading: "Showroom clean. At your door.",
+      sub: "Paint correction, ceramic coating and interior resets, done in your driveway by one careful detailer.",
+      photo: { src: u("photo-1608506375591-b90e1f955e4b", 2000), alt: "A black sports car being covered in foam in a garage" },
+      meta: ["Now booking October", "Portland metro", "Fully insured"],
+      badge: "Book by text"
+    },
+    facts: [
+      { value: "One", label: "Car per day, never rushed" },
+      { value: "4 hrs", label: "Typical deep clean" },
+      { value: "2 yrs", label: "Coating warranty" },
+      { value: "Same day", label: "Quote reply" }
+    ],
+    about: {
+      label: "How we work",
+      heading: "One car at a time, done properly.",
+      paragraphs: ["We bring water, power and every product we need. You hand over the keys and get on with your day.", "Each job is inspected under light before we leave, and you get photos of the result."],
+      points: ["Water and power on board", "pH-neutral, paint-safe products", "Before and after photos sent to you"],
+      photo: { src: u("photo-1632823469850-2f77dd9c7f93", 1200), alt: "A detailer fitting protective film to the front of a car", caption: "Hand finished" }
+    },
+    marquee: "Booked by text  ✳  Done in your driveway  ✳  Inspected under light",
+    items: {
+      label: "Packages", nav: "Packages", heading: "Pick your level.",
+      intro: "Prices are for cars and small SUVs. Larger vehicles are quoted on the day, before any work starts.",
+      list: [
+        { kicker: "2 to 3 hours", name: "Reset", price: "$149", description: "A proper wash inside and out for a car that's looked after.", includes: ["Hand wash and dry", "Wheels and tires", "Vacuum, wipe-down, glass"], photo: { src: u("photo-1708805282683-50a060eba80f", 900), alt: "A gloved hand cleaning a tire with a brush" } },
+        { kicker: "4 to 5 hours", name: "Deep clean", price: "$289", badge: "Most booked", description: "For cars that carry kids, dogs or a long winter.", includes: ["Everything in Reset", "Seats and carpets shampooed", "Clay bar and paint sealant"], photo: { src: u("photo-1605437241278-c1806d14a4d9", 900), alt: "A clean black and gray car interior" } },
+        { kicker: "1 to 2 days", name: "Correct and coat", price: "From $790", description: "Swirls removed and the finish locked in.", includes: ["Single-stage paint correction", "Ceramic coating", "Two-year warranty"], photo: { src: u("photo-1607860108855-64acf2078ed9", 900), alt: "Water being sprayed over a black coupe" } }
+      ]
+    },
+    steps: { label: "Process", heading: "From text to keys back.", list: [
+      { title: "Text us the car", text: "Make, model and what's bothering you. Photos help." },
+      { title: "Get a fixed price", text: "Same-day reply with a price and the next open slot." },
+      { title: "We come to you", text: "Home or office. We need a parking space, nothing else." },
+      { title: "Inspect together", text: "We walk the car with you under light before you pay." }
+    ] },
+    gallery: { label: "Recent work", nav: "Work", heading: "Fresh off the pad.", photos: [
+      { src: u("photo-1520340356584-f9917d1eea6f", 1400), alt: "A polished black car", caption: "Correct and coat", meta: "Lake Oswego" },
+      { src: u("photo-1633014041037-f5446fb4ce99", 1000), alt: "A grey car covered in soap suds", caption: "Reset", meta: "Beaverton" },
+      { src: u("photo-1708805283017-c662be2c7a44", 1000), alt: "Close-up of a clean car tire on a wet surface", caption: "Wheels and tires", meta: "Tigard" },
+      { src: u("photo-1554294314-80a5fb7e6bd5", 1400), alt: "A black Mercedes-Benz", caption: "Deep clean", meta: "Portland" }
+    ] },
+    quotes: [
+      { text: "Sample review. Replace with a real customer's words before publishing.", name: "Customer name", detail: "Vehicle" },
+      { text: "Sample review. Real reviews only; this one is here to show the layout.", name: "Customer name", detail: "Vehicle" }
+    ],
+    faq: { label: "Questions", heading: "Good to know.", list: [
+      { q: "Do you need water or power from me?", a: "No. The van carries both." },
+      { q: "What if it rains?", a: "We reschedule at no charge, or work under cover if you have it." },
+      { q: "How do I pay?", a: "Card or cash after you've inspected the car." }
+    ] },
+    visit: { label: "Service area", heading: "We come to you.", placeLabel: "Where we work", hoursLabel: "When", address: ["Portland metro", "Beaverton, Tigard, Lake Oswego"], note: "Outside these areas? Ask. We travel for full correction jobs.", hours: [{ days: "Mon to Fri", time: "8am to 6pm" }, { days: "Saturday", time: "9am to 4pm" }, { days: "Sunday", time: "Closed" }] },
+    contact: { label: "Book", nav: "Book now", heading: "Get a quote.", text: "Tell us the car and what it needs. We reply the same day with a price and the next open slot.", messageLabel: "Your car and what it needs", button: "Request a quote", direct: [{ label: "Text", value: "(503) 555-0142" }, { label: "Email", value: "hello@shinelab.example" }] },
+    closer: { label: "Next opening: this week", text: "Book now" },
+    footer: "Fully insured"
+  };
+
+  document.getElementById("frame").srcdoc = render(sample);
+</script>
+</body>
+</html>

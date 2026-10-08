@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Example site renderer</title>
+<style>html,body{margin:0;height:100%}iframe{display:block;width:100%;height:100%;border:0}</style>
+</head>
+<body>
+<iframe id="frame" title="Example site"></iframe>
+<script type="module">
+  // Renders one made-up example site (?i=0..5). Used to capture the preview images on the start screen.
+  import { render as dark } from "./templates/dark.js";
+  import { render as editorial } from "./templates/editorial.js";
+  import { photosFor } from "./photos.js";
+
+  const EXAMPLES = [
+    { t: dark, type: "detailing", name: "Shine Lab Detailing", area: "Portland, OR", heading: "Showroom clean. At your door.", sub: "Paint correction, ceramic coating and interior resets, done in your driveway.", cta: "Book now", items: [["Reset", "$149"], ["Deep clean", "$289"], ["Correct and coat", "From $790"]], ih: "Pick your level." },
+    { t: editorial, type: "cafe", name: "Northside Roasters", area: "Portland, OR", heading: "Roasted weekly. Poured daily.", sub: "A small-batch roaster with a cafe out front. Beans roasted behind the counter every week.", cta: "Visit us", items: [["House Blend", "$18"], ["Ethiopia Konga", "$22"], ["Harbor Decaf", "$20"]], ih: "On the shelf." },
+    { t: dark, type: "barber", name: "Fade Room", area: "Austin, TX", heading: "Clean fades. Sharp beards.", sub: "A three-chair barbershop on East 6th. Walk-ins welcome, booking is quicker.", cta: "Book a cut", items: [["Skin fade", "$35"], ["Beard trim", "$15"], ["Hot towel shave", "$30"]], ih: "What we do." },
+    { t: editorial, type: "landscaping", name: "Greenline Gardens", area: "Raleigh, NC", heading: "Lawns kept right. Gardens built well.", sub: "Family-run lawn care, planting and patio builds for homes around Raleigh.", cta: "Get a quote", items: [["Lawn care", ""], ["Planting", ""], ["Patio builds", ""]], ih: "What we do." },
+    { t: editorial, type: "restaurant", name: "Salt & Ember", area: "Charleston, SC", heading: "Wood fire. Local catch.", sub: "A forty-seat kitchen cooking over oak, with a menu that changes with the boats.", cta: "Reserve", items: [["Oak-grilled snapper", "$34"], ["Ember carrots", "$14"], ["Burnt honey tart", "$11"]], ih: "From the fire." },
+    { t: dark, type: "fitness", name: "Iron District", area: "Denver, CO", heading: "Lift heavy. Leave better.", sub: "A strength gym with coached sessions, open racks and no mirrors on the ceiling.", cta: "Try a session", items: [["Open gym", "$59/mo"], ["Coached strength", "$129/mo"], ["Drop-in", "$15"]], ih: "Ways to train." }
+  ];
+
+  const e = EXAMPLES[Number(new URLSearchParams(location.search).get("i")) || 0];
+  const p = photosFor(e.type);
+  document.getElementById("frame").srcdoc = e.t({
+    name: e.name,
+    hero: { label: e.area, heading: e.heading, sub: e.sub, photo: p.hero, meta: [e.area] },
+    about: { label: "About", heading: e.sub.split(". ")[0] + ".", paragraphs: [e.sub], photo: p.about },
+    marquee: e.items.map(i => i[0]).join("  ✳  "),
+    items: { label: "Services", nav: "Services", heading: e.ih, list: e.items.map(([name, price], i) => ({ name, price, description: "", kicker: "", photo: p.items[i] })) },
+    gallery: { label: "Gallery", nav: "Gallery", heading: "A closer look.", photos: p.gallery.map(ph => ({ ...ph, caption: ph.alt, meta: "" })) },
+    contact: { label: "Contact", nav: e.cta, heading: "Get in touch.", text: "Send a message.", direct: [] },
+    closer: { label: e.name, text: e.cta },
+    footer: e.area
+  });
+</script>
+</body>
+</html>
