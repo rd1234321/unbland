@@ -63,6 +63,9 @@
   .examples { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 16px; font-size: 13px; color: #8E8A82; opacity: 0; animation: fade .8s .85s forwards; }
   .examples button { border: 1px solid rgba(255, 255, 255, .2); background: rgba(255, 255, 255, .04); color: #DAD6CE; border-radius: 999px; padding: 7px 13px; cursor: pointer; font-size: 13px; transition: border-color .2s, background .2s; }
   .examples button:hover { border-color: var(--accent); background: rgba(255, 79, 26, .12); }
+  .legal { display: flex; gap: 20px; justify-content: center; padding: 0 24px 22px; font-size: 13px; }
+  .legal a { color: #8E8A82; text-decoration: none; }
+  .legal a:hover { color: #F3F1EC; text-decoration: underline; }
   .dots::after { content: ""; animation: dots 1.4s steps(4, end) infinite; }
   @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
 
@@ -118,6 +121,8 @@
   .auth-msg { min-height: 20px; font-size: 13.5px; color: var(--error); }
   .auth-msg.ok { color: #1F6F54; }
   .auth-switch { font-size: 13.5px; color: var(--muted); text-align: center; margin-top: 6px; }
+  .auth-legal { font-size: 12.5px; color: var(--muted); text-align: center; margin-top: 4px; }
+  .auth-legal a { color: inherit; }
   .auth-switch button { border: 0; background: none; text-decoration: underline; cursor: pointer; padding: 0; }
   .pub-row { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
   .pub-row .go { flex: 1; margin-top: 0; }
@@ -210,6 +215,7 @@
     <p class="msg" id="msg" role="status" aria-live="polite"></p>
     <div class="examples" id="examples"><span>Try an example:</span></div>
   </main>
+  <footer class="legal"><a href="privacy.html">Privacy</a><a href="terms.html">Terms</a><a href="mailto:unblandapp@gmail.com">Contact</a></footer>
 </div>
 
 <!-- Result screen: the site, appearing as it is designed -->
@@ -297,6 +303,7 @@
     <p class="auth-msg" id="auth-msg" role="status" aria-live="polite"></p>
     <button class="go" type="submit" id="auth-go">Sign in</button>
     <p class="auth-switch"><span id="auth-q">New here?</span> <button type="button" id="auth-toggle">Create an account</button></p>
+    <p class="auth-legal">By continuing you agree to the <a href="terms.html" target="_blank" rel="noopener">terms</a> and <a href="privacy.html" target="_blank" rel="noopener">privacy policy</a>.</p>
     <button class="auth-x" type="button" id="auth-close" aria-label="Close">×</button>
   </form>
 </dialog>
