@@ -83,6 +83,10 @@
   .status .meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .4s linear; }
   .building #sizes, .building #restyle, .building #open, .building #download { display: none; }
   .note { font-size: 13px; color: var(--error); }
+  .building #undo, .building #edit { display: none; }
+  .btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .btn[disabled] { opacity: .4; cursor: default; }
+  .edit-hint { margin: 0; padding: 8px 16px; font-size: 13px; background: #FFE9DF; border-bottom: 1px solid var(--ink); }
   .work { flex: 1; min-height: 0; display: flex; }
   .frame-wrap { flex: 1; min-width: 0; display: flex; justify-content: center; background: #E2E0D9; padding: 16px; }
   iframe { width: 100%; height: 100%; border: 1px solid var(--ink); border-radius: 6px; background: #fff; transition: width .3s ease; }
@@ -164,13 +168,17 @@
     </div>
     <span class="spacer"></span>
     <button class="btn quiet" type="button" id="again">Start over</button>
+    <button class="btn quiet" type="button" id="undo" disabled>Undo</button>
+    <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
     <button class="btn" type="button" id="restyle" title="Designs the same business again in a different style. Uses one of today's builds.">Try another style</button>
     <button class="btn" type="button" id="open">Open full size</button>
     <button class="btn primary" type="button" id="download">Download site</button>
   </div>
+  <p class="edit-hint" id="edit-hint" hidden>Click any text to change it. Click a photo to replace it. Editing by hand is free and uses no builds.</p>
   <div class="work">
     <div class="frame-wrap" id="wrap"><iframe id="frame" title="Your site"></iframe></div>
   </div>
+  <input type="file" id="photo" accept="image/*" hidden>
 </div>
 
 <script type="module">
@@ -210,15 +218,126 @@
       if (target) target.scrollIntoView({ behavior: "smooth" });
     });
   }
-  function display(html) {
-    frame.onload = tameLinks;
-    frame.srcdoc = html;
+  // The site is kept as a parsed document in which every element carries a number (data-u).
+  // The preview shows that numbered copy, so an edit made in the preview can be written back to the right place.
+  let source = null;
+  let editing = false;
+  const history = [];
+  const numbered = () => "<!doctype html>\n" + source.documentElement.outerHTML;
+  const plain = () => numbered().replace(/ data-u="\d+"/g, "");
+  const inSource = el => source.querySelector(`[data-u="${el.getAttribute("data-u")}"]`);
+
+  function setSite(html, remember = true) {
+    if (remember && site.html && site.html !== html) { history.push(site.html); if (history.length > 40) history.shift(); }
+    source = new DOMParser().parseFromString(html, "text/html");
+    let n = 0;
+    source.querySelectorAll("body *").forEach(el => el.setAttribute("data-u", n++));
+    site.html = html;
+    save();
+    $("undo").disabled = !history.length;
+    frame.onload = wire;
+    frame.srcdoc = numbered();
+  }
+  // Records an edit already visible in the preview, without reloading it.
+  function commit() {
+    history.push(site.html);
+    if (history.length > 40) history.shift();
+    site.html = plain();
+    save();
+    $("undo").disabled = false;
+  }
+  const display = html => setSite(html, false);
+
+  // The nearest element that directly holds some text, which is what a click should edit.
+  function textTarget(node) {
+    for (let el = node; el && el.nodeType === 1 && el.tagName !== "BODY"; el = el.parentElement) {
+      if (/^(SCRIPT|STYLE|SVG|INPUT|TEXTAREA|SELECT)$/i.test(el.tagName)) return null;
+      if ([...el.childNodes].some(c => c.nodeType === 3 && c.textContent.trim()) && el.hasAttribute("data-u")) return el;
+    }
+    return null;
+  }
+  const shape = el => [...el.children].map(c => c.tagName).join(",");
+
+  function wire() {
+    const doc = frame.contentDocument;
+    tameLinks();
+    const style = doc.createElement("style");
+    style.textContent = `.__hot{outline:2px dashed #FF4F1A!important;outline-offset:3px!important;cursor:text!important}img.__hot{cursor:pointer!important}[contenteditable]{outline:2px solid #FF4F1A!important;outline-offset:3px!important}`;
+    doc.head.append(style);
+
+    let hot = null;
+    doc.addEventListener("mouseover", e => {
+      if (!editing) return;
+      hot?.classList.remove("__hot");
+      hot = e.target.tagName === "IMG" ? e.target : textTarget(e.target);
+      hot?.classList.add("__hot");
+    });
+    doc.addEventListener("mouseout", () => { hot?.classList.remove("__hot"); hot = null; });
+
+    // Capture phase, so editing wins over the site's own links and buttons.
+    doc.addEventListener("click", e => {
+      if (!editing) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.target.tagName === "IMG" && e.target.hasAttribute("data-u")) { pickPhoto(e.target); return; }
+      const el = textTarget(e.target);
+      if (!el || el.isContentEditable) return;
+      const before = el.innerText;
+      el.classList.remove("__hot");
+      el.setAttribute("contenteditable", "plaintext-only");
+      if (!el.isContentEditable) el.setAttribute("contenteditable", "true");
+      el.focus();
+      el.addEventListener("keydown", k => { if (k.key === "Escape") el.blur(); });
+      el.addEventListener("blur", () => {
+        el.removeAttribute("contenteditable");
+        const after = el.innerText.replace(/\n+$/, "");
+        const src = inSource(el);
+        if (!src || after === before) return;
+        // Keep inner formatting when the structure is unchanged; otherwise store the plain words.
+        if (shape(src) === shape(el)) { src.innerHTML = el.innerHTML; src.querySelectorAll(".__hot").forEach(x => x.classList.remove("__hot")); }
+        else src.textContent = after;
+        commit();
+      }, { once: true });
+    }, true);
+  }
+
+  // Replace a photo with one from the visitor's computer, shrunk so the saved site stays small.
+  let photoTarget = null;
+  function pickPhoto(img) { photoTarget = img; $("photo").value = ""; $("photo").click(); }
+  $("photo").addEventListener("change", () => {
+    const file = $("photo").files[0];
+    if (!file || !photoTarget) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const im = new Image();
+      im.onload = () => {
+        const scale = Math.min(1, 1600 / Math.max(im.width, im.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(im.width * scale); c.height = Math.round(im.height * scale);
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+        const url = c.toDataURL("image/jpeg", 0.82);
+        const src = inSource(photoTarget);
+        for (const el of [photoTarget, src]) { if (!el) continue; el.removeAttribute("srcset"); el.setAttribute("src", url); }
+        if (src) commit();
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function setEditing(on) {
+    editing = on;
+    $("edit").setAttribute("aria-pressed", on);
+    $("edit").textContent = on ? "Done editing" : "Edit";
+    $("edit-hint").hidden = !on;
+    frame.contentDocument?.activeElement?.blur?.();
   }
 
   // Asks the server to design the site and draws it in the preview as the code arrives.
   async function design(prompt, avoid) {
     if (busy) return;
     busy = true;
+    setEditing(false);
     go.disabled = true;
     say("Starting");
     msg.classList.add("dots");
@@ -270,9 +389,9 @@
       html = html.replace(/```\s*$/, "").trim();
       if (!/<\/html>\s*$/i.test(html)) throw new Error("The design was cut off before it finished. Try again.");
 
-      site = { html, prompt, used: [...(avoid || []), direction].filter(Boolean) };
-      save();
-      display(html);   // reload cleanly so entrance animations play from the top
+      history.length = 0;
+      site = { html: "", prompt, used: [...(avoid || []), direction].filter(Boolean) };
+      setSite(html, false);   // reload cleanly so entrance animations play from the top
     } catch (err) {
       if (!result.hidden && !site.html) show(false);
       if (site.html && !result.hidden) { display(site.html); $("status-text").textContent = ""; alert(err.message); }
@@ -323,8 +442,10 @@
   // Bar controls
   const sizeBtns = [...document.querySelectorAll("[data-size]")];
   sizeBtns.forEach(b => b.onclick = () => { $("wrap").classList.toggle("phone", b.dataset.size === "phone"); sizeBtns.forEach(x => x.setAttribute("aria-pressed", x === b)); });
-  $("again").onclick = () => { if (busy) return; try { sessionStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } site = { html: "", prompt: "", used: [] }; show(false); promptBox.focus(); };
+  $("again").onclick = () => { if (busy) return; try { sessionStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } site = { html: "", prompt: "", used: [] }; history.length = 0; setEditing(false); show(false); promptBox.focus(); };
   $("restyle").onclick = () => { if (site.prompt) design(site.prompt, site.used); };
+  $("edit").onclick = () => setEditing(!editing);
+  $("undo").onclick = () => { if (!history.length || busy) return; const prev = history.pop(); setSite(prev, false); };
 
   const blobUrl = () => URL.createObjectURL(new Blob([site.html], { type: "text/html" }));
   $("open").onclick = () => window.open(blobUrl(), "_blank");
@@ -340,7 +461,7 @@
   // Bring back the last site after a refresh, so a reload never costs another build.
   try {
     const saved = JSON.parse(sessionStorage.getItem(SAVE_KEY) || "null");
-    if (saved?.html) { site = saved; promptBox.value = saved.prompt || ""; show(true); display(site.html); }
+    if (saved?.html) { site = { ...saved, html: "" }; promptBox.value = saved.prompt || ""; show(true); setSite(saved.html, false); }
   } catch { /* nothing saved */ }
 </script>
 </body>
