@@ -140,6 +140,8 @@ nav a,.cta{font:700 12px var(--display);letter-spacing:.14em;text-transform:uppe
 .hero-meta span:first-child{color:var(--accent)}
 .hero .tag{color:var(--accent);margin-bottom:18px}
 h1{font:500 clamp(48px,11.5vw,188px)/.9 var(--display);letter-spacing:-.045em;text-wrap:balance}
+h1.lg{font-size:clamp(42px,8.2vw,132px)}
+h1.xl{font-size:clamp(36px,6.2vw,100px);line-height:.94}
 .w{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.1em;margin-bottom:-.1em}
 .w>span{display:inline-block;transform:translateY(110%);animation:up .9s cubic-bezier(.2,.75,.1,1) forwards;animation-delay:calc(var(--i)*90ms + 250ms)}
 @keyframes up{to{transform:none}}
@@ -307,7 +309,7 @@ footer{border-top:1px solid var(--line);padding:28px var(--gut) 36px;display:fle
     ${c.hero.meta?.length ? `<div class="hero-meta">${c.hero.meta.map(m => `<span>${esc(m)}</span>`).join("")}</div>` : ""}
     ${badge}
     <span class="tag">${esc(c.hero.label)}</span>
-    <h1>${words(c.hero.heading)}</h1>
+    <h1 class="${String(c.hero.heading || "").length > 44 ? "xl" : String(c.hero.heading || "").length > 26 ? "lg" : ""}">${words(c.hero.heading)}</h1>
     <div class="hero-foot"><p>${esc(c.hero.sub)}</p>
       <div class="hero-actions">${c.contact ? `<a class="btn" href="#contact">${esc(c.contact.nav || "Get in touch")} <i>→</i></a>` : ""}${c.items?.list?.length ? `<a class="ghost" href="#items">${esc(c.items.nav || "See more")}</a>` : ""}</div>
     </div>

@@ -274,7 +274,18 @@
     const f = Object.fromEntries(new FormData(form));
     html = TEMPLATES[template](contentFrom(f));
     const y = frame.contentWindow?.scrollY || 0;
-    frame.onload = () => frame.contentWindow.scrollTo(0, y);
+    frame.onload = () => {
+      frame.contentWindow.scrollTo(0, y);
+      // In-page links must scroll inside the preview. Left alone, they load this whole page into the frame.
+      frame.contentDocument.addEventListener("click", e => {
+        const link = e.target.closest?.("a[href]");
+        if (!link) return;
+        e.preventDefault();
+        const id = link.getAttribute("href").startsWith("#") ? link.getAttribute("href").slice(1) : "";
+        const target = id ? frame.contentDocument.getElementById(id) : null;
+        if (target) target.scrollIntoView({ behavior: "smooth" });
+      });
+    };
     frame.srcdoc = html;
     try { sessionStorage.setItem(SAVE_KEY, JSON.stringify({ f, extra, template })); } catch { /* storage unavailable */ }
   }

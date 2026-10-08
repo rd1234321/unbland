@@ -129,6 +129,7 @@ nav{display:flex;gap:34px}
 
 .hero{display:grid;grid-template-columns:repeat(12,1fr);gap:0 32px;padding:clamp(48px,7vw,104px) var(--gut) 0;align-items:end}
 h1{grid-column:1/10;font:400 clamp(52px,9.4vw,164px)/.92 var(--serif);letter-spacing:-.035em;font-variation-settings:"opsz" 144;text-wrap:balance}
+h1.xl{font-size:clamp(40px,6.6vw,112px)}
 h1 .ln{display:block;overflow:hidden;padding-bottom:.12em;margin-bottom:-.12em}
 h1 .ln>span{display:block;transform:translateY(105%);animation:rise 1s cubic-bezier(.2,.7,.1,1) forwards;animation-delay:calc(var(--i)*120ms + 100ms)}
 h1 em{font-style:italic;color:var(--accent)}
@@ -295,7 +296,7 @@ body>footer{display:flex;justify-content:space-between;gap:24px;padding:22px var
 ${c.hero.meta?.length ? `<div class="mast"><span>${esc(c.hero.label)}</span>${c.hero.meta.map(m => `<span>${esc(m)}</span>`).join("")}</div>` : ""}
 <main id="top">
   <div class="hero">
-    <h1>${headline(c.hero.heading)}</h1>
+    <h1 class="${String(c.hero.heading || "").length > 44 ? "xl" : ""}">${headline(c.hero.heading)}</h1>
     <div class="hero-side"><p>${esc(c.hero.sub)}</p>${c.contact ? `<a class="btn" href="#contact">${esc(c.contact.nav || "Get in touch")} <i>→</i></a>` : ""}</div>
     ${c.hero.photo?.src ? `<figure class="hero-img">${img(c.hero.photo, false)}</figure><p class="hero-cap"><span>${esc(c.hero.photo.alt)}</span><span>${esc(c.hero.label)}</span></p>` : ""}
   </div>
