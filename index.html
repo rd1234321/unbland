@@ -457,7 +457,7 @@
   const pretty = name => name.replace(/-/g, " ").replace(/^./, c => c.toUpperCase());
   const say = (text, bad) => { msg.textContent = text; msg.classList.toggle("err", !!bad); msg.classList.remove("dots"); };
   const show = done => { startEl.hidden = done; result.hidden = !done; $("mine").hidden = true; };
-  const save = () => { try { sessionStorage.setItem(SAVE_KEY, JSON.stringify(site)); } catch { /* storage unavailable */ } queueCloudSave(); };
+  const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(site)); } catch { /* storage unavailable */ } queueCloudSave(); };
 
   // In-page links must scroll inside the preview. Left alone, they load this whole page into the frame.
   function tameLinks() {
@@ -593,6 +593,7 @@
   function drawChat() {
     chatLog.textContent = "";
     bubble("bot", "Your site is ready. Tell me what to change and I'll do it. For quick fixes to wording or photos, press Edit and change them yourself; that's free.");
+    if (!user) bubble("bot", "This site is only stored in this browser for now. Create a free account to save it, publish it, and get free pixels for chat changes.");
     const chips = document.createElement("div");
     chips.className = "chips";
     for (const text of SUGGESTIONS) {
@@ -898,7 +899,7 @@
       return;
     }
     site.id = data[0].id;
-    try { sessionStorage.setItem(SAVE_KEY, JSON.stringify(site)); } catch { /* ignore */ }
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(site)); } catch { /* ignore */ }
     $("saved").textContent = "Saved";
   }
 
@@ -1126,7 +1127,7 @@
       scale(); new ResizeObserver(scale).observe(frameEl.parentElement);
     }
   }
-  const newSite = () => { if (busy) return; try { sessionStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } site = { html: "", prompt: "", used: [] }; history.length = 0; setEditing(false); promptBox.value = ""; $("publish").textContent = "Publish"; show(false); promptBox.focus(); };
+  const newSite = () => { if (busy) return; try { localStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } site = { html: "", prompt: "", used: [] }; history.length = 0; setEditing(false); promptBox.value = ""; $("publish").textContent = "Publish"; show(false); promptBox.focus(); };
   $("mine-new").onclick = newSite;
   acts("signin").forEach(b => b.onclick = () => openAuth("signin"));
   acts("mine").forEach(b => b.onclick = openMine);
@@ -1161,9 +1162,10 @@
     $("auth-msg").textContent = "Sign-in didn't complete. Please try again, or use email and password.";
   });
 
-  // Bring back the last site after a refresh, so a reload never costs another build.
+  // Bring back the last site after a refresh or a return from signing in, so it is never lost
+  // and a reload never costs another build. Kept in this browser until "New site" is pressed.
   try {
-    const saved = JSON.parse(sessionStorage.getItem(SAVE_KEY) || "null");
+    const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
     if (saved?.html) { site = { ...saved, html: "" }; promptBox.value = saved.prompt || ""; show(true); setSite(saved.html, false); drawChat(); }
   } catch { /* nothing saved */ }
 </script>
