@@ -129,6 +129,37 @@
   .auth-legal { font-size: 12.5px; color: var(--muted); text-align: center; margin-top: 4px; }
   .auth-legal a { color: inherit; }
   .auth-switch button { border: 0; background: none; text-decoration: underline; cursor: pointer; padding: 0; }
+  .pubpanel { margin: 62px 14px auto auto; width: min(420px, calc(100vw - 28px)); }
+  .pubpanel::backdrop { background: rgba(4, 5, 6, .35); backdrop-filter: none; }
+  .pub-body { padding: 20px 20px 18px; display: grid; gap: 8px; }
+  .pub-head { display: flex; align-items: center; gap: 10px; }
+  .pub-head h2 { font: 600 19px/1.2 "Inter", sans-serif; flex: 1; }
+  .pub-head .auth-x { position: static; }
+  .pub-dot { width: 10px; height: 10px; border-radius: 50%; background: #6B6862; flex: none; }
+  [data-state="live"] .pub-dot { background: #3FB97C; box-shadow: 0 0 0 4px rgba(63, 185, 124, .18); }
+  [data-state="changed"] .pub-dot { background: #F0B341; box-shadow: 0 0 0 4px rgba(240, 179, 65, .18); }
+  .pub-body .auth-sub { margin: 0; }
+  .pub-body h3 { font: 600 11px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
+  .pub-card { border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+  .pub-addr { display: flex; align-items: center; gap: 6px; padding: 10px 10px 10px 12px; }
+  .pub-icon { width: 26px; height: 26px; border-radius: 6px; background: rgba(255, 255, 255, .1); display: grid; place-items: center; font-weight: 700; font-size: 13px; flex: none; overflow: hidden; margin-right: 4px; }
+  .pub-icon img { width: 100%; height: 100%; object-fit: contain; }
+  .pub-url { flex: 1; min-width: 0; font-size: 13.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: left; }
+  .pub-url span, .pub-url b { direction: ltr; unicode-bidi: embed; }
+  .pub-url b { color: var(--ink); font-weight: 600; }
+  .pub-tool { display: grid; place-items: center; width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; flex: none; }
+  .pub-tool:hover { background: rgba(255, 255, 255, .08); color: var(--ink); }
+  .auth form.pub-rename { display: flex; gap: 8px; padding: 0 12px 12px; }
+  .pub-rename input { flex: 1; padding: 8px 10px; font-size: 14px; }
+  .pub-rename .btn { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 9px; padding: 8px 14px; cursor: pointer; }
+  .pub-line { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; padding: 10px 14px; border-top: 1px solid var(--rule); font-size: 13.5px; color: var(--muted); }
+  .pub-line svg { flex: none; }
+  .pub-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; }
+  .pub-foot .linkish { font-size: 13.5px; color: var(--muted); }
+  .pub-foot .go { margin: 0 0 0 auto; padding: 11px 18px; font-size: 14.5px; }
+  .pub-foot .go:disabled { background: rgba(255, 255, 255, .08); color: var(--muted); box-shadow: none; cursor: default; }
+  .pub-body .auth-msg:empty { min-height: 0; }
+  [hidden] { display: none !important; }
   .pub-row { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
   .pub-row .go { flex: 1; margin-top: 0; }
   .pub-row .btn { padding: 13px 18px; text-decoration: none; color: inherit; font-size: 15px; }
@@ -394,17 +425,30 @@
 </div>
 
 <!-- Publish: the live link for a site -->
-<dialog class="auth" id="pub" aria-labelledby="pub-title">
-  <form method="dialog">
-    <h2 id="pub-title">Your site is live</h2>
-    <p class="auth-sub" id="pub-sub">Anyone with this link can see it. Press Publish again after you make changes to update it.</p>
-    <label for="pub-link">Link</label>
-    <input id="pub-link" type="text" readonly>
-    <p class="auth-msg ok" id="pub-msg" role="status" aria-live="polite"></p>
-    <div class="pub-row"><button class="go" type="button" id="pub-copy">Copy link</button><a class="btn" id="pub-open" target="_blank" rel="noopener">Open</a></div>
-    <p class="auth-switch"><button type="button" id="pub-off">Take this site offline</button></p>
-    <button class="auth-x" type="button" id="pub-close" aria-label="Close">×</button>
-  </form>
+<dialog class="auth pubpanel" id="pub" aria-labelledby="pub-title" data-state="off">
+  <div class="pub-body">
+    <div class="pub-head"><i class="pub-dot" aria-hidden="true"></i><h2 id="pub-title">Not published</h2><button class="auth-x" type="button" id="pub-close" aria-label="Close">×</button></div>
+    <p class="auth-sub" id="pub-sub"></p>
+    <h3>Web address</h3>
+    <div class="pub-card">
+      <div class="pub-addr" id="pub-addr">
+        <span class="pub-icon" id="pub-icon" aria-hidden="true"></span>
+        <span class="pub-url"><span id="pub-base"></span><b id="pub-slug"></b></span>
+        <button type="button" class="pub-tool" id="pub-edit" title="Change the address" aria-label="Change the address"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
+        <button type="button" class="pub-tool" id="pub-copy" title="Copy the link" aria-label="Copy the link"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        <a class="pub-tool" id="pub-open" target="_blank" rel="noopener" title="Open the live site" aria-label="Open the live site"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+      </div>
+      <form class="pub-rename" id="pub-rename" hidden>
+        <label for="pub-name" style="position:absolute;clip:rect(0 0 0 0)">Address name</label>
+        <input id="pub-name" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="business-name">
+        <button class="btn" type="submit">Save</button>
+      </form>
+      <p class="pub-line"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Anyone with the link can see it</p>
+      <p class="pub-line" id="pub-badge"></p>
+    </div>
+    <p class="auth-msg" id="pub-msg" role="status" aria-live="polite"></p>
+    <div class="pub-foot"><button type="button" class="linkish" id="pub-off">Take offline</button><button class="go" type="button" id="pub-go">Publish</button></div>
+  </div>
 </dialog>
 
 <!-- Settings -->
@@ -534,6 +578,7 @@
     save();
     $("site-name").textContent = siteName().split(/[|·—–]/)[0].trim();
     $("undo").disabled = !history.length;
+    if (remember && site.slug) $("publish").textContent = "Publish changes";
     frame.onload = wire;
     frame.srcdoc = numbered();
   }
@@ -1055,72 +1100,118 @@
   const pub = $("pub");
   const liveUrl = slug => new URL("s/?" + slug, location.origin + location.pathname).href;
   const slugify = text => (text.split(/[|·—–:]/)[0].toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) || "site");
-  function showPublished(slug, message) {
-    site.slug = slug;
-    $("publish").textContent = "Update live site";
-    $("pub-link").value = liveUrl(slug);
+  // The publish panel: shows whether the site is live, its address, and one button to publish changes.
+  let pubSame = false, pubDraft = "";
+  const SLUG_OK = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+  const pubSay = (text = "", ok = false) => { $("pub-msg").className = ok ? "auth-msg ok" : "auth-msg"; $("pub-msg").textContent = text; };
+  function drawPub() {
+    const isLive = !!site.slug, slug = site.slug || pubDraft;
+    pub.dataset.state = !isLive ? "off" : pubSame ? "live" : "changed";
+    $("pub-title").textContent = !isLive ? "Not published" : pubSame ? "Published" : "Changes not live yet";
+    $("pub-sub").textContent = !isLive ? "Publish to get a link you can send to your client." : pubSame ? "The live site is up to date." : "You've changed the site since you last published.";
+    $("pub-base").textContent = liveUrl("").replace(/^https?:\/\//, "");
+    $("pub-slug").textContent = slug;
+    $("pub-open").hidden = $("pub-off").hidden = !isLive;
     $("pub-open").href = liveUrl(slug);
-    $("pub-msg").className = "auth-msg ok";
-    $("pub-msg").textContent = message || "";
-    if (!pub.open) pub.showModal();
+    $("pub-go").textContent = !isLive ? "Publish" : pubSame ? "Up to date" : "Publish changes";
+    $("pub-go").disabled = isLive && pubSame;
+    const icon = source?.querySelector('link[rel~="icon"]')?.getAttribute("href");
+    const box = $("pub-icon");
+    box.textContent = "";
+    if (icon && /^(data:image\/|https:\/\/)/i.test(icon)) { const im = new Image(); im.src = icon; im.alt = ""; box.append(im); }
+    else box.textContent = (siteName().trim()[0] || "•").toUpperCase();
+    const free = pixelPlan !== "paid" && pixelPlan !== "owner";
+    $("pub-badge").innerHTML = free
+      ? '<svg viewBox="0 0 48 48" width="15" height="15" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>Shows a small "Made with Unbland" badge <button type="button" class="linkish" id="pub-upgrade">Remove it</button>'
+      : '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>No Unbland badge on this site';
+    if (free) $("pub-upgrade").onclick = () => { pub.close(); openPlans(); };
+    $("publish").textContent = isLive ? (pubSame ? "Published" : "Publish changes") : "Publish";
   }
-  async function publish() {
+  async function openPub() {
     await ready;
     if (!user) { openAuth("signin"); return; }
     if (busy || !site.html) return;
     setEditing(false);
-    const btn = $("publish");
-    btn.disabled = true;
+    $("pub-rename").hidden = true;
+    pubSay("Checking…", true);
+    if (!pub.open) pub.showModal();
     try {
       clearTimeout(cloudTimer);
       await cloudSave();   // a site must be saved before it can be published
       if (!site.id) throw new Error("Couldn't save the site, so it can't be published yet. Try again in a moment.");
-      const name = siteName();
-      const { data: existing, error: e1 } = await sb.from("published").select("slug").eq("site_id", site.id).maybeSingle();
-      if (e1) throw new Error("Couldn't reach the server. Try again.");
-      if (existing) {
-        const { error } = await sb.from("published").update({ html: site.html, name }).eq("slug", existing.slug);
-        if (error) throw new Error("Couldn't update the live site. Try again.");
-        showPublished(existing.slug, "Updated. The live site now matches what you see here.");
-        return;
-      }
-      // New link: the business name plus a short random ending, retried if that exact link is taken.
-      for (let attempt = 0; attempt < 4; attempt++) {
-        const slug = `${slugify(name)}-${Math.random().toString(36).slice(2, 6)}`;
-        const { error } = await sb.from("published").insert({ slug, site_id: site.id, name, html: site.html });
-        if (!error) { showPublished(slug, "Published."); return; }
-        const cap = /publish_limit:(\d+)/.exec(error.message || "");
-        if (cap) { openPlans(`Your plan has ${cap[1]} live site${cap[1] === "1" ? "" : "s"} at a time. Take another live site offline first, or choose a bigger plan.`); return; }
-        if (error.code !== "23505") throw new Error("Couldn't publish the site. Try again.");
-      }
-      throw new Error("Couldn't find a free link. Try again.");
-    } catch (err) {
-      alert(err.message);
-    } finally {
-      btn.disabled = false;
-    }
+      const { data, error } = await sb.from("published").select("slug, html").eq("site_id", site.id).maybeSingle();
+      if (error) throw new Error("Couldn't reach the server. Try again.");
+      site.slug = data?.slug || null;
+      pubSame = !!data && data.html === site.html;
+      if (!site.slug && !pubDraft.startsWith(slugify(siteName()))) pubDraft = `${slugify(siteName())}-${Math.random().toString(36).slice(2, 6)}`;
+      pubSay();
+    } catch (err) { pubSay(err.message); }
+    drawPub();
   }
-  $("publish").onclick = publish;
+  $("pub-go").onclick = async () => {
+    const btn = $("pub-go");
+    if (!site.id || btn.disabled) return;
+    btn.disabled = true;
+    pubSay();
+    const name = siteName();
+    let failed = "";
+    if (site.slug) {
+      const { error } = await sb.from("published").update({ html: site.html, name }).eq("slug", site.slug);
+      if (error) failed = "Couldn't update the live site. Try again.";
+    } else {
+      const { error } = await sb.from("published").insert({ slug: pubDraft, site_id: site.id, name, html: site.html });
+      const cap = /publish_limit:(\d+)/.exec(error?.message || "");
+      if (cap) { pub.close(); btn.disabled = false; openPlans(`Your plan has ${cap[1]} live site${cap[1] === "1" ? "" : "s"} at a time. Take another live site offline first, or choose a bigger plan.`); return; }
+      if (error?.code === "23505") failed = "That address is already taken. Change it with the pencil and try again.";
+      else if (error) failed = "Couldn't publish the site. Try again.";
+      else site.slug = pubDraft;
+    }
+    if (failed) { btn.disabled = false; pubSay(failed); return; }
+    pubSame = true;
+    drawPub();
+    pubSay("Published. The live site matches what you see here.", true);
+  };
+  $("pub-edit").onclick = () => {
+    const form = $("pub-rename");
+    form.hidden = !form.hidden;
+    if (!form.hidden) { $("pub-name").value = site.slug || pubDraft; $("pub-name").focus(); $("pub-name").select(); }
+  };
+  $("pub-rename").addEventListener("submit", async e => {
+    e.preventDefault();
+    const next = $("pub-name").value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    if (next.length < 3 || !SLUG_OK.test(next)) { pubSay("Use at least 3 letters or numbers. Dashes are fine."); return; }
+    if (next === (site.slug || pubDraft)) { $("pub-rename").hidden = true; return; }
+    if (site.slug) {
+      const { error } = await sb.from("published").update({ slug: next }).eq("slug", site.slug);
+      if (error) { pubSay(error.code === "23505" ? "That address is already taken. Try another." : "Couldn't change the address. Try again."); return; }
+      site.slug = next;
+      pubSay("Address changed. The old link no longer works.", true);
+    } else { pubDraft = next; pubSay(); }
+    $("pub-rename").hidden = true;
+    drawPub();
+  });
+  pub.addEventListener("click", e => { if (e.target === pub) pub.close(); });   // a click outside the panel closes it
+  $("publish").onclick = openPub;
   $("pub-close").onclick = () => pub.close();
   $("pub-copy").onclick = async () => {
-    try { await navigator.clipboard.writeText($("pub-link").value); $("pub-msg").className = "auth-msg ok"; $("pub-msg").textContent = "Link copied."; }
-    catch { $("pub-link").select(); $("pub-msg").textContent = "Press Cmd or Ctrl and C to copy."; }
+    const url = liveUrl(site.slug || pubDraft);
+    try { await navigator.clipboard.writeText(url); pubSay(site.slug ? "Link copied." : "Link copied. It will work once you publish.", true); }
+    catch { pubSay(url, true); }
   };
   $("pub-off").onclick = async () => {
     if (!site.slug || !confirm("Take this site offline? The link will stop working.")) return;
     const { error } = await sb.from("published").delete().eq("slug", site.slug);
-    if (error) { $("pub-msg").className = "auth-msg"; $("pub-msg").textContent = "Couldn't take it offline. Try again."; return; }
-    site.slug = null;
-    $("publish").textContent = "Publish";
-    pub.close();
+    if (error) { pubSay("Couldn't take it offline. Try again."); return; }
+    pubDraft = site.slug; site.slug = null;
+    drawPub();
+    pubSay("The site is offline.", true);
   };
-  // Keeps the Publish button's label right for whichever site is open.
   async function refreshPublishState() {
     $("publish").textContent = "Publish";
     site.slug = null;
     if (!sb || !user || !site.id) return;
     const { data } = await sb.from("published").select("slug").eq("site_id", site.id).maybeSingle();
-    if (data?.slug) { site.slug = data.slug; $("publish").textContent = "Update live site"; }
+    if (data?.slug) { site.slug = data.slug; $("publish").textContent = "Published"; }
   }
 
   // ---- Settings: account, owner tools, help, and deleting the account.
