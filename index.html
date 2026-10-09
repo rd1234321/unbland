@@ -239,6 +239,10 @@
   .pub-row .btn { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 10px; }
   .auth-x { color: var(--muted); }
 
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 12px 10px; }
+  .result .tools .btn { font-size: 12.5px; padding: 6px 11px; border-radius: 999px; }
+  .result .btn.icon { width: 36px; padding: 8px 0; text-align: center; font-size: 15px; }
+  .building .tools { opacity: .45; pointer-events: none; }
   @media (max-width: 860px) {
     .chat { width: 100%; border-right: 0; border-top: 1px solid var(--rule); }
     .site-name { display: none; }
@@ -291,10 +295,7 @@
     <button class="btn" type="button" data-act="signin">Sign in to save</button>
     <button class="btn quiet" type="button" id="again">New site</button>
     <button class="btn quiet" type="button" id="undo" disabled>Undo</button>
-    <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
-    <button class="btn" type="button" id="logo">Add logo</button>
-    <button class="btn" type="button" id="restyle" title="Designs the same business again in a different style. Uses one of today's builds.">Try another style</button>
-    <button class="btn" type="button" id="open">Open full size</button>
+    <button class="btn icon" type="button" id="open" title="Open full size in a new tab" aria-label="Open full size in a new tab">&#8599;</button>
     <button class="btn" type="button" id="download">Download</button>
     <button class="btn primary" type="button" id="publish">Publish</button>
   </div>
@@ -302,6 +303,11 @@
   <div class="work">
     <aside class="chat" id="chat" aria-label="Chat to change the site">
       <div class="chat-log" id="chat-log" role="log" aria-live="polite"></div>
+      <div class="tools" role="group" aria-label="Site tools">
+        <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
+        <button class="btn" type="button" id="logo">Add logo</button>
+        <button class="btn" type="button" id="restyle" title="Designs the same business again in a different style. Uses one of today's builds.">Try another style</button>
+      </div>
       <form class="chat-form" id="chat-form">
         <label for="chat-input" style="position:absolute;clip:rect(0 0 0 0);margin:0">Ask for a change</label>
         <textarea id="chat-input" rows="2" maxlength="1500" placeholder="Ask for a change…"></textarea>
