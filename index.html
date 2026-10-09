@@ -55,6 +55,10 @@
   .box-foot span { font-size: 13px; color: #8E8A82; }
   .go { display: inline-flex; align-items: center; gap: 12px; background: var(--accent); color: #fff; font-weight: 600; font-size: 16px; border: 0; border-radius: 9px; padding: 15px 24px; cursor: pointer; white-space: nowrap; box-shadow: 0 10px 34px -8px rgba(255, 79, 26, .75); transition: transform .2s, box-shadow .2s; }
   .go:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -8px rgba(255, 79, 26, .9); }
+  .kind { display: inline-flex; padding: 3px; border-radius: 9px; background: rgba(255, 255, 255, .06); }
+  .kind button { border: 0; background: transparent; color: #B4B0A8; font-weight: 500; font-size: 13.5px; padding: 8px 12px; border-radius: 7px; cursor: pointer; white-space: nowrap; }
+  .kind button[aria-pressed="true"] { background: rgba(255, 255, 255, .13); color: #F3F1EC; }
+  .kind small { font-size: inherit; opacity: .6; }
   .go i { font-style: normal; transition: transform .25s; }
   .go:hover i { transform: translateX(5px); }
   .go[disabled] { opacity: .7; cursor: progress; transform: none; }
@@ -85,7 +89,7 @@
   .status .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s infinite; }
   .status .meter { width: 120px; height: 4px; border-radius: 2px; background: var(--rule); overflow: hidden; }
   .status .meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .4s linear; }
-  .building #sizes, .building #restyle, .building #open, .building #download { display: none; }
+  .building #sizes, .building #restyle, .building #renew, .building #open, .building #download { display: none; }
   .note { font-size: 13px; color: var(--error); }
   .top-right { display: inline-flex; align-items: center; gap: 10px; }
   .acct { font-size: 13px; font-weight: 600; color: #F3F1EC; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
@@ -255,6 +259,20 @@
   .set-body section { padding: 18px 0; border-top: 1px solid var(--rule); display: grid; gap: 10px; justify-items: start; }
   .set-body section:first-of-type { border-top: 0; }
   .set-body h3 { font: 600 11px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .plans { width: min(720px, calc(100vw - 32px)); }
+  .plans-body { position: relative; padding: 30px 28px 24px; display: grid; gap: 10px; }
+  .plans-body h3 { font: 600 11px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
+  .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .plan { border: 1px solid var(--rule); border-radius: 12px; padding: 16px; display: grid; gap: 4px; align-content: start; }
+  .plan.best { border-color: var(--accent); }
+  .plan b { font-size: 15px; }
+  .plan .price { font: 400 32px/1.1 var(--serif); }
+  .plan .price small { font: 400 13px "Inter", sans-serif; color: var(--muted); }
+  .plan .gets { font-size: 14px; font-weight: 600; }
+  .plan p { font-size: 13px; color: var(--muted); min-height: 2.8em; }
+  .plan .go { justify-content: center; padding: 10px 14px; font-size: 14px; margin-top: 8px; }
+  .linkish { border: 0; background: none; padding: 0; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+  [data-pixels] { cursor: pointer; }
   .set-row { display: flex; gap: 10px; align-items: baseline; font-size: 14.5px; flex-wrap: wrap; }
   .set-row span, .set-note { color: var(--muted); font-size: 14px; }
   .settings form.set-pass { width: 100%; display: grid; gap: 6px; padding: 0; }
@@ -285,7 +303,7 @@
   </div>
   <div class="veil" aria-hidden="true"></div>
   <div class="spot" aria-hidden="true"></div>
-  <header><a class="logo" href="./"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a><span class="top-right"><span class="chip">Free in early access</span><span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free."></span><button class="acct" type="button" data-act="mine" hidden>My sites</button><button class="acct" type="button" data-act="signin">Sign in</button><button class="acct quiet icon" type="button" data-act="settings" hidden title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button></span></header>
+  <header><a class="logo" href="./"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a><span class="top-right"><span class="chip">Free in early access</span><span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free. Click to get more." role="button" tabindex="0"></span><button class="acct" type="button" data-act="mine" hidden>My sites</button><button class="acct" type="button" data-act="signin">Sign in</button><button class="acct quiet icon" type="button" data-act="settings" hidden title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button></span></header>
   <main class="ask">
     <h1><span class="ln"><span>Describe the business.</span></span><span class="ln"><span><em>Get the site.</em></span></span></h1>
     <p>One message in. A finished, animated website out, in about fifteen seconds.</p>
@@ -293,7 +311,10 @@
       <label for="prompt" style="position:absolute;clip:rect(0 0 0 0);margin:0">Describe the business</label>
       <textarea id="prompt" maxlength="3000" placeholder="Name, what they do, where, prices, hours, phone…"></textarea>
       <div class="box-foot">
-        <span>Only uses the facts you give it. Nothing made up.</span>
+        <div class="kind" role="group" aria-label="Kind of build">
+          <button type="button" data-kind="quick" aria-pressed="true" title="Starts from a design in our library and rebuilds it around this business. Faster.">Quick build<small data-cost="build"></small></button>
+          <button type="button" data-kind="new" aria-pressed="false" title="Designs a site from nothing, only for this business. Takes longer. Paid plans.">Brand new design<small data-cost="fresh"></small></button>
+        </div>
         <button class="go" id="go" type="button">Build the site <i aria-hidden="true">→</i></button>
       </div>
     </div>
@@ -315,7 +336,7 @@
     </div>
     <span class="spacer"></span>
     <span class="saved" id="saved" role="status" aria-live="polite"></span>
-    <span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free."></span>
+    <span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free. Click to get more." role="button" tabindex="0"></span>
     <button class="btn quiet" type="button" data-act="mine" hidden>My sites</button>
     <button class="btn quiet icon" type="button" data-act="settings" hidden title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button class="btn" type="button" data-act="signin">Sign in to save</button>
@@ -332,7 +353,8 @@
       <div class="tools" role="group" aria-label="Site tools">
         <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
         <button class="btn" type="button" id="logo">Add logo</button>
-        <button class="btn" type="button" id="restyle" title="Designs the same business again in a different style. Uses one of today's builds.">Try another style</button>
+        <button class="btn" type="button" id="restyle" title="Rebuilds the same business in a different style from our library.">Try another style</button>
+        <button class="btn" type="button" id="renew" title="Designs the same business again from nothing. Paid plans.">Brand new design</button>
       </div>
       <form class="chat-form" id="chat-form">
         <label for="chat-input" style="position:absolute;clip:rect(0 0 0 0);margin:0">Ask for a change</label>
@@ -352,7 +374,7 @@
     <a class="logo" href="./"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a>
     <span class="spacer"></span>
     <span class="who" id="who"></span>
-    <span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free."></span>
+    <span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free. Click to get more." role="button" tabindex="0"></span>
     <button class="btn quiet icon" type="button" data-act="settings" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button class="btn primary" type="button" id="mine-new">New site</button>
   </header>
@@ -386,6 +408,7 @@
       <p class="set-row"><span>Signed in as</span><b id="set-email"></b></p>
       <p class="set-row"><span>Pixels</span><b id="set-pixels">…</b><span id="set-plan"></span></p>
       <p class="set-note" id="set-costs"></p>
+      <button class="btn" type="button" id="set-more">Get more pixels</button>
       <form id="set-pass-form" class="set-pass">
         <label for="set-pass">New password</label>
         <div class="set-inline"><input id="set-pass" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters"><button class="btn" type="submit">Change</button></div>
@@ -413,6 +436,20 @@
 </dialog>
 
 <!-- Sign in or create an account -->
+<dialog class="auth settings plans" id="plans" aria-labelledby="plans-title">
+  <div class="plans-body">
+    <h2 id="plans-title">Get more pixels</h2>
+    <p class="auth-sub">Pixels pay for AI work: building sites and chat changes. Editing by hand is always free. Pixels you don't use stay on your account.</p>
+    <p class="auth-msg" id="plans-msg" role="status" aria-live="polite"></p>
+    <h3>Monthly plans</h3>
+    <div class="plan-grid" id="plans-plans"></div>
+    <h3>One-time top-ups</h3>
+    <div class="plan-grid" id="plans-topups"></div>
+    <p class="set-note">Payments are handled by Stripe. Plans renew monthly until canceled, and include brand new designs. <button type="button" class="linkish" id="plans-manage">Manage billing or cancel</button></p>
+    <button class="auth-x" type="button" id="plans-close" aria-label="Close">×</button>
+  </div>
+</dialog>
+
 <dialog class="auth" id="auth" aria-labelledby="auth-title">
   <form id="auth-form" method="dialog">
     <h2 id="auth-title">Sign in</h2>
@@ -628,7 +665,7 @@
       if (data.pixels != null) showPixels(data.pixels);
       if (!res.ok) {
         if (data.code === "signin") setTimeout(() => openAuth("signup"), 600);
-        if (data.code === "pixels") showPixels(data.have);
+        if (data.code === "pixels") { showPixels(data.have); openPlans(data.error); }
         throw new Error(data.error || "Something went wrong making that change. Try again.");
       }
       let html = lean, applied = 0;
@@ -705,7 +742,7 @@
   }
 
   // Asks the server to design the site and draws it in the preview as the code arrives.
-  async function design(prompt, avoid) {
+  async function design(prompt, avoid, kind = buildKind) {
     if (busy) return;
     busy = true;
     setEditing(false);
@@ -719,15 +756,17 @@
       const request = fresh => fetch(`${FUNCTIONS_URL}/design-site`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, apikey: ANON_KEY },
-        body: JSON.stringify({ prompt, avoid, fresh })
+        body: JSON.stringify({ prompt, avoid, fresh, mode: kind === "new" ? "new" : "quick" })
       });
       let res = await request(false);
+      if (res.status === 409 && kind !== "new") say("That library design didn't fit. Designing a new one");
       // A design from the library sometimes doesn't fit; the server then asks for a brand new one instead.
       if (res.status === 409) res = await request(true);
       if (!res.ok || !res.body) {
         const data = await res.json().catch(() => ({}));
         if (data.code === "signin") setTimeout(() => openAuth("signup"), 600);
-        if (data.code === "pixels") showPixels(data.have);
+        if (data.code === "pixels") { showPixels(data.have); openPlans(data.error); }
+        if (data.code === "upgrade") { if (user) openPlans(data.error); else setTimeout(() => openAuth("signup"), 600); }
         throw new Error(data.error || "Something went wrong starting the design. Try again.");
       }
       if (res.headers.get("x-pixels") != null) showPixels(Number(res.headers.get("x-pixels")));
@@ -826,7 +865,8 @@
   const sizeBtns = [...document.querySelectorAll("[data-size]")];
   sizeBtns.forEach(b => b.onclick = () => { $("wrap").classList.toggle("phone", b.dataset.size === "phone"); sizeBtns.forEach(x => x.setAttribute("aria-pressed", x === b)); });
   $("again").onclick = () => newSite();
-  $("restyle").onclick = () => { if (site.prompt) design(site.prompt, site.used); };
+  $("restyle").onclick = () => { if (site.prompt) design(site.prompt, site.used, "quick"); };
+  $("renew").onclick = () => { if (site.prompt) design(site.prompt, site.used, "new"); };
   $("edit").onclick = () => setEditing(!editing);
   $("undo").onclick = () => { if (!history.length || busy) return; const prev = history.pop(); setSite(prev, false); };
 
@@ -849,7 +889,19 @@
   const siteName = () => (site.html.match(/<title>([^<]*)<\/title>/i)?.[1] || "Untitled site").replace(/&amp;/g, "&").trim().slice(0, 120);
 
   // Pixels: the balance that pays for AI work. Shown wherever the person is signed in.
-  let costs = { build: 5, chat: 1 }, pixelPlan = "";
+  let costs = { build: 5, chat: 1, fresh: 8 }, pixelPlan = "";
+  // Quick build or brand new design: the choice next to the Build button, remembered for next time.
+  let buildKind = "quick";
+  try { if (localStorage.getItem("unbland.kind") === "new") buildKind = "new"; } catch {}
+  const kindButtons = document.querySelectorAll(".kind button");
+  const showKind = () => kindButtons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.kind === buildKind)));
+  const showCosts = () => {
+    document.querySelectorAll("[data-cost]").forEach(el => { el.textContent = user ? ` · ${costs[el.dataset.cost]}` : ""; });
+    $("restyle").textContent = `Try another style · ${costs.build}`;
+    $("renew").textContent = `Brand new design · ${costs.fresh}`;
+  };
+  kindButtons.forEach(b => b.onclick = () => { buildKind = b.dataset.kind; showKind(); try { localStorage.setItem("unbland.kind", buildKind); } catch {} });
+  showKind(); showCosts();
   const bearer = async () => { try { const { data } = sb ? await sb.auth.getSession() : { data: null }; return data?.session?.access_token || ANON_KEY; } catch { return ANON_KEY; } };
   function showPixels(n) {
     const known = typeof n === "number" && !Number.isNaN(n);
@@ -864,12 +916,12 @@
     const { data, error } = await sb.rpc("my_pixels");
     const row = Array.isArray(data) ? data[0] : data;
     if (error || !row) { showPixels(null); return; }
-    costs = { build: row.cost_build, chat: row.cost_chat };
+    costs = { build: row.cost_build, chat: row.cost_chat, fresh: row.cost_fresh ?? 8 };
     pixelPlan = row.plan;
     showPixels(row.pixels);
-    $("restyle").textContent = `Try another style · ${costs.build}`;
+    showCosts();
     $("set-plan").textContent = row.plan === "owner" ? "(owner account)" : row.plan === "paid" ? "(paid plan)" : "(free plan)";
-    $("set-costs").textContent = `Building a site or trying another style uses ${costs.build} pixels. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
+    $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
   }
 
   function accountUI() {
@@ -1046,6 +1098,79 @@
     $("set-danger").hidden = !!data;   // the owner's account can't be deleted from here
   }
   $("set-close").onclick = () => settings.close();
+
+  // Plans and top-ups. The prices come from the database; paying happens on Stripe's own page.
+  const plans = $("plans");
+  const money = cents => `$${cents % 100 ? (cents / 100).toFixed(2) : cents / 100}`;
+  async function billing(body, button) {
+    const note = $("plans-msg");
+    note.className = "auth-msg"; note.textContent = "";
+    if (button) button.disabled = true;
+    try {
+      const res = await fetch(`${FUNCTIONS_URL}/billing`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${await bearer()}`, apikey: ANON_KEY }, body: JSON.stringify(body) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.url) throw new Error(data.error || "Couldn't open the payment page. Try again.");
+      location.href = data.url;
+    } catch (err) {
+      note.textContent = err.message;
+      if (button) button.disabled = false;
+    }
+  }
+  async function openPlans(message = "") {
+    if (!user) { openAuth("signup"); return; }
+    if (settings.open) settings.close();
+    const note = $("plans-msg");
+    note.className = "auth-msg"; note.textContent = message;
+    if (!plans.open) plans.showModal();
+    const { data, error } = await sb.from("price_list").select("id, kind, name, price_cents, pixels, blurb").eq("active", true).order("sort");
+    if (error || !data) { note.textContent = "Couldn't load the prices. Try again shortly."; return; }
+    for (const kind of ["plan", "topup"]) {
+      const box = $(kind === "plan" ? "plans-plans" : "plans-topups");
+      box.textContent = "";
+      for (const item of data.filter(d => d.kind === kind)) {
+        const el = document.createElement("div");
+        el.className = `plan${item.id === "pro" ? " best" : ""}`;
+        el.innerHTML = `<b></b><span class="price"></span><span class="gets"></span><p></p><button class="go" type="button"></button>`;
+        el.querySelector("b").textContent = kind === "plan" ? item.name : "Top-up";
+        el.querySelector(".price").innerHTML = `${money(item.price_cents)}${kind === "plan" ? "<small> / month</small>" : ""}`;
+        el.querySelector(".gets").textContent = `${item.pixels} pixels${kind === "plan" ? " every month" : ""}`;
+        el.querySelector("p").textContent = item.blurb || "";
+        const b = el.querySelector("button");
+        b.textContent = kind === "plan" ? `Choose ${item.name}` : "Buy";
+        b.onclick = () => billing({ action: "checkout", item: item.id }, b);
+        box.append(el);
+      }
+    }
+  }
+  $("plans-close").onclick = () => plans.close();
+  $("plans-manage").onclick = e => billing({ action: "portal" }, e.currentTarget);
+  $("set-more").onclick = () => openPlans();
+  document.querySelectorAll("[data-pixels]").forEach(el => el.onclick = () => openPlans());
+
+  // Coming back from Stripe's payment page. The pixels arrive a few seconds after paying.
+  {
+    const paid = new URLSearchParams(location.search).get("paid");
+    if (paid) {
+      window.history.replaceState(null, "", location.pathname);
+      if (paid !== "no") (async () => {
+        await null;   // let the rest of this script run first, so sign-in has started
+        await ready;
+        for (let i = 0; i < 20 && !user; i++) await new Promise(r => setTimeout(r, 300));
+        if (!user) return;
+        await openPlans();
+        const note = $("plans-msg");
+        note.className = "auth-msg ok"; note.textContent = "Payment received. Adding your pixels…";
+        const before = Number($("set-pixels").textContent);
+        for (let i = 0; i < 8; i++) {
+          await loadPixels();
+          const now = Number($("set-pixels").textContent);
+          if (i > 0 && now > before) { note.textContent = `Thanks! Your pixels are in: you now have ${now}.`; return; }
+          await new Promise(r => setTimeout(r, 2500));
+        }
+        note.textContent = "Payment received. Your pixels will show up shortly; refresh the page in a minute.";
+      })();
+    }
+  }
   $("set-pass-form").addEventListener("submit", async e => {
     e.preventDefault();
     const m = $("set-pass-msg"), password = $("set-pass").value;
