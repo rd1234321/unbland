@@ -3,10 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
 <title>Unbland — Describe the business, get the site</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:wght@800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root { --bg: #F4F3EF; --ink: #141414; --muted: #5E5C57; --rule: #D4D1C8; --accent: #FF4F1A; --error: #B3261E; --serif: "Instrument Serif", Georgia, serif; }
   * { box-sizing: border-box; margin: 0; }
@@ -14,8 +15,8 @@
   body { background: var(--bg); color: var(--ink); font: 400 15px/1.5 "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
   button, input, select, textarea { font: inherit; color: inherit; }
   :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
-  .logo { font: 400 26px var(--serif); text-decoration: none; color: inherit; }
-  .logo span { color: var(--accent); }
+  .logo { display: inline-flex; align-items: center; gap: 9px; font: 800 22px/1 "Bricolage Grotesque", "Inter", system-ui, sans-serif; letter-spacing: -.04em; text-decoration: none; color: inherit; }
+  .logo .mark { width: 28px; height: 28px; flex: none; }
   [hidden] { display: none !important; }
 
   /* Start: one box, on a drifting wall of example sites */
@@ -243,6 +244,25 @@
   .result .tools .btn { font-size: 12.5px; padding: 6px 11px; border-radius: 999px; }
   .result .btn.icon { width: 36px; padding: 8px 0; text-align: center; font-size: 15px; }
   .building .tools { opacity: .45; pointer-events: none; }
+  .acct.icon, .result .btn.icon, .mine .btn.icon { display: inline-grid; place-items: center; width: 36px; height: 36px; padding: 0; }
+  .settings { width: min(460px, calc(100vw - 32px)); }
+  .set-body { position: relative; padding: 28px 28px 22px; color: var(--ink); }
+  .set-body h2 { font: 400 34px/1 var(--serif); margin-bottom: 6px; }
+  .set-body section { padding: 18px 0; border-top: 1px solid var(--rule); display: grid; gap: 10px; justify-items: start; }
+  .set-body section:first-of-type { border-top: 0; }
+  .set-body h3 { font: 600 11px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .set-row { display: flex; gap: 10px; align-items: baseline; font-size: 14.5px; flex-wrap: wrap; }
+  .set-row span, .set-note { color: var(--muted); font-size: 14px; }
+  .settings form.set-pass { width: 100%; display: grid; gap: 6px; padding: 0; }
+  .settings .set-pass label { margin: 0; }
+  .set-inline { display: flex; gap: 8px; }
+  .set-inline input { flex: 1; }
+  .settings .btn { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 10px; padding: 9px 14px; font-weight: 500; font-size: 14px; cursor: pointer; text-decoration: none; }
+  .settings .btn:hover { border-color: rgba(255, 255, 255, .3); }
+  .settings .btn.danger { color: #FF9A8A; border-color: rgba(255, 154, 138, .45); }
+  .set-links { display: flex; gap: 18px; font-size: 14.5px; }
+  .set-links a { color: var(--ink); }
+  .settings .auth-msg { min-height: 0; }
   @media (max-width: 860px) {
     .chat { width: 100%; border-right: 0; border-top: 1px solid var(--rule); }
     .site-name { display: none; }
@@ -261,7 +281,7 @@
   </div>
   <div class="veil" aria-hidden="true"></div>
   <div class="spot" aria-hidden="true"></div>
-  <header><a class="logo" href="./">unbland<span>.</span></a><span class="top-right"><span class="chip">Free in early access</span><button class="acct" type="button" data-act="mine" hidden>My sites</button><button class="acct" type="button" data-act="signin">Sign in</button><button class="acct quiet" type="button" data-act="signout" hidden>Sign out</button></span></header>
+  <header><a class="logo" href="./"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a><span class="top-right"><span class="chip">Free in early access</span><button class="acct" type="button" data-act="mine" hidden>My sites</button><button class="acct" type="button" data-act="signin">Sign in</button><button class="acct quiet icon" type="button" data-act="settings" hidden title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button></span></header>
   <main class="ask">
     <h1><span class="ln"><span>Describe the business.</span></span><span class="ln"><span><em>Get the site.</em></span></span></h1>
     <p>One message in. A finished, animated website out, in about fifteen seconds.</p>
@@ -282,7 +302,7 @@
 <!-- Result screen: the site, appearing as it is designed -->
 <div class="result" id="result" hidden>
   <div class="bar">
-    <a class="logo" href="./" style="font-size:22px">unbland<span>.</span></a>
+    <a class="logo" href="./"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a>
     <span class="site-name" id="site-name"></span>
     <div class="status" id="status" role="status" aria-live="polite"><span class="pulse" aria-hidden="true"></span><span id="status-text"></span><span class="meter" aria-hidden="true"><i id="meter"></i></span></div>
     <div class="seg" role="group" aria-label="Preview size" id="sizes">
@@ -292,6 +312,7 @@
     <span class="spacer"></span>
     <span class="saved" id="saved" role="status" aria-live="polite"></span>
     <button class="btn quiet" type="button" data-act="mine" hidden>My sites</button>
+    <button class="btn quiet icon" type="button" data-act="settings" hidden title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button class="btn" type="button" data-act="signin">Sign in to save</button>
     <button class="btn quiet" type="button" id="again">New site</button>
     <button class="btn quiet" type="button" id="undo" disabled>Undo</button>
@@ -323,10 +344,10 @@
 <!-- My sites: everything the signed-in person has built -->
 <div class="mine" id="mine" hidden>
   <header class="mine-head">
-    <a class="logo" href="./">unbland<span>.</span></a>
+    <a class="logo" href="./"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a>
     <span class="spacer"></span>
     <span class="who" id="who"></span>
-    <button class="btn quiet" type="button" data-act="signout">Sign out</button>
+    <button class="btn quiet icon" type="button" data-act="settings" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button class="btn primary" type="button" id="mine-new">New site</button>
   </header>
   <main class="mine-main">
@@ -348,6 +369,39 @@
     <p class="auth-switch"><button type="button" id="pub-off">Take this site offline</button></p>
     <button class="auth-x" type="button" id="pub-close" aria-label="Close">×</button>
   </form>
+</dialog>
+
+<!-- Settings -->
+<dialog class="auth settings" id="settings" aria-labelledby="set-title">
+  <div class="set-body">
+    <h2 id="set-title">Settings</h2>
+    <section>
+      <h3>Account</h3>
+      <p class="set-row"><span>Signed in as</span><b id="set-email"></b></p>
+      <form id="set-pass-form" class="set-pass">
+        <label for="set-pass">New password</label>
+        <div class="set-inline"><input id="set-pass" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters"><button class="btn" type="submit">Change</button></div>
+        <p class="auth-msg" id="set-pass-msg" role="status" aria-live="polite"></p>
+      </form>
+      <button class="btn" type="button" data-act="signout">Sign out</button>
+    </section>
+    <section id="set-owner" hidden>
+      <h3>Owner tools</h3>
+      <p class="set-note">Choose which designs are kept for reuse.</p>
+      <a class="btn" href="admin.html">Open the design library</a>
+    </section>
+    <section>
+      <h3>Help and legal</h3>
+      <p class="set-links"><a href="mailto:unblandapp@gmail.com">Contact us</a><a href="privacy.html" target="_blank" rel="noopener">Privacy</a><a href="terms.html" target="_blank" rel="noopener">Terms</a></p>
+    </section>
+    <section id="set-danger">
+      <h3>Delete account</h3>
+      <p class="set-note">Permanently removes your account, every saved site, and any site you've published. This can't be undone.</p>
+      <button class="btn danger" type="button" id="set-delete">Delete my account</button>
+      <p class="auth-msg" id="set-del-msg" role="status" aria-live="polite"></p>
+    </section>
+    <button class="auth-x" type="button" id="set-close" aria-label="Close">×</button>
+  </div>
 </dialog>
 
 <!-- Sign in or create an account -->
@@ -780,6 +834,7 @@
     acts("signin").forEach(b => b.hidden = !!user);
     acts("mine").forEach(b => b.hidden = !user);
     acts("signout").forEach(b => b.hidden = !user);
+    acts("settings").forEach(b => b.hidden = !user);
     $("who").textContent = user?.email || "";
     if (!user) $("saved").textContent = "";
   }
@@ -934,6 +989,55 @@
     if (data?.slug) { site.slug = data.slug; $("publish").textContent = "Update live site"; }
   }
 
+  // ---- Settings: account, owner tools, help, and deleting the account.
+  const settings = $("settings");
+  async function openSettings() {
+    if (!user) return;
+    $("set-email").textContent = user.email || "";
+    $("set-pass").value = "";
+    $("set-pass-msg").textContent = ""; $("set-del-msg").textContent = "";
+    $("set-owner").hidden = true;
+    if (!settings.open) settings.showModal();
+    const { data } = await sb.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
+    $("set-owner").hidden = !data;
+    $("set-danger").hidden = !!data;   // the owner's account can't be deleted from here
+  }
+  $("set-close").onclick = () => settings.close();
+  $("set-pass-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const m = $("set-pass-msg"), password = $("set-pass").value;
+    m.className = "auth-msg";
+    if (password.length < 8) { m.textContent = "Use a password of at least 8 characters."; return; }
+    const { error } = await sb.auth.updateUser({ password });
+    if (error) { m.textContent = /same/i.test(error.message) ? "That's already your password." : "Couldn't change the password. Try again."; return; }
+    $("set-pass").value = "";
+    m.className = "auth-msg ok";
+    m.textContent = "Password changed.";
+  });
+  $("set-delete").onclick = async () => {
+    const m = $("set-del-msg");
+    if (prompt('This permanently deletes your account and every site in it. Type DELETE to confirm.') !== "DELETE") { m.className = "auth-msg"; m.textContent = "Nothing was deleted."; return; }
+    $("set-delete").disabled = true;
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${FUNCTIONS_URL}/delete-account`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token || ""}`, apikey: ANON_KEY },
+        body: JSON.stringify({ confirm: "DELETE" })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Couldn't delete the account. Try again.");
+      await sb.auth.signOut();
+      settings.close();
+      newSite();
+    } catch (err) {
+      m.className = "auth-msg";
+      m.textContent = err.message;
+    } finally {
+      $("set-delete").disabled = false;
+    }
+  };
+
   // My sites page
   const fmt = d => new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
   async function openMine() {
@@ -984,7 +1088,8 @@
   $("mine-new").onclick = newSite;
   acts("signin").forEach(b => b.onclick = () => openAuth("signin"));
   acts("mine").forEach(b => b.onclick = openMine);
-  acts("signout").forEach(b => b.onclick = async () => { await sb?.auth.signOut(); if (!$("mine").hidden) show(!!site.html); });
+  acts("settings").forEach(b => b.onclick = openSettings);
+  acts("signout").forEach(b => b.onclick = async () => { await sb?.auth.signOut(); if (settings.open) settings.close(); if (!$("mine").hidden) show(!!site.html); });
 
   // Load the accounts library last and separately, so the builder still works if it can't be reached.
   ready = (async () => {
