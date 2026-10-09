@@ -1058,6 +1058,8 @@
         const slug = `${slugify(name)}-${Math.random().toString(36).slice(2, 6)}`;
         const { error } = await sb.from("published").insert({ slug, site_id: site.id, name, html: site.html });
         if (!error) { showPublished(slug, "Published."); return; }
+        const cap = /publish_limit:(\d+)/.exec(error.message || "");
+        if (cap) { openPlans(`Your plan has ${cap[1]} live site${cap[1] === "1" ? "" : "s"} at a time. Take another live site offline first, or choose a bigger plan.`); return; }
         if (error.code !== "23505") throw new Error("Couldn't publish the site. Try again.");
       }
       throw new Error("Couldn't find a free link. Try again.");
@@ -1139,7 +1141,7 @@
       if (kind === "plan") {
         const free = document.createElement("div");
         free.className = "plan";
-        free.innerHTML = `<b>Free${planId || pixelPlan === "owner" ? "" : '<i class="yours">Your plan</i>'}</b><span class="price">$0</span>${list(["5 pixels to start", "Quick builds from our design library", "Edit by hand as much as you like", "Publish with a shareable link"])}`;
+        free.innerHTML = `<b>Free${planId || pixelPlan === "owner" ? "" : '<i class="yours">Your plan</i>'}</b><span class="price">$0</span>${list(["5 pixels to start", "Quick builds from our design library", "Edit by hand as much as you like", "1 live site, with a small Unbland badge"])}`;
         box.append(free);
       }
       for (const item of data.filter(d => d.kind === kind)) {

@@ -11,6 +11,7 @@
   .note { font: 400 16px/1.5 system-ui, sans-serif; color: #333; max-width: 32ch; margin: 22vh auto 0; padding: 0 24px; text-align: center; }
   .note b { display: block; font-size: 22px; margin-bottom: 8px; }
   .note a { color: inherit; }
+  .made { position: fixed; right: 12px; bottom: 12px; display: inline-flex; align-items: center; gap: 7px; padding: 7px 11px 7px 8px; border-radius: 999px; background: #141414; color: #fff; font: 600 12px/1 system-ui, sans-serif; text-decoration: none; box-shadow: 0 4px 16px rgba(0, 0, 0, .3); }
 </style>
 </head>
 <body>
@@ -28,11 +29,11 @@
 
   const slug = decodeURIComponent(location.search.slice(1).split("&")[0] || "").toLowerCase();
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) missing();
-  else fetch(`${SUPABASE_URL}/rest/v1/published?slug=eq.${slug}&select=name,html`, { headers: { apikey: PUBLISHABLE_KEY } })
+  else fetch(`${SUPABASE_URL}/rest/v1/published?slug=eq.${slug}&select=name,html,badge`, { headers: { apikey: PUBLISHABLE_KEY } })
     .then(r => r.ok ? r.json() : Promise.reject())
     .then(rows => {
       if (!rows.length) return missing();
-      const { name, html } = rows[0];
+      const { name, html, badge } = rows[0];
       document.title = name;
       const frame = document.createElement("iframe");
       frame.title = name;
@@ -40,6 +41,13 @@
       frame.srcdoc = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, INNER + "</body>") : html + INNER;
       note.remove();
       document.body.append(frame);
+      // Sites on the free plan carry a small badge. Paid plans remove it.
+      if (badge) {
+        const made = document.createElement("a");
+        made.className = "made"; made.href = "../"; made.target = "_blank"; made.rel = "noopener";
+        made.innerHTML = '<svg viewBox="0 0 48 48" width="16" height="16" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>Made with Unbland';
+        document.body.append(made);
+      }
     })
     .catch(() => { note.innerHTML = "<b>Couldn't load this site</b>Check your connection and refresh the page."; });
 </script>
