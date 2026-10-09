@@ -259,7 +259,7 @@
   .set-body section { padding: 18px 0; border-top: 1px solid var(--rule); display: grid; gap: 10px; justify-items: start; }
   .set-body section:first-of-type { border-top: 0; }
   .set-body h3 { font: 600 11px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
-  .plans { width: min(720px, calc(100vw - 32px)); }
+  .plans { width: min(900px, calc(100vw - 32px)); }
   .plans-body { position: relative; padding: 30px 28px 24px; display: grid; gap: 10px; }
   .plans-body h3 { font: 600 11px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
   .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
@@ -270,6 +270,12 @@
   .plan .price small { font: 400 13px "Inter", sans-serif; color: var(--muted); }
   .plan .gets { font-size: 14px; font-weight: 600; }
   .plan p { font-size: 13px; color: var(--muted); min-height: 2.8em; }
+  .plan ul { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
+  .plan li { padding-left: 18px; position: relative; }
+  .plan li::before { content: ""; position: absolute; left: 2px; top: .45em; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); }
+  .plan li:first-child { color: var(--ink); font-weight: 600; }
+  .yours { font: 600 10px "Inter", sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-left: 8px; }
+  .plan { grid-template-rows: auto auto 1fr auto; }
   .plan .go { justify-content: center; padding: 10px 14px; font-size: 14px; margin-top: 8px; }
   .linkish { border: 0; background: none; padding: 0; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
   [data-pixels] { cursor: pointer; }
@@ -889,7 +895,7 @@
   const siteName = () => (site.html.match(/<title>([^<]*)<\/title>/i)?.[1] || "Untitled site").replace(/&amp;/g, "&").trim().slice(0, 120);
 
   // Pixels: the balance that pays for AI work. Shown wherever the person is signed in.
-  let costs = { build: 5, chat: 1, fresh: 8 }, pixelPlan = "";
+  let costs = { build: 5, chat: 1, fresh: 8 }, pixelPlan = "", allowance = 0, planId = "";
   // Quick build or brand new design: the choice next to the Build button, remembered for next time.
   let buildKind = "quick";
   try { if (localStorage.getItem("unbland.kind") === "new") buildKind = "new"; } catch {}
@@ -907,7 +913,7 @@
     const known = typeof n === "number" && !Number.isNaN(n);
     document.querySelectorAll("[data-pixels]").forEach(el => {
       el.hidden = !user || !known;
-      if (known) { el.textContent = `${n} pixel${n === 1 ? "" : "s"}`; el.classList.toggle("low", n < costs.build); }
+      if (known) { el.textContent = allowance ? `${n} / ${allowance} pixels` : `${n} pixel${n === 1 ? "" : "s"}`; el.classList.toggle("low", n < costs.build); }
     });
     if (known) $("set-pixels").textContent = String(n);
   }
@@ -917,10 +923,11 @@
     const row = Array.isArray(data) ? data[0] : data;
     if (error || !row) { showPixels(null); return; }
     costs = { build: row.cost_build, chat: row.cost_chat, fresh: row.cost_fresh ?? 8 };
-    pixelPlan = row.plan;
+    pixelPlan = row.plan; allowance = row.allowance || 0; planId = row.plan_id || "";
     showPixels(row.pixels);
     showCosts();
-    $("set-plan").textContent = row.plan === "owner" ? "(owner account)" : row.plan === "paid" ? "(paid plan)" : "(free plan)";
+    const planLabel = row.plan_name ? `${row.plan_name} plan` : row.plan === "owner" ? "owner account" : "Free plan";
+    $("set-plan").textContent = row.plan_name ? `of ${allowance} a month · ${planLabel}` : allowance ? `of ${allowance} · ${planLabel}` : `· ${planLabel}`;
     $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
   }
 
@@ -1122,21 +1129,33 @@
     const note = $("plans-msg");
     note.className = "auth-msg"; note.textContent = message;
     if (!plans.open) plans.showModal();
-    const { data, error } = await sb.from("price_list").select("id, kind, name, price_cents, pixels, blurb").eq("active", true).order("sort");
+    const { data, error } = await sb.from("price_list").select("id, kind, name, price_cents, pixels, blurb, perks").eq("active", true).order("sort");
     if (error || !data) { note.textContent = "Couldn't load the prices. Try again shortly."; return; }
+    await loadPixels();
+    const list = items => `<ul>${items.map(t => `<li>${String(t).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]))}</li>`).join("")}</ul>`;
     for (const kind of ["plan", "topup"]) {
       const box = $(kind === "plan" ? "plans-plans" : "plans-topups");
       box.textContent = "";
+      if (kind === "plan") {
+        const free = document.createElement("div");
+        free.className = "plan";
+        free.innerHTML = `<b>Free${planId || pixelPlan === "owner" ? "" : '<i class="yours">Your plan</i>'}</b><span class="price">$0</span>${list(["5 pixels to start", "Quick builds from our design library", "Edit by hand as much as you like", "Publish with a shareable link"])}`;
+        box.append(free);
+      }
       for (const item of data.filter(d => d.kind === kind)) {
         const el = document.createElement("div");
         el.className = `plan${item.id === "pro" ? " best" : ""}`;
         el.innerHTML = `<b></b><span class="price"></span><span class="gets"></span><p></p><button class="go" type="button"></button>`;
         el.querySelector("b").textContent = kind === "plan" ? item.name : "Top-up";
+        const mine = kind === "plan" && item.id === planId;
+        if (mine) el.querySelector("b").insertAdjacentHTML("beforeend", '<i class="yours">Your plan</i>');
+        if (kind === "plan" && item.perks?.length) { el.querySelector(".gets").remove(); el.querySelector("p").outerHTML = list(item.perks); }
         el.querySelector(".price").innerHTML = `${money(item.price_cents)}${kind === "plan" ? "<small> / month</small>" : ""}`;
-        el.querySelector(".gets").textContent = `${item.pixels} pixels${kind === "plan" ? " every month" : ""}`;
-        el.querySelector("p").textContent = item.blurb || "";
+        if (el.querySelector(".gets")) el.querySelector(".gets").textContent = `${item.pixels} pixels${kind === "plan" ? " every month" : ""}`;
+        if (el.querySelector("p")) el.querySelector("p").textContent = item.blurb || "";
         const b = el.querySelector("button");
         b.textContent = kind === "plan" ? `Choose ${item.name}` : "Buy";
+        if (mine) { b.remove(); box.append(el); continue; }
         b.onclick = () => billing({ action: "checkout", item: item.id }, b);
         box.append(el);
       }
