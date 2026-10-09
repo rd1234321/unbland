@@ -244,6 +244,10 @@
   .result .tools .btn { font-size: 12.5px; padding: 6px 11px; border-radius: 999px; }
   .result .btn.icon { width: 36px; padding: 8px 0; text-align: center; font-size: 15px; }
   .building .tools { opacity: .45; pointer-events: none; }
+  .pixels { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: #F3F1EC; border: 1px solid rgba(255, 255, 255, .16); background: rgba(255, 255, 255, .05); border-radius: 999px; padding: 6px 12px; white-space: nowrap; }
+  .pixels::before { content: ""; width: 9px; height: 9px; background: var(--accent); border-radius: 2px; }
+  .pixels.low { border-color: rgba(255, 154, 138, .6); color: #FFB3A6; }
+  .building .pixels { display: none; }
   .acct.icon, .result .btn.icon, .mine .btn.icon { display: inline-grid; place-items: center; width: 36px; height: 36px; padding: 0; }
   .settings { width: min(460px, calc(100vw - 32px)); }
   .set-body { position: relative; padding: 28px 28px 22px; color: var(--ink); }
@@ -281,7 +285,7 @@
   </div>
   <div class="veil" aria-hidden="true"></div>
   <div class="spot" aria-hidden="true"></div>
-  <header><a class="logo" href="./"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a><span class="top-right"><span class="chip">Free in early access</span><button class="acct" type="button" data-act="mine" hidden>My sites</button><button class="acct" type="button" data-act="signin">Sign in</button><button class="acct quiet icon" type="button" data-act="settings" hidden title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button></span></header>
+  <header><a class="logo" href="./"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a><span class="top-right"><span class="chip">Free in early access</span><span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free."></span><button class="acct" type="button" data-act="mine" hidden>My sites</button><button class="acct" type="button" data-act="signin">Sign in</button><button class="acct quiet icon" type="button" data-act="settings" hidden title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button></span></header>
   <main class="ask">
     <h1><span class="ln"><span>Describe the business.</span></span><span class="ln"><span><em>Get the site.</em></span></span></h1>
     <p>One message in. A finished, animated website out, in about fifteen seconds.</p>
@@ -311,6 +315,7 @@
     </div>
     <span class="spacer"></span>
     <span class="saved" id="saved" role="status" aria-live="polite"></span>
+    <span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free."></span>
     <button class="btn quiet" type="button" data-act="mine" hidden>My sites</button>
     <button class="btn quiet icon" type="button" data-act="settings" hidden title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button class="btn" type="button" data-act="signin">Sign in to save</button>
@@ -347,6 +352,7 @@
     <a class="logo" href="./"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a>
     <span class="spacer"></span>
     <span class="who" id="who"></span>
+    <span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free."></span>
     <button class="btn quiet icon" type="button" data-act="settings" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
     <button class="btn primary" type="button" id="mine-new">New site</button>
   </header>
@@ -378,6 +384,8 @@
     <section>
       <h3>Account</h3>
       <p class="set-row"><span>Signed in as</span><b id="set-email"></b></p>
+      <p class="set-row"><span>Pixels</span><b id="set-pixels">…</b><span id="set-plan"></span></p>
+      <p class="set-note" id="set-costs"></p>
       <form id="set-pass-form" class="set-pass">
         <label for="set-pass">New password</label>
         <div class="set-inline"><input id="set-pass" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters"><button class="btn" type="submit">Change</button></div>
@@ -612,11 +620,16 @@
     try {
       const res = await fetch(`${FUNCTIONS_URL}/edit-site`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${ANON_KEY}`, apikey: ANON_KEY },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${await bearer()}`, apikey: ANON_KEY },
         body: JSON.stringify({ html: lean, request, history })
       });
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || "Something went wrong making that change. Try again.");
+      if (data.pixels != null) showPixels(data.pixels);
+      if (!res.ok) {
+        if (data.code === "signin") setTimeout(() => openAuth("signup"), 600);
+        if (data.code === "pixels") showPixels(data.have);
+        throw new Error(data.error || "Something went wrong making that change. Try again.");
+      }
       let html = lean, applied = 0;
       for (const e of data.edits || []) {
         const at = html.indexOf(e.find);
@@ -701,9 +714,10 @@
     const started = Date.now();
     let timer;
     try {
+      const token = await bearer();
       const request = fresh => fetch(`${FUNCTIONS_URL}/design-site`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${ANON_KEY}`, apikey: ANON_KEY },
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, apikey: ANON_KEY },
         body: JSON.stringify({ prompt, avoid, fresh })
       });
       let res = await request(false);
@@ -711,8 +725,11 @@
       if (res.status === 409) res = await request(true);
       if (!res.ok || !res.body) {
         const data = await res.json().catch(() => ({}));
+        if (data.code === "signin") setTimeout(() => openAuth("signup"), 600);
+        if (data.code === "pixels") showPixels(data.have);
         throw new Error(data.error || "Something went wrong starting the design. Try again.");
       }
+      if (res.headers.get("x-pixels") != null) showPixels(Number(res.headers.get("x-pixels")));
       const direction = res.headers.get("x-direction") || "";
       say("");
       show(true);
@@ -829,6 +846,30 @@
   let sb = null, user = null, cloudTimer = null, authMode = "signin", ready = Promise.resolve();
   const acts = name => document.querySelectorAll(`[data-act="${name}"]`);
   const siteName = () => (site.html.match(/<title>([^<]*)<\/title>/i)?.[1] || "Untitled site").replace(/&amp;/g, "&").trim().slice(0, 120);
+
+  // Pixels: the balance that pays for AI work. Shown wherever the person is signed in.
+  let costs = { build: 5, chat: 1 }, pixelPlan = "";
+  const bearer = async () => { try { const { data } = sb ? await sb.auth.getSession() : { data: null }; return data?.session?.access_token || ANON_KEY; } catch { return ANON_KEY; } };
+  function showPixels(n) {
+    const known = typeof n === "number" && !Number.isNaN(n);
+    document.querySelectorAll("[data-pixels]").forEach(el => {
+      el.hidden = !user || !known;
+      if (known) { el.textContent = `${n} pixel${n === 1 ? "" : "s"}`; el.classList.toggle("low", n < costs.build); }
+    });
+    if (known) $("set-pixels").textContent = String(n);
+  }
+  async function loadPixels() {
+    if (!sb || !user) { showPixels(null); return; }
+    const { data, error } = await sb.rpc("my_pixels");
+    const row = Array.isArray(data) ? data[0] : data;
+    if (error || !row) { showPixels(null); return; }
+    costs = { build: row.cost_build, chat: row.cost_chat };
+    pixelPlan = row.plan;
+    showPixels(row.pixels);
+    $("restyle").textContent = `Try another style · ${costs.build}`;
+    $("set-plan").textContent = row.plan === "owner" ? "(owner account)" : row.plan === "paid" ? "(paid plan)" : "(free plan)";
+    $("set-costs").textContent = `Building a site or trying another style uses ${costs.build} pixels. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
+  }
 
   function accountUI() {
     acts("signin").forEach(b => b.hidden = !!user);
@@ -994,6 +1035,7 @@
   async function openSettings() {
     if (!user) return;
     $("set-email").textContent = user.email || "";
+    loadPixels();
     $("set-pass").value = "";
     $("set-pass-msg").textContent = ""; $("set-del-msg").textContent = "";
     $("set-owner").hidden = true;
@@ -1102,6 +1144,7 @@
         accountUI();
         if (user && user.id !== was && site.html) queueCloudSave();   // keep the site they just built
         if (user && user.id !== was) refreshPublishState();
+        if (user?.id !== was) loadPixels();
         if (!user) site.id = null;
       });
     } catch { /* accounts unavailable; everything else carries on */ }
