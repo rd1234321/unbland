@@ -359,6 +359,7 @@
       <div class="tools" role="group" aria-label="Site tools">
         <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
         <button class="btn" type="button" id="logo">Add logo</button>
+        <button class="btn" type="button" id="tabicon" title="The small picture shown in the browser tab and in bookmarks.">Tab icon</button>
         <button class="btn" type="button" id="restyle" title="Rebuilds the same business in a different style from our library.">Try another style</button>
         <button class="btn" type="button" id="renew" title="Designs the same business again from nothing. Paid plans.">Brand new design</button>
       </div>
@@ -372,6 +373,7 @@
   </div>
   <input type="file" id="photo" accept="image/*" hidden>
   <input type="file" id="logo-file" accept="image/*" hidden>
+  <input type="file" id="tabicon-file" accept="image/*" hidden>
 </div>
 
 <!-- My sites: everything the signed-in person has built -->
@@ -733,6 +735,35 @@
         setEditing(false);
         setSite(plain());
         bubble("bot", "Your logo is now at the top of the site, in place of the name. Press Undo if it doesn't look right, or ask me here to make it bigger, smaller, or to show the name beside it.");
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Tab icon (favicon): the small picture in the browser tab. Saved inside the site, so it travels with
+  // the published link and the downloaded file.
+  $("tabicon").onclick = () => { if (busy || !site.html) return; $("tabicon-file").value = ""; $("tabicon-file").click(); };
+  $("tabicon-file").addEventListener("change", () => {
+    const file = $("tabicon-file").files[0];
+    if (!file || !source) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const im = new Image();
+      im.onerror = () => bubble("bot", "That file couldn't be read as an image. Try a PNG, JPG or SVG.", "bad");
+      im.onload = () => {
+        // Fit the picture into a small square, keeping its shape and any transparent background.
+        const size = 96, w = im.width || size, h = im.height || size, scale = Math.min(size / w, size / h);
+        const c = document.createElement("canvas");
+        c.width = c.height = size;
+        c.getContext("2d").drawImage(im, (size - w * scale) / 2, (size - h * scale) / 2, w * scale, h * scale);
+        source.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"]').forEach(l => l.remove());
+        const link = source.createElement("link");
+        link.setAttribute("rel", "icon"); link.setAttribute("type", "image/png"); link.setAttribute("href", c.toDataURL("image/png"));
+        source.head.append(link);
+        setEditing(false);
+        setSite(plain());
+        bubble("bot", "Tab icon added. You'll see it in the browser tab when you open or publish the site (press Publish again if the site is already live). Square pictures work best.");
       };
       im.src = reader.result;
     };

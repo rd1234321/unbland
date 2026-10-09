@@ -35,6 +35,10 @@
       if (!rows.length) return missing();
       const { name, html, badge } = rows[0];
       document.title = name;
+      // Use the site's own tab icon, if it has one.
+      const icon = new DOMParser().parseFromString(html, "text/html").querySelector('link[rel~="icon"]')?.getAttribute("href");
+      if (icon && /^(data:image\/|https:\/\/)/i.test(icon)) { const l = document.querySelector('link[rel="icon"]'); l.removeAttribute("type"); l.href = icon; }
+      else document.querySelector('link[rel="icon"]').remove();
       const frame = document.createElement("iframe");
       frame.title = name;
       frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation");
