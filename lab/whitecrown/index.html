@@ -53,7 +53,7 @@
   .facts { margin-top: 18px; font-size: 15px; }
 
   .hint { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 4; font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); transition: opacity .4s; }
-  .demo { position: fixed; right: 12px; bottom: 12px; z-index: 6; font-size: 11.5px; color: #8B877F; background: rgba(12, 13, 16, .8); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; text-decoration: none; }
+  .demo { position: fixed; right: 12px; bottom: 12px; z-index: 6; max-width: calc(100vw - 24px); font-size: 10.5px; color: #8B877F; background: rgba(12, 13, 16, .8); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; text-decoration: none; }
   .nogl canvas#scene, .nogl .hint { display: none; }
   .nogl .copy { opacity: 1; transform: none; }
   @media (max-width: 760px) {
@@ -113,16 +113,17 @@
   </section>
 </main>
 <div class="hint" id="hint">Scroll</div>
-<a class="demo" href="../">Concept page by Unbland</a>
+<a class="demo" href="../">Concept page by Unbland<span id="credit" hidden> · Car model: "2022 Lamborghini Huracan Tecnica" by kevin (ケビン), Sketchfab, CC BY</span></a>
 
 <script type="importmap">
-{ "imports": { "three": "https://unpkg.com/three@0.165.0/build/three.module.js" } }
+{ "imports": { "three": "https://unpkg.com/three@0.165.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/" } }
 </script>
 <script type="module">
   // A 3D landing page for a mobile detailer. A stylized car sits in a dark studio. As you scroll, a light arch
   // passes over it and the dull, dusty paint turns to a deep gloss; then the camera moves around the car while
   // the packages, service area and contact details appear. Everything is built in code with three.js.
   import * as THREE from "three";
+  import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
   const canvas = document.getElementById("scene");
   const sections = [...document.querySelectorAll("section")];
@@ -214,10 +215,10 @@
 
     // Paint that can be dull or glossy on either side of a moving line (the light arch).
     const wipe = { value: 3 };
-    const paint = new THREE.MeshPhysicalMaterial({ color: "#11141C", metalness: 0.55, roughness: 0.14, envMapIntensity: 2.2, clearcoat: 1, clearcoatRoughness: 0.06 });
+    const paint = new THREE.MeshPhysicalMaterial({ color: "#11141C", metalness: 0.55, roughness: 0.14, envMapIntensity: 1.7, clearcoat: 1, clearcoatRoughness: 0.06 });
     paint.onBeforeCompile = shader => {
       shader.uniforms.uWipe = wipe;
-      shader.vertexShader = shader.vertexShader.replace("#include <common>", "#include <common>\nvarying float vCarX;").replace("#include <begin_vertex>", "#include <begin_vertex>\nvCarX = position.x;");
+      shader.vertexShader = shader.vertexShader.replace("#include <common>", "#include <common>\nvarying float vCarX;").replace("#include <begin_vertex>", "#include <begin_vertex>\nvCarX = (modelMatrix * vec4(position, 1.0)).x;");
       shader.fragmentShader = shader.fragmentShader
         .replace("#include <common>", "#include <common>\nuniform float uWipe;\nvarying float vCarX;")
         .replace("#include <color_fragment>", "#include <color_fragment>\nfloat dull = 1.0 - smoothstep(uWipe - 0.18, uWipe + 0.18, vCarX);\ndiffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.075, 0.07, 0.064), dull * 0.95);")
@@ -259,12 +260,51 @@
     }
     const world = new THREE.Group();
     scene.add(world);
-    const car = buildCar(true);
+    let car = buildCar(true);   // a simple stand-in shape, shown until the detailed model has loaded
     world.add(car);
     // A mirror image under a dark glassy floor gives the polished-studio reflection.
-    const mirror = buildCar(false);
+    let mirror = buildCar(false);
     mirror.scale.y = -1;
     world.add(mirror);
+    let lampParts = null;
+
+    // The detailed car: "2022 Lamborghini Huracan Tecnica" by kevin (ケビン) on Sketchfab, CC Attribution.
+    // Its materials are re-tuned for this studio, and its body paint is swapped for the dull-to-gloss paint above.
+    new GLTFLoader().load("huracan.glb", gltf => {
+      const model = gltf.scene;
+      model.updateMatrixWorld(true);
+      let box = new THREE.Box3().setFromObject(model), size = box.getSize(new THREE.Vector3());
+      if (size.z > size.x) { model.rotation.y = Math.PI / 2; model.updateMatrixWorld(true); box = new THREE.Box3().setFromObject(model); size = box.getSize(new THREE.Vector3()); }
+      const holder = new THREE.Group();
+      holder.add(model);
+      const k = 4.6 / size.x, mid = box.getCenter(new THREE.Vector3());
+      model.position.x -= mid.x; model.position.z -= mid.z; model.position.y -= box.min.y;
+      holder.scale.setScalar(k);
+      if (new URLSearchParams(location.search).get("flip") !== null) holder.rotation.y = Math.PI;
+
+      const emissive = [];
+      model.traverse(o => {
+        if (!o.isMesh) return;
+        const m = o.material, n = m.name || "";
+        if (n === "CarPaint") { o.material = paint; return; }
+        if (/^(CarPaint2|CSR2_Coloured|material|int_black_gloss|CSR2_Carbon1)$/.test(n)) { m.color.set("#0A0B0E"); m.metalness = 0.4; m.roughness = 0.3; m.clearcoat = 1; m.clearcoatRoughness = 0.15; m.envMapIntensity = 1.4; }
+        else if (/Glass|Window|win_int/.test(n) && n !== "GlassRed") { m.color.set("#06080B"); m.transparent = true; m.opacity = n === "win_int" ? 0 : 0.78; m.metalness = 0.9; m.roughness = 0.05; m.envMapIntensity = 1.8; m.depthWrite = false; }
+        else if (n === "GlassRed") { m.color.set("#5A0606"); m.emissive = new THREE.Color("#FF1C1C"); m.roughness = 0.2; emissive.push([m, 2.4]); }
+        else if (n === "CSR2_Light") { m.emissive = new THREE.Color("#FFFFFF"); m.emissiveMap = m.map; m.roughness = 0.2; emissive.push([m, 1.6]); }
+        else if (n === "Engine_chrome") { m.color.set("#2B2D31"); m.metalness = 0.9; m.roughness = 0.38; }
+        else if (/chrome|mirrors|Rim|BRAKEDISC/.test(n)) { m.metalness = 1; m.roughness = Math.min(m.roughness, 0.25); m.envMapIntensity = 1.5; }
+        else if (/Tyre|Rubber/.test(n)) { m.color.set("#0B0B0C"); m.roughness = 0.92; }
+        else if (/Caliper/.test(n)) { m.color.set("#D2B26A"); m.metalness = 0.6; m.roughness = 0.35; }
+        else { m.roughness = Math.max(m.roughness, 0.55); }
+      });
+      world.remove(car, mirror);
+      car = holder; car.userData.wheels = [];
+      world.add(car);
+      mirror = new THREE.Group(); mirror.userData.wheels = [];
+      if (!small()) { mirror = holder.clone(); mirror.userData.wheels = []; mirror.scale.set(k, -k, k); world.add(mirror); }   // phones skip the reflection
+      lampParts = emissive;
+      document.getElementById("credit").hidden = false;
+    }, undefined, () => { /* the stand-in shape stays if the model can't be loaded */ });
     const pool = document.createElement("canvas");
     pool.width = pool.height = 256;
     const pg = pool.getContext("2d"), grad = pg.createRadialGradient(128, 128, 0, 128, 128, 128);
@@ -336,7 +376,8 @@
 
       for (const c of [car, mirror]) for (const w of c.userData.wheels) w.rotation.z = -p * 9 - t * 0.15;
       const lamps = car.userData.lamps, on = 0.25 + span(p, 0.82, 0.96) * 0.75;
-      lamps[0].color.setRGB(0.92 * on, 0.95 * on, on); lamps[1].color.setRGB(on, 0.16 * on, 0.16 * on);
+      if (lamps) { lamps[0].color.setRGB(0.92 * on, 0.95 * on, on); lamps[1].color.setRGB(on, 0.16 * on, 0.16 * on); }
+      if (lampParts) for (const [m, strength] of lampParts) m.emissiveIntensity = strength * on;
 
       // Studio reflections drift slowly, so the highlights glide along the paint.
       scene.environmentRotation.y = t * 0.06 + p * 2.2;
