@@ -72,6 +72,8 @@
   .ticks button { border: 1px solid var(--rule); background: transparent; color: var(--muted); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 13.5px; cursor: pointer; }
   .ticks button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
   .ticks button[aria-pressed="true"]::before { content: "✓ "; }
+  .go.danger { background: #C2362B; box-shadow: none; flex: 1; justify-content: center; }
+  .go.danger:disabled { background: rgba(194, 54, 43, .35); color: rgba(255, 255, 255, .7); cursor: default; }
   .writer-two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
   .writer-two > div { display: grid; }
   @media (max-width: 560px) { .writer-two { grid-template-columns: 1fr; } }
@@ -524,6 +526,15 @@
 </dialog>
 
 <!-- Sign in or create an account -->
+<dialog class="auth" id="del" aria-labelledby="del-title">
+  <form method="dialog">
+    <h2 id="del-title">Delete this site?</h2>
+    <p class="auth-sub" id="del-text"></p>
+    <p class="auth-msg" id="del-live"></p>
+    <div class="pub-row"><button class="btn" type="button" id="del-no">Keep it</button><button class="go danger" type="button" id="del-yes" disabled>Delete</button></div>
+  </form>
+</dialog>
+
 <dialog class="auth writer" id="writer" aria-labelledby="writer-title">
   <form class="writer-form" id="writer-form">
     <h2 id="writer-title">Describe the business</h2>
@@ -1632,6 +1643,24 @@
 
   // My sites page
   const fmt = d => new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  // Deleting a site asks first, in its own window, and the Delete button only wakes up after a few seconds,
+  // so a site can't be lost to a quick double click.
+  function confirmDelete(name, live) {
+    const box = $("del"), yes = $("del-yes");
+    $("del-text").textContent = `"${name}" will be deleted for good. This can't be undone.`;
+    $("del-live").textContent = live ? "This site is published. Its live link will stop working." : "";
+    return new Promise(done => {
+      let left = 3;
+      yes.disabled = true; yes.textContent = `Delete (${left})`;
+      const tick = setInterval(() => { left--; if (left > 0) yes.textContent = `Delete (${left})`; else { clearInterval(tick); yes.disabled = false; yes.textContent = "Delete site"; } }, 1000);
+      const finish = answer => { clearInterval(tick); yes.onclick = $("del-no").onclick = box.onclose = null; if (box.open) box.close(); done(answer); };
+      yes.onclick = () => finish(true);
+      $("del-no").onclick = () => finish(false);
+      box.onclose = () => finish(false);
+      box.showModal();
+      $("del-no").focus();
+    });
+  }
   async function openMine() {
     if (!user || busy) return;
     setEditing(false);
@@ -1666,7 +1695,8 @@
       const [openBtn, delBtn] = card.querySelectorAll("button");
       openBtn.onclick = open;
       delBtn.onclick = async () => {
-        if (!confirm(`Delete "${row.name}"? This can't be undone.`)) return;
+        const { data: liveRow } = await sb.from("published").select("slug").eq("site_id", row.id).maybeSingle();
+        if (!await confirmDelete(row.name, !!liveRow)) return;
         const { error: e3 } = await sb.from("sites").delete().eq("id", row.id);
         if (e3) { note.textContent = "Couldn't delete that site. Try again."; return; }
         if (site.id === row.id) site.id = null;
