@@ -277,6 +277,8 @@
   .bubble.bad { border-color: rgba(255, 154, 138, .6); color: #FF9A8A; }
   .chips button { background: transparent; border: 1px solid var(--rule); color: #CFCBC3; padding: 6px 11px; transition: border-color .15s, color .15s; }
   .chips button:hover { border-color: var(--accent); color: var(--ink); }
+  .bubble.used { background: transparent; border: 0; padding: 0 4px; font-size: 12.5px; color: var(--muted); }
+  #chat-price { margin-bottom: 4px; }
   .scope { display: flex; align-items: center; gap: 6px; margin: 0 14px 8px; font-size: 12.5px; color: var(--muted); }
   .scope select { background: var(--panel); border: 1px solid var(--rule); color: var(--ink); border-radius: 8px; padding: 4px 6px; font: inherit; cursor: pointer; }
   .scope select option { color: #141414; }
@@ -430,6 +432,7 @@
         <button class="btn" type="button" id="restyle" title="Rebuilds the same business in a different style from our library.">Try another style</button>
         <button class="btn" type="button" id="renew" title="Designs the same business again from nothing. Paid plans.">Brand new design</button>
       </div>
+      <p class="scope" id="chat-price">Small changes use 1 pixel. Bigger ones use more, up to 6.</p>
       <label class="scope" title="Choose whether a chat change applies to every screen size or only one">Change applies to <select id="scope"><option value="">all screen sizes</option><option value="computer">computer only</option><option value="tablet">tablet only</option><option value="phone">phone only</option></select></label>
       <form class="chat-form" id="chat-form">
         <label for="chat-input" style="position:absolute;clip:rect(0 0 0 0);margin:0">Ask for a change</label>
@@ -874,6 +877,7 @@
       if (applied && /<\/html>\s*$/i.test(html)) setSite(html);
       waiting.remove();
       bubble("bot", reply);
+      if (data.used > 0) bubble("bot", `That change used ${data.used} pixel${data.used === 1 ? "" : "s"}.${data.used > 1 ? " Bigger changes use more." : ""}`, "used");
       site.chat.push({ role: "user", text: request }, { role: "assistant", text: reply });
       save();
     } catch (err) {
@@ -1239,7 +1243,7 @@
     showCosts();
     const planLabel = row.plan_name ? `${row.plan_name} plan` : row.plan === "owner" ? "owner account" : "Free plan";
     $("set-plan").textContent = row.plan_name ? `of ${allowance} a month · ${planLabel}` : allowance ? `of ${allowance} · ${planLabel}` : `· ${planLabel}`;
-    $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A multi-page site uses ${costs.multi} for up to 3 pages, plus ${costs.page} for each page after that. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
+    $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A multi-page site uses ${costs.multi} for up to 3 pages, plus ${costs.page} for each page after that. A chat change uses ${costs.chat} for a small change and up to 6 for a very large one, depending on how much work it takes. Editing by hand, adding a logo and publishing are free.`;
   }
 
   function accountUI() {
