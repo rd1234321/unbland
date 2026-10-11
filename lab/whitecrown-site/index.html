@@ -7,18 +7,18 @@
 <title>White Crown Auto Detailing | Mobile detailing in Modesto, CA</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root { --bg: #07080A; --ink: #F4F2ED; --muted: #B9B5AC; --gold: #D2B26A; --line: rgba(255, 255, 255, .14); }
+  :root { --bg: #090D10; --ink: #EAF1F4; --muted: #93A3AB; --gold: #7FE7F2; --line: rgba(234, 241, 244, .12); }   /* --gold is the accent: the ice blue from the original site */
   * { box-sizing: border-box; margin: 0; }
   html { background: var(--bg); }
-  body { color: var(--ink); font: 300 17px/1.55 "Outfit", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  body { color: var(--ink); font: 400 16.5px/1.6 "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   canvas#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
 
   header { position: fixed; inset: 0 0 auto 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px clamp(18px, 4vw, 44px); }
-  .brand { display: inline-flex; align-items: center; gap: 12px; font-weight: 600; font-size: 17px; letter-spacing: .14em; text-transform: uppercase; color: inherit; text-decoration: none; white-space: nowrap; }
+  .brand { display: inline-flex; align-items: center; gap: 12px; font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 17px; letter-spacing: .14em; text-transform: uppercase; color: inherit; text-decoration: none; white-space: nowrap; }
   .brand svg { width: 30px; height: 30px; color: var(--gold); flex: none; }
-  .call { display: inline-flex; align-items: center; gap: 10px; background: var(--gold); color: #14110A; font-weight: 600; font-size: 15px; text-decoration: none; border-radius: 999px; padding: 12px 20px; white-space: nowrap; transition: transform .2s ease-out; }
+  .call { display: inline-flex; align-items: center; gap: 10px; background: var(--gold); color: #06141A; font-weight: 600; font-size: 15px; text-decoration: none; border-radius: 999px; padding: 12px 20px; white-space: nowrap; transition: transform .2s ease-out; }
   .call:hover { transform: translateY(-2px); }
   .call.big { font-size: 19px; padding: 18px 30px; }
 
@@ -38,13 +38,13 @@
   .solid { position: relative; background: var(--bg); border-top: 1px solid var(--line); }
   .solid section.block { display: block; min-height: 0; padding: clamp(70px, 10vw, 130px) clamp(18px, 6vw, 90px); pointer-events: auto; }
   .work { margin-top: 36px; display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px; }
-  .work figure { position: relative; grid-column: span 2; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3; background: #111317; }
+  .work figure { position: relative; grid-column: span 2; border-radius: 14px; overflow: hidden; aspect-ratio: 4 / 3; background: #111920; }
   .work figure.wide { grid-column: span 3; aspect-ratio: 16 / 9; }
   .work figure:nth-child(2), .work figure:nth-child(3), .work figure:nth-child(4) { grid-column: span 2; }
   .work figure:nth-child(1), .work figure:nth-child(5) { grid-column: span 6; aspect-ratio: 21 / 8; }
   .work img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .6s ease-out; }
   .work figure:hover img { transform: scale(1.04); }
-  .work figcaption { position: absolute; left: 14px; bottom: 12px; font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; background: rgba(7, 8, 10, .7); padding: 6px 12px; border-radius: 999px; }
+  .work figcaption { position: absolute; left: 14px; bottom: 12px; font-weight: 600; font-size: 13px; letter-spacing: .14em; text-transform: uppercase; background: rgba(9, 13, 16, .7); padding: 6px 12px; border-radius: 999px; }
   .split { display: grid !important; grid-template-columns: 1fr 1fr; gap: clamp(28px, 6vw, 80px); align-items: start; border-top: 1px solid var(--line); }
   .info { margin-top: 28px; display: grid; gap: 14px; }
   .info div { display: grid; grid-template-columns: 90px 1fr; gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
@@ -54,7 +54,7 @@
   form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   form label { display: grid; gap: 6px; font-size: 13.5px; font-weight: 500; color: var(--muted); }
   form .full { grid-column: 1 / -1; }
-  form input, form select, form textarea { width: 100%; background: #0E1013; border: 1px solid var(--line); border-radius: 10px; padding: 13px 14px; color: var(--ink); font: inherit; font-size: 16px; }
+  form input, form select, form textarea { width: 100%; background: #111920; border: 1px solid var(--line); border-radius: 10px; padding: 13px 14px; color: var(--ink); font: inherit; font-size: 16px; }
   form input:focus, form select:focus, form textarea:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
   form button { border: 0; cursor: pointer; justify-content: center; font-family: inherit; }
   footer { display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; padding: 28px clamp(18px, 6vw, 90px) 60px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
@@ -67,12 +67,12 @@
   section { min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; padding: 110px clamp(18px, 6vw, 90px); pointer-events: none; }
   .copy { position: relative; max-width: 520px; opacity: 0; transform: translateY(24px); transition: opacity .5s ease-out, transform .5s ease-out; }
   section.on .copy { opacity: 1; transform: none; }
-  .copy::before { content: ""; position: absolute; inset: -60px -90px; z-index: -1; background: radial-gradient(closest-side, rgba(7, 8, 10, .88), rgba(7, 8, 10, .6) 55%, rgba(7, 8, 10, 0)); }
+  .copy::before { content: ""; position: absolute; inset: -60px -90px; z-index: -1; background: radial-gradient(closest-side, rgba(9, 13, 16, .88), rgba(9, 13, 16, .6) 55%, rgba(9, 13, 16, 0)); }
   .copy a, .copy li { pointer-events: auto; }
   section.right { justify-content: flex-end; }
   section.center { justify-content: center; text-align: center; align-items: flex-end; padding-bottom: 9vh; }
   section.low { align-items: flex-end; padding-bottom: 10vh; }
-  h1, h2 { font-weight: 600; letter-spacing: -.03em; line-height: 1.02; }
+  h1, h2 { font-family: "Space Grotesk", "Inter", sans-serif; font-weight: 600; letter-spacing: -.035em; line-height: 1.02; }
   h1 { font-size: clamp(42px, 6.4vw, 86px); }
   h2 { font-size: clamp(34px, 4.6vw, 60px); }
   em { font-style: normal; color: var(--gold); }
@@ -83,18 +83,18 @@
   .quiet { color: var(--ink); font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
 
   .packs { list-style: none; padding: 0; margin-top: 24px; display: grid; gap: 12px; width: min(460px, 100%); }
-  .packs li { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: rgba(12, 13, 16, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; align-items: baseline; }
+  .packs li { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: rgba(17, 25, 32, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; align-items: baseline; }
   .packs li.top { border-color: var(--gold); }
-  .packs b { font-weight: 600; font-size: 19px; }
+  .packs b { font-family: "Space Grotesk", sans-serif; font-weight: 600; font-size: 19px; }
   .packs .tag { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-left: 8px; }
   .packs .price { font-weight: 600; font-size: 19px; color: var(--gold); white-space: nowrap; }
   .packs small { grid-column: 1 / -1; color: var(--muted); font-size: 14.5px; line-height: 1.45; }
   .towns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
-  .towns span { border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: 14.5px; color: var(--ink); background: rgba(12, 13, 16, .6); }
+  .towns span { border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: 14.5px; color: var(--ink); background: rgba(17, 25, 32, .6); }
   .facts { margin-top: 18px; font-size: 15px; }
 
   .hint { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 4; font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); transition: opacity .4s; }
-  .demo { position: fixed; right: 12px; bottom: 12px; z-index: 6; max-width: calc(100vw - 24px); font-size: 10.5px; color: #8B877F; background: rgba(12, 13, 16, .8); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; text-decoration: none; }
+  .demo { position: fixed; right: 12px; bottom: 12px; z-index: 6; max-width: calc(100vw - 24px); font-size: 10.5px; color: #8B877F; background: rgba(17, 25, 32, .8); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; text-decoration: none; }
   .nogl canvas#scene, .nogl .hint { display: none; }
   .nogl .copy { opacity: 1; transform: none; }
   @media (max-width: 760px) {
@@ -238,8 +238,8 @@
     renderer.toneMappingExposure = 1.25;
 
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color("#07080A");
-    scene.fog = new THREE.Fog("#07080A", 12, 30);
+    scene.background = new THREE.Color("#090D10");
+    scene.fog = new THREE.Fog("#090D10", 12, 30);
 
     // ---- Studio lighting: long soft light panels, which is what makes car paint look like car paint ----
     const studio = new THREE.Scene();
@@ -252,15 +252,15 @@
     panel(14, 1.2, 0, 6.2, 4.6, Math.PI / 2.6, 0, 10);      // front overhead strip
     panel(14, 1.2, 0, 6.2, -4.6, -Math.PI / 2.6, 0, 7);     // rear overhead strip
     panel(18, 5, 0, 2.6, -10, 0, 0, 2.6, "#dfe8ff");        // back wall wash
-    panel(18, 4, 0, 2.2, 10, 0, 0, 1.8, "#fff1dc");         // front wall wash
-    panel(5, 6, 10, 3, 0, 0, -Math.PI / 2, 5, "#ffe9c4");   // warm side light
+    panel(18, 4, 0, 2.2, 10, 0, 0, 1.8, "#e6f6ff");         // front wall wash
+    panel(5, 6, 10, 3, 0, 0, -Math.PI / 2, 5, "#d6f3ff");   // warm side light
     panel(5, 6, -10, 3, 0, 0, Math.PI / 2, 4, "#cfe0ff");   // cool side light
     const pmrem = new THREE.PMREMGenerator(renderer);
     scene.environment = pmrem.fromScene(studio, 0.02).texture;
 
     const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 80);
     scene.add(new THREE.HemisphereLight("#ffffff", "#1a1c22", 0.9));
-    const keyLight = new THREE.DirectionalLight("#fff4e2", 2.6);
+    const keyLight = new THREE.DirectionalLight("#f2fbff", 2.6);
     keyLight.position.set(4, 7, 6);
     const fillLight = new THREE.DirectionalLight("#cfe0ff", 1.4);
     fillLight.position.set(-6, 4, -3);
@@ -390,7 +390,7 @@
         else if (n === "Engine_chrome") { m.color.set("#2B2D31"); m.metalness = 0.9; m.roughness = 0.38; }
         else if (/chrome|mirrors|Rim|BRAKEDISC/.test(n)) { m.metalness = 1; m.roughness = Math.min(m.roughness, 0.25); m.envMapIntensity = 1.5; }
         else if (/Tyre|Rubber/.test(n)) { m.color.set("#0B0B0C"); m.roughness = 0.92; }
-        else if (/Caliper/.test(n)) { m.color.set("#D2B26A"); m.metalness = 0.6; m.roughness = 0.35; }
+        else if (/Caliper/.test(n)) { m.color.set("#7FE7F2"); m.metalness = 0.6; m.roughness = 0.35; }
         else { m.roughness = Math.max(m.roughness, 0.55); }
       });
       world.remove(car, mirror);
@@ -404,7 +404,7 @@
     const pool = document.createElement("canvas");
     pool.width = pool.height = 256;
     const pg = pool.getContext("2d"), grad = pg.createRadialGradient(128, 128, 0, 128, 128, 128);
-    grad.addColorStop(0, "#262A31"); grad.addColorStop(0.35, "#13151A"); grad.addColorStop(1, "#07080A");
+    grad.addColorStop(0, "#1F2C36"); grad.addColorStop(0.35, "#111920"); grad.addColorStop(1, "#090D10");
     pg.fillStyle = grad; pg.fillRect(0, 0, 256, 256);
     const poolMap = new THREE.CanvasTexture(pool);
     poolMap.colorSpace = THREE.SRGBColorSpace;
@@ -414,13 +414,13 @@
 
     // The light arch that passes over the car.
     const arch = new THREE.Group();
-    const archGlow = new THREE.MeshBasicMaterial({ color: "#FFF4DC", transparent: true, opacity: 0 });
+    const archGlow = new THREE.MeshBasicMaterial({ color: "#EAFBFF", transparent: true, opacity: 0 });
     arch.add(new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.022, 10, 80, Math.PI), archGlow));
-    const halo = new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.09, 10, 80, Math.PI), new THREE.MeshBasicMaterial({ color: "#D2B26A", transparent: true, opacity: 0, depthWrite: false }));
+    const halo = new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.09, 10, 80, Math.PI), new THREE.MeshBasicMaterial({ color: "#7FE7F2", transparent: true, opacity: 0, depthWrite: false }));
     arch.add(halo);
     arch.rotation.y = Math.PI / 2;
     world.add(arch);
-    const archLight = new THREE.PointLight("#FFF1D6", 0, 7);
+    const archLight = new THREE.PointLight("#BFF4FF", 0, 7);
     archLight.position.y = 1.7;
     world.add(archLight);
 
@@ -429,7 +429,7 @@
     for (let i = 0; i < N; i++) { dp[i * 3] = (Math.random() - 0.5) * 22; dp[i * 3 + 1] = Math.random() * 7; dp[i * 3 + 2] = (Math.random() - 0.5) * 16; }
     const dg = new THREE.BufferGeometry();
     dg.setAttribute("position", new THREE.BufferAttribute(dp, 3));
-    const dust = new THREE.Points(dg, new THREE.PointsMaterial({ color: "#E9DDBF", size: 0.03, transparent: true, opacity: 0.5, depthWrite: false }));
+    const dust = new THREE.Points(dg, new THREE.PointsMaterial({ color: "#CFEFF6", size: 0.03, transparent: true, opacity: 0.5, depthWrite: false }));
     scene.add(dust);
 
     // ---- Story ----
