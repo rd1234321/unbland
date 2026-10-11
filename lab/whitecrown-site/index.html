@@ -312,13 +312,38 @@
     // Paint that can be dull or glossy on either side of a moving line (the light arch).
     const wipe = { value: 3 };
     const paint = new THREE.MeshPhysicalMaterial({ color: "#11141C", metalness: 0.55, roughness: 0.14, envMapIntensity: 1.7, clearcoat: 1, clearcoatRoughness: 0.06 });
+    const foamLine = { value: 3 }, carSpace = { value: new THREE.Matrix4() };
     paint.onBeforeCompile = shader => {
-      shader.uniforms.uWipe = wipe;
-      shader.vertexShader = shader.vertexShader.replace("#include <common>", "#include <common>\nvarying float vCarX;").replace("#include <begin_vertex>", "#include <begin_vertex>\nvCarX = (modelMatrix * vec4(position, 1.0)).x;");
+      shader.uniforms.uWipe = wipe; shader.uniforms.uFoam = foamLine; shader.uniforms.uCar = carSpace;
+      // Positions are measured in the car's own space, so the effect stays put when the car is turned.
+      shader.vertexShader = shader.vertexShader
+        .replace("#include <common>", "#include <common>\nuniform mat4 uCar;\nvarying vec3 vCarP;")
+        .replace("#include <begin_vertex>", "#include <begin_vertex>\nvCarP = (uCar * modelMatrix * vec4(position, 1.0)).xyz;");
       shader.fragmentShader = shader.fragmentShader
-        .replace("#include <common>", "#include <common>\nuniform float uWipe;\nvarying float vCarX;")
-        .replace("#include <color_fragment>", "#include <color_fragment>\nfloat dull = 1.0 - smoothstep(uWipe - 0.18, uWipe + 0.18, vCarX);\ndiffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.075, 0.07, 0.064), dull * 0.95);")
+        .replace("#include <common>", `#include <common>
+uniform float uWipe; uniform float uFoam; varying vec3 vCarP;
+float h31(vec3 p) { p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
+float n3(vec3 x) { vec3 i = floor(x), f = fract(x); f = f * f * (3.0 - 2.0 * f);
+  return mix(mix(mix(h31(i), h31(i + vec3(1,0,0)), f.x), mix(h31(i + vec3(0,1,0)), h31(i + vec3(1,1,0)), f.x), f.y),
+             mix(mix(h31(i + vec3(0,0,1)), h31(i + vec3(1,0,1)), f.x), mix(h31(i + vec3(0,1,1)), h31(i + vec3(1,1,1)), f.x), f.y), f.z); }
+float fbm(vec3 p) { return 0.55 * n3(p) + 0.3 * n3(p * 2.3) + 0.15 * n3(p * 5.1); }`)
+        // Three states along the car: dusty, covered in foam, then rinsed to a gloss behind the light arch.
+        .replace("#include <color_fragment>", `#include <color_fragment>
+float nz = fbm(vCarP * 3.2);
+float clean = smoothstep(uWipe - 0.16, uWipe + 0.16, vCarP.x + (nz - 0.5) * 0.3);
+float dull = 1.0 - clean;
+float reach = smoothstep(uFoam - 0.35, uFoam + 0.35, vCarP.x + (nz - 0.5) * 1.1);
+float lace = fbm(vCarP * 8.5 + 3.7);
+float cover = max(smoothstep(0.40, 0.54, nz + 0.10 * reach), smoothstep(0.52, 0.62, lace) * 0.85);   // big suds patches plus lacy trails, with paint showing between
+float foam = dull * reach * cover;
+float bubbles = 0.55 * n3(vCarP * 16.0) + 0.45 * n3(vCarP * 44.0);
+vec3 foamColor = mix(vec3(0.46, 0.58, 0.66), vec3(1.0), smoothstep(0.2, 0.8, bubbles));
+diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.075, 0.07, 0.064), dull * 0.95);
+diffuseColor.rgb = mix(diffuseColor.rgb, foamColor, foam);
+float beads = step(0.9, n3(vCarP * 70.0)) * clean * (1.0 - smoothstep(0.0, 1.5, vCarP.x - uWipe));
+diffuseColor.rgb += beads * 0.55;`)
         .replace("#include <roughnessmap_fragment>", "#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.92, dull);")
+        .replace("#include <metalnessmap_fragment>", "#include <metalnessmap_fragment>\nmetalnessFactor *= (1.0 - foam);")
         .replace("#include <lights_physical_fragment>", "#include <lights_physical_fragment>\nmaterial.clearcoat *= (1.0 - dull);");
     };
     const glass = new THREE.MeshPhysicalMaterial({ color: "#05070A", metalness: 0.9, roughness: 0.06, envMapIntensity: 1.8 });
@@ -475,7 +500,10 @@
       px += (pointerX - px) * 0.05; py += (pointerY - py) * 0.05;
 
       // The arch travels from the nose to the tail; paint behind it is glossy.
-      const pass = span(p, 0.08, 0.32);
+      // Foam spreads over the car from the nose back, then the arch rinses it to a gloss.
+      foamLine.value = 3.0 - span(p, 0.03, 0.14) * 6.0;
+      carSpace.value.copy(world.matrixWorld).invert();
+      const pass = span(p, 0.16, 0.34);
       const at = 2.9 - pass * 5.8;
       wipe.value = at;
       arch.position.x = at; archLight.position.x = at;
