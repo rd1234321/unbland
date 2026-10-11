@@ -1,0 +1,366 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>White Crown Auto Detailing | Mobile detailing in Modesto, CA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #07080A; --ink: #F4F2ED; --muted: #B9B5AC; --gold: #D2B26A; --line: rgba(255, 255, 255, .14); }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: var(--bg); }
+  body { color: var(--ink); font: 300 17px/1.55 "Outfit", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  canvas#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+
+  header { position: fixed; inset: 0 0 auto 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px clamp(18px, 4vw, 44px); }
+  .brand { display: inline-flex; align-items: center; gap: 12px; font-weight: 600; font-size: 17px; letter-spacing: .14em; text-transform: uppercase; color: inherit; text-decoration: none; white-space: nowrap; }
+  .brand svg { width: 30px; height: 30px; color: var(--gold); flex: none; }
+  .call { display: inline-flex; align-items: center; gap: 10px; background: var(--gold); color: #14110A; font-weight: 600; font-size: 15px; text-decoration: none; border-radius: 999px; padding: 12px 20px; white-space: nowrap; transition: transform .2s ease-out; }
+  .call:hover { transform: translateY(-2px); }
+  .call.big { font-size: 19px; padding: 18px 30px; }
+
+  main { position: relative; z-index: 2; }
+  section { min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; padding: 110px clamp(18px, 6vw, 90px); pointer-events: none; }
+  .copy { position: relative; max-width: 520px; opacity: 0; transform: translateY(24px); transition: opacity .5s ease-out, transform .5s ease-out; }
+  section.on .copy { opacity: 1; transform: none; }
+  .copy::before { content: ""; position: absolute; inset: -60px -90px; z-index: -1; background: radial-gradient(closest-side, rgba(7, 8, 10, .88), rgba(7, 8, 10, .6) 55%, rgba(7, 8, 10, 0)); }
+  .copy a, .copy li { pointer-events: auto; }
+  section.right { justify-content: flex-end; }
+  section.center { justify-content: center; text-align: center; align-items: flex-end; padding-bottom: 9vh; }
+  section.low { align-items: flex-end; padding-bottom: 10vh; }
+  h1, h2 { font-weight: 600; letter-spacing: -.03em; line-height: 1.02; }
+  h1 { font-size: clamp(42px, 6.4vw, 86px); }
+  h2 { font-size: clamp(34px, 4.6vw, 60px); }
+  em { font-style: normal; color: var(--gold); }
+  p { color: var(--muted); margin-top: 18px; max-width: 44ch; }
+  section.center p { margin-left: auto; margin-right: auto; }
+  .cta { margin-top: 26px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  section.center .cta { justify-content: center; }
+  .quiet { color: var(--ink); font-weight: 500; text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 2px; }
+
+  .packs { list-style: none; padding: 0; margin-top: 24px; display: grid; gap: 12px; width: min(460px, 100%); }
+  .packs li { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; background: rgba(12, 13, 16, .72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); display: grid; grid-template-columns: 1fr auto; gap: 4px 14px; align-items: baseline; }
+  .packs li.top { border-color: var(--gold); }
+  .packs b { font-weight: 600; font-size: 19px; }
+  .packs .tag { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); margin-left: 8px; }
+  .packs .price { font-weight: 600; font-size: 19px; color: var(--gold); white-space: nowrap; }
+  .packs small { grid-column: 1 / -1; color: var(--muted); font-size: 14.5px; line-height: 1.45; }
+  .towns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 22px; }
+  .towns span { border: 1px solid var(--line); border-radius: 999px; padding: 7px 14px; font-size: 14.5px; color: var(--ink); background: rgba(12, 13, 16, .6); }
+  .facts { margin-top: 18px; font-size: 15px; }
+
+  .hint { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 4; font-size: 11px; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--muted); transition: opacity .4s; }
+  .demo { position: fixed; right: 12px; bottom: 12px; z-index: 6; font-size: 11.5px; color: #8B877F; background: rgba(12, 13, 16, .8); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; text-decoration: none; }
+  .nogl canvas#scene, .nogl .hint { display: none; }
+  .nogl .copy { opacity: 1; transform: none; }
+  @media (max-width: 760px) {
+    .brand span { display: none; }
+    section, section.right { justify-content: flex-start; align-items: flex-end; padding-bottom: 12vh; }
+    section.center { justify-content: center; }
+  }
+  @media (prefers-reduced-motion: reduce) { .copy { transition: none; } }
+</style>
+</head>
+<body>
+<canvas id="scene" aria-hidden="true"></canvas>
+
+<header>
+  <a class="brand" href="#top"><svg viewBox="0 0 32 32" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M4 23 6.5 9l6 6.5L16 6l3.5 9.5 6-6.5L28 23z"/><path d="M5 27h22" stroke-linecap="round"/></svg><span>White Crown</span></a>
+  <a class="call" href="tel:+12094808184">Call (209) 480-8184</a>
+</header>
+
+<main id="top">
+  <section class="low">
+    <div class="copy">
+      <h1>A detailing studio, <em>in your driveway.</em></h1>
+      <p>White Crown Auto Detailing is fully mobile, premium detailing based in Modesto, CA. We come to you.</p>
+      <p class="cta"><a class="call" href="sms:+12094808184">Text for a free quote</a><a class="quiet" href="tel:+12094808184">or call (209) 480-8184</a></p>
+    </div>
+  </section>
+  <section>
+    <div class="copy">
+      <h2>From dull to a <em>show finish.</em></h2>
+      <p>Precision work, with professional-grade products chosen for each surface. One accountable craftsperson handles the job from arrival through final inspection.</p>
+    </div>
+  </section>
+  <section class="right">
+    <div class="copy">
+      <h2>Three packages, all at your location.</h2>
+      <ul class="packs">
+        <li><b>Essential</b><span class="price">from $149</span><small>2 to 3 hours. Hand wash and dry, wheel and tire detail, interior vacuum, dash and glass finish.</small></li>
+        <li class="top"><b>Signature<span class="tag">Most popular</span></b><span class="price">from $249</span><small>4 to 5 hours. Everything in Essential, plus clay-bar decontamination, leather clean and condition, carpet spot treatment.</small></li>
+        <li><b>Crown Collection</b><span class="price">from $499</span><small>6 to 8 hours. Everything in Signature, plus one-step paint correction, premium paint sealant, full interior extraction.</small></li>
+      </ul>
+    </div>
+  </section>
+  <section>
+    <div class="copy">
+      <h2>Across Modesto and the <em>Central Valley.</em></h2>
+      <div class="towns"><span>Modesto</span><span>Riverbank</span><span>Manteca</span><span>Turlock</span><span>Ceres</span><span>Salida</span></div>
+      <p>Just outside those areas? Reach out. We often travel a bit further for full details.</p>
+    </div>
+  </section>
+  <section class="center">
+    <div class="copy">
+      <h2>Ready when <em>you are.</em></h2>
+      <p>Share your ZIP code and vehicle details. We'll confirm coverage and help choose the right detail. Quotes are free.</p>
+      <p class="cta"><a class="call big" href="tel:+12094808184">Call or text (209) 480-8184</a></p>
+      <p class="facts">Open daily until 6 PM · 324 E Rumble Rd, Modesto, CA 95350</p>
+    </div>
+  </section>
+</main>
+<div class="hint" id="hint">Scroll</div>
+<a class="demo" href="../">Concept page by Unbland</a>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.165.0/build/three.module.js" } }
+</script>
+<script type="module">
+  // A 3D landing page for a mobile detailer. A stylized car sits in a dark studio. As you scroll, a light arch
+  // passes over it and the dull, dusty paint turns to a deep gloss; then the camera moves around the car while
+  // the packages, service area and contact details appear. Everything is built in code with three.js.
+  import * as THREE from "three";
+
+  const canvas = document.getElementById("scene");
+  const sections = [...document.querySelectorAll("section")];
+  const small = () => innerWidth < 760;
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const forced = new URLSearchParams(location.search).get("p");   // ?p=0.5 holds one point of the story, for checking
+
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" }); }
+  catch { document.documentElement.classList.add("nogl"); }
+
+  if (renderer) {
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, small() ? 1.5 : 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.25;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color("#07080A");
+    scene.fog = new THREE.Fog("#07080A", 12, 30);
+
+    // ---- Studio lighting: long soft light panels, which is what makes car paint look like car paint ----
+    const studio = new THREE.Scene();
+    studio.background = new THREE.Color("#15171B");
+    const panel = (w, h, x, y, z, rx, ry, strength, tint = "#ffffff") => {
+      const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: new THREE.Color(tint).multiplyScalar(strength), side: THREE.DoubleSide }));
+      m.position.set(x, y, z); m.rotation.set(rx, ry, 0); studio.add(m);
+    };
+    panel(16, 3.2, 0, 7, 0, Math.PI / 2, 0, 14);            // big overhead softbox
+    panel(14, 1.2, 0, 6.2, 4.6, Math.PI / 2.6, 0, 10);      // front overhead strip
+    panel(14, 1.2, 0, 6.2, -4.6, -Math.PI / 2.6, 0, 7);     // rear overhead strip
+    panel(18, 5, 0, 2.6, -10, 0, 0, 2.6, "#dfe8ff");        // back wall wash
+    panel(18, 4, 0, 2.2, 10, 0, 0, 1.8, "#fff1dc");         // front wall wash
+    panel(5, 6, 10, 3, 0, 0, -Math.PI / 2, 5, "#ffe9c4");   // warm side light
+    panel(5, 6, -10, 3, 0, 0, Math.PI / 2, 4, "#cfe0ff");   // cool side light
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(studio, 0.02).texture;
+
+    const camera = new THREE.PerspectiveCamera(36, 1, 0.1, 80);
+    scene.add(new THREE.HemisphereLight("#ffffff", "#1a1c22", 0.9));
+    const keyLight = new THREE.DirectionalLight("#fff4e2", 2.6);
+    keyLight.position.set(4, 7, 6);
+    const fillLight = new THREE.DirectionalLight("#cfe0ff", 1.4);
+    fillLight.position.set(-6, 4, -3);
+    scene.add(keyLight, fillLight);
+
+    // ---- The car, shaped from smooth cross-sections ----
+    const ss = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+    const sp = (v, e) => Math.sign(v) * Math.pow(Math.abs(v), e);
+    function loft(rings) {
+      const n = rings[0].length, pos = [], idx = [];
+      for (const r of rings) for (const p of r) pos.push(p.x, p.y, p.z);
+      for (let i = 0; i < rings.length - 1; i++) for (let k = 0; k < n; k++) {
+        const a = i * n + k, b = i * n + (k + 1) % n, c = (i + 1) * n + k, d = (i + 1) * n + (k + 1) % n;
+        idx.push(a, c, b, b, c, d);
+      }
+      const g = new THREE.BufferGeometry();
+      g.setAttribute("position", new THREE.Float32BufferAttribute(pos, 3));
+      g.setIndex(idx);
+      g.computeVertexNormals();
+      return g;
+    }
+    const LEN = 4.7, RING = 48, STEPS = 90;
+    const body = [];
+    for (let i = 0; i <= STEPS; i++) {
+      const u = i / STEPS, x = -LEN / 2 + LEN * u, m = Math.abs(2 * u - 1);
+      const end = Math.sqrt(Math.max(0, 1 - Math.pow(m, 6)));                          // rounds off the nose and tail
+      const half = 0.93 * (1 - 0.2 * Math.pow(m, 3)) * (0.3 + 0.7 * end);
+      const topY = 0.82 - 0.17 * ss(0.68, 1, u) - 0.07 * (1 - ss(0, 0.2, u));          // low hood, slightly lower tail
+      const botY = 0.23 + 0.1 * Math.pow(m, 8);
+      const mid = (topY + botY) / 2, hh = ((topY - botY) / 2) * (0.4 + 0.6 * end);
+      const ring = [];
+      for (let k = 0; k < RING; k++) { const a = (k / RING) * Math.PI * 2; ring.push(new THREE.Vector3(x, mid + hh * sp(Math.sin(a), 0.42), half * sp(Math.cos(a), 0.42))); }
+      body.push(ring);
+    }
+    const cabin = [];
+    for (let i = 0; i <= 60; i++) {
+      const v = i / 60, x = -1.38 + 2.55 * v;
+      const rise = Math.pow(Math.sin(Math.PI * Math.pow(v, 1.18)), 0.62);               // steeper windshield, longer fastback
+      const high = 0.5 * rise, wide = 0.8 * (0.72 + 0.28 * Math.sin(Math.PI * v));
+      const ring = [];
+      for (let k = 0; k < RING; k++) {
+        const a = (k / RING) * Math.PI * 2, s = Math.sin(a), c = Math.cos(a);
+        const up = Math.max(0, s);
+        ring.push(new THREE.Vector3(x, 0.7 + (s >= 0 ? high * Math.pow(up, 0.55) : -0.08), wide * sp(c, 0.5) * (1 - 0.24 * up)));
+      }
+      cabin.push(ring);
+    }
+
+    // Paint that can be dull or glossy on either side of a moving line (the light arch).
+    const wipe = { value: 3 };
+    const paint = new THREE.MeshPhysicalMaterial({ color: "#11141C", metalness: 0.55, roughness: 0.14, envMapIntensity: 2.2, clearcoat: 1, clearcoatRoughness: 0.06 });
+    paint.onBeforeCompile = shader => {
+      shader.uniforms.uWipe = wipe;
+      shader.vertexShader = shader.vertexShader.replace("#include <common>", "#include <common>\nvarying float vCarX;").replace("#include <begin_vertex>", "#include <begin_vertex>\nvCarX = position.x;");
+      shader.fragmentShader = shader.fragmentShader
+        .replace("#include <common>", "#include <common>\nuniform float uWipe;\nvarying float vCarX;")
+        .replace("#include <color_fragment>", "#include <color_fragment>\nfloat dull = 1.0 - smoothstep(uWipe - 0.18, uWipe + 0.18, vCarX);\ndiffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.075, 0.07, 0.064), dull * 0.95);")
+        .replace("#include <roughnessmap_fragment>", "#include <roughnessmap_fragment>\nroughnessFactor = mix(roughnessFactor, 0.92, dull);")
+        .replace("#include <lights_physical_fragment>", "#include <lights_physical_fragment>\nmaterial.clearcoat *= (1.0 - dull);");
+    };
+    const glass = new THREE.MeshPhysicalMaterial({ color: "#05070A", metalness: 0.9, roughness: 0.06, envMapIntensity: 1.8 });
+    const rubber = new THREE.MeshStandardMaterial({ color: "#0A0A0B", roughness: 0.9 });
+    const alloy = new THREE.MeshStandardMaterial({ color: "#C9CDD3", metalness: 1, roughness: 0.22, envMapIntensity: 1.4 });
+    const dark = new THREE.MeshBasicMaterial({ color: "#020203" });
+
+    function buildCar(withLights) {
+      const car = new THREE.Group();
+      car.add(new THREE.Mesh(loft(body), paint), new THREE.Mesh(loft(cabin), glass));
+      const wheels = [];
+      for (const x of [-1.46, 1.5]) for (const side of [-1, 1]) {
+        const well = new THREE.Mesh(new THREE.CylinderGeometry(0.43, 0.43, 0.06, 40), dark);   // a dark arch behind the wheel
+        well.rotation.x = Math.PI / 2; well.position.set(x, 0.41, side * 0.845);
+        const w = new THREE.Group();
+        const tire = new THREE.Mesh(new THREE.TorusGeometry(0.29, 0.105, 18, 44), rubber);
+        const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.14, 32), alloy);
+        rim.rotation.x = Math.PI / 2;
+        w.add(tire, rim);
+        for (let s = 0; s < 5; s++) { const spoke = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.44, 0.16), dark); spoke.rotation.z = (s / 5) * Math.PI; w.add(spoke); }
+        w.position.set(x, 0.395, side * 0.9);
+        car.add(well, w);
+        wheels.push(w);
+      }
+      if (withLights) {
+        const head = new THREE.MeshBasicMaterial({ color: "#EAF2FF" }), tail = new THREE.MeshBasicMaterial({ color: "#FF2A2A" });
+        for (const side of [-1, 1]) {
+          const h = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.03, 0.26), head); h.position.set(2.2, 0.52, side * 0.34); h.rotation.y = side * -0.5; car.add(h);
+        }
+        const t = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.028, 0.78), tail); t.position.set(-2.27, 0.54, 0); car.add(t);
+        car.userData.lamps = [head, tail];
+      }
+      car.userData.wheels = wheels;
+      return car;
+    }
+    const world = new THREE.Group();
+    scene.add(world);
+    const car = buildCar(true);
+    world.add(car);
+    // A mirror image under a dark glassy floor gives the polished-studio reflection.
+    const mirror = buildCar(false);
+    mirror.scale.y = -1;
+    world.add(mirror);
+    const pool = document.createElement("canvas");
+    pool.width = pool.height = 256;
+    const pg = pool.getContext("2d"), grad = pg.createRadialGradient(128, 128, 0, 128, 128, 128);
+    grad.addColorStop(0, "#262A31"); grad.addColorStop(0.35, "#13151A"); grad.addColorStop(1, "#07080A");
+    pg.fillStyle = grad; pg.fillRect(0, 0, 256, 256);
+    const poolMap = new THREE.CanvasTexture(pool);
+    poolMap.colorSpace = THREE.SRGBColorSpace;
+    const floor = new THREE.Mesh(new THREE.CircleGeometry(13, 64), new THREE.MeshBasicMaterial({ map: poolMap, transparent: true, opacity: 0.8 }));
+    floor.rotation.x = -Math.PI / 2;
+    world.add(floor);
+
+    // The light arch that passes over the car.
+    const arch = new THREE.Group();
+    const archGlow = new THREE.MeshBasicMaterial({ color: "#FFF4DC", transparent: true, opacity: 0 });
+    arch.add(new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.022, 10, 80, Math.PI), archGlow));
+    const halo = new THREE.Mesh(new THREE.TorusGeometry(1.75, 0.09, 10, 80, Math.PI), new THREE.MeshBasicMaterial({ color: "#D2B26A", transparent: true, opacity: 0, depthWrite: false }));
+    arch.add(halo);
+    arch.rotation.y = Math.PI / 2;
+    world.add(arch);
+    const archLight = new THREE.PointLight("#FFF1D6", 0, 7);
+    archLight.position.y = 1.7;
+    world.add(archLight);
+
+    // Fine dust in the air.
+    const N = small() ? 160 : 380, dp = new Float32Array(N * 3);
+    for (let i = 0; i < N; i++) { dp[i * 3] = (Math.random() - 0.5) * 22; dp[i * 3 + 1] = Math.random() * 7; dp[i * 3 + 2] = (Math.random() - 0.5) * 16; }
+    const dg = new THREE.BufferGeometry();
+    dg.setAttribute("position", new THREE.BufferAttribute(dp, 3));
+    const dust = new THREE.Points(dg, new THREE.PointsMaterial({ color: "#E9DDBF", size: 0.03, transparent: true, opacity: 0.5, depthWrite: false }));
+    scene.add(dust);
+
+    // ---- Story ----
+    const span = (p, a, b) => ss(a, b, p);
+    // Camera stops: three-quarter front, side (for the light arch), rear three-quarter, high, low front.
+    const path = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(5.4, 1.5, 4.8), new THREE.Vector3(3.0, 1.9, 6.6), new THREE.Vector3(-5.6, 1.5, 4.4),
+      new THREE.Vector3(-1.4, 5.6, 5.8), new THREE.Vector3(6.2, 0.75, 2.4)
+    ], false, "centripetal");
+    const look = new THREE.Vector3(0, 0.55, 0), camAt = new THREE.Vector3();
+    let target = 0, smooth = 0, pointerX = 0, pointerY = 0, px = 0, py = 0;
+    const readScroll = () => { const max = document.documentElement.scrollHeight - innerHeight; target = forced != null ? Number(forced) : max > 0 ? scrollY / max : 0; };
+    addEventListener("scroll", readScroll, { passive: true });
+    addEventListener("pointermove", e => { pointerX = e.clientX / innerWidth - 0.5; pointerY = e.clientY / innerHeight - 0.5; });
+    function resize() {
+      renderer.setSize(innerWidth, innerHeight, false);
+      camera.aspect = innerWidth / innerHeight;
+      camera.fov = innerWidth < innerHeight ? 52 : 36;
+      camera.updateProjectionMatrix();
+      readScroll();
+    }
+    addEventListener("resize", resize);
+    resize();
+    if (forced != null) smooth = Number(forced);
+
+    const clock = new THREE.Clock();
+    function frame() {
+      const t = calm ? 0 : clock.getElapsedTime();
+      smooth += (target - smooth) * (forced != null ? 1 : 0.07);
+      const p = smooth;
+      px += (pointerX - px) * 0.05; py += (pointerY - py) * 0.05;
+
+      // The arch travels from the nose to the tail; paint behind it is glossy.
+      const pass = span(p, 0.14, 0.44);
+      const at = 2.9 - pass * 5.8;
+      wipe.value = at;
+      arch.position.x = at; archLight.position.x = at;
+      const lit = Math.sin(pass * Math.PI);
+      archGlow.opacity = Math.min(1, lit * 3); halo.opacity = lit * 0.35; archLight.intensity = lit * 26;
+
+      for (const c of [car, mirror]) for (const w of c.userData.wheels) w.rotation.z = -p * 9 - t * 0.15;
+      const lamps = car.userData.lamps, on = 0.25 + span(p, 0.82, 0.96) * 0.75;
+      lamps[0].color.setRGB(0.92 * on, 0.95 * on, on); lamps[1].color.setRGB(on, 0.16 * on, 0.16 * on);
+
+      // Studio reflections drift slowly, so the highlights glide along the paint.
+      scene.environmentRotation.y = t * 0.06 + p * 2.2;
+      dust.rotation.y = t * 0.01;
+
+      path.getPoint(Math.min(1, Math.max(0, p)), camAt);
+      const far = innerWidth < innerHeight ? 1.5 : 1;
+      camera.position.set(camAt.x * far + px * 0.8, camAt.y + (far - 1) * 1.2 - py * 0.5, camAt.z * far);
+      camera.lookAt(look);
+      // Slide the car beside the words on wide screens: right, right, left, right, then centered and raised.
+      const wide = innerWidth >= 900;
+      const side = 0.2 * (1 - span(p, 0.42, 0.56) * 2 + span(p, 0.66, 0.8) * 2 - span(p, 0.9, 1));
+      const lift = wide ? span(p, 0.88, 1) * 0.16 : 0.2;
+      camera.setViewOffset(innerWidth, innerHeight, wide ? -side * innerWidth : 0, lift * innerHeight, innerWidth, innerHeight);
+
+      const here = p * (sections.length - 1);
+      sections.forEach((s, i) => s.classList.toggle("on", Math.abs(here - i) < 0.42));
+      document.getElementById("hint").style.opacity = p < 0.04 ? 1 : 0;
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+</script>
+</body>
+</html>
