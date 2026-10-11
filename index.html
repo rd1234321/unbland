@@ -683,6 +683,9 @@
   function drawChat() {
     chatLog.textContent = "";
     bubble("bot", "Your site is ready. Tell me what to change and I'll do it. For quick fixes to wording or photos, press Edit and change them yourself; that's free.");
+    const asked = site.prompt || "";
+    if (/\b(\d+|two|three|four|five|six|multi|multiple|several)[- ]?pages?\b/i.test(asked)) bubble("bot", "Unbland builds one-page sites for now, so what you asked for as separate pages is laid out as sections of a single page, with the menu jumping between them.");
+    if (asked && asked.length < 220) bubble("bot", "Your description was short, so the site is light on detail. Unbland only uses facts you give it. For a fuller site, start again with the services, prices, areas covered, opening hours and contact details.");
     if (!user) bubble("bot", "This site is only stored in this browser for now. Create a free account to save it, publish it, and get free pixels for chat changes.");
     const chips = document.createElement("div");
     chips.className = "chips";
@@ -978,7 +981,12 @@
   const kindButtons = document.querySelectorAll(".kind button");
   const showKind = () => kindButtons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.kind === buildKind)));
   const showCosts = () => {
-    document.querySelectorAll("[data-cost]").forEach(el => { el.textContent = user ? ` · ${costs[el.dataset.cost]}` : ""; });
+    // Say who can use each kind of build, and what it costs once signed in.
+    const paying = pixelPlan === "paid" || pixelPlan === "owner";
+    document.querySelectorAll("[data-cost]").forEach(el => {
+      const fresh = el.dataset.cost === "fresh";
+      el.textContent = fresh ? (paying ? ` · ${costs.fresh} pixels` : " · Paid plans") : (user ? ` · ${costs.build} pixels` : " · Free to try");
+    });
     $("restyle").textContent = `Try another style · ${costs.build}`;
     $("renew").textContent = `Brand new design · ${costs.fresh}`;
   };
