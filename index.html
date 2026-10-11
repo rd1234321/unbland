@@ -1042,10 +1042,14 @@
       // For a multi-page site, the number of pages chosen is sent along with the description.
       const pagesWanted = kind === "multi" ? pageCount() : 1;
       const sent = kind === "multi" ? `Make this site exactly ${pagesWanted} pages in total, including the home page.\n\n${prompt}` : prompt;
+      // New designs steer away from the styles this person got most recently, so their sites don't look alike.
+      let recent = [];
+      try { recent = JSON.parse(localStorage.getItem("unbland.styles") || "[]").filter(x => typeof x === "string").slice(-4); } catch {}
+      const avoidAll = kind === "quick" ? (avoid || []) : [...new Set([...(avoid || []), ...recent])];
       const request = fresh => fetch(`${FUNCTIONS_URL}/design-site`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, apikey: ANON_KEY },
-        body: JSON.stringify({ prompt: sent, avoid, fresh, mode: kind === "new" || kind === "multi" ? kind : "quick" })
+        body: JSON.stringify({ prompt: sent, avoid: avoidAll, fresh, mode: kind === "new" || kind === "multi" ? kind : "quick" })
       });
       let res = await request(false);
       if (res.status === 409 && kind !== "new") say("That library design didn't fit. Designing a new one");
@@ -1060,6 +1064,7 @@
       }
       if (res.headers.get("x-pixels") != null) showPixels(Number(res.headers.get("x-pixels")));
       const direction = res.headers.get("x-direction") || "";
+      if (direction) try { localStorage.setItem("unbland.styles", JSON.stringify([...recent.filter(x => x !== direction), direction].slice(-4))); } catch {}
       say("");
       show(true);
       result.classList.add("building");
