@@ -1,0 +1,348 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="../icon.svg">
+<title>Unbland — Websites that don't look like everyone else's</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:wght@800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0B0C0E; --ink: #F3F1EC; --muted: #A9A59C; --accent: #FF4F1A; }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: var(--bg); }
+  body { color: var(--ink); font: 400 17px/1.55 "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  canvas#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+  .shade { position: fixed; inset: 0; pointer-events: none; background: radial-gradient(120% 90% at 50% 45%, transparent 40%, rgba(11, 12, 14, .78) 100%); }
+
+  header { position: fixed; inset: 0 0 auto 0; z-index: 5; display: flex; align-items: center; justify-content: space-between; padding: 20px clamp(18px, 4vw, 44px); }
+  .logo { display: inline-flex; align-items: center; gap: 9px; font: 800 22px/1 "Bricolage Grotesque", "Inter", sans-serif; letter-spacing: -.04em; color: inherit; text-decoration: none; }
+  .logo svg { width: 28px; height: 28px; }
+  .btn { display: inline-flex; align-items: center; gap: 10px; background: var(--accent); color: #fff; font-weight: 600; font-size: 15px; text-decoration: none; border-radius: 10px; padding: 12px 18px; white-space: nowrap; box-shadow: 0 10px 34px -8px rgba(255, 79, 26, .6); transition: transform .2s ease-out; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.big { font-size: 18px; padding: 18px 28px; border-radius: 12px; }
+
+  main { position: relative; z-index: 2; }
+  section { min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; padding: 120px clamp(18px, 6vw, 90px); pointer-events: none; }
+  section .copy { max-width: 560px; opacity: 0; transform: translateY(24px); transition: opacity .5s ease-out, transform .5s ease-out; }
+  section.on .copy { opacity: 1; transform: none; }
+  section .copy a { pointer-events: auto; }
+  section.right { justify-content: flex-end; }
+  section.center { justify-content: center; text-align: center; }
+  section.bottom { align-items: flex-end; padding-bottom: 9vh; }
+  h1, h2 { font: 400 clamp(44px, 7vw, 92px)/1.02 "Instrument Serif", Georgia, serif; letter-spacing: -.02em; text-shadow: 0 2px 30px rgba(11, 12, 14, .7); }
+  h2 { font-size: clamp(38px, 5.4vw, 70px); }
+  em { font-style: italic; color: var(--accent); }
+  p { color: var(--muted); margin-top: 18px; max-width: 46ch; text-shadow: 0 1px 16px rgba(11, 12, 14, .9); }
+  section.center p { margin-left: auto; margin-right: auto; }
+  .points { list-style: none; padding: 0; margin-top: 22px; display: grid; gap: 10px; color: var(--ink); }
+  .points li { padding-left: 22px; position: relative; }
+  .points li::before { content: ""; position: absolute; left: 0; top: .55em; width: 9px; height: 9px; border-radius: 3px; background: var(--accent); }
+  .cta { margin-top: 28px; }
+  .small { font-size: 14px; margin-top: 14px; }
+  .hint { position: fixed; left: 50%; bottom: 22px; transform: translateX(-50%); z-index: 4; font-size: 12px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); transition: opacity .4s; }
+  .hint::after { content: ""; display: block; width: 1px; height: 26px; margin: 8px auto 0; background: linear-gradient(var(--muted), transparent); animation: drop 1.8s ease-out infinite; }
+  @keyframes drop { from { transform: scaleY(0); transform-origin: top; } 60% { transform: scaleY(1); transform-origin: top; } to { opacity: 0; } }
+  .nogl canvas#scene, .nogl .hint { display: none; }
+  .nogl section .copy { opacity: 1; transform: none; }
+  @media (max-width: 720px) {
+    section, section.right { justify-content: flex-start; align-items: flex-end; padding-bottom: 14vh; }
+    section.center { justify-content: center; }
+    .shade { background: linear-gradient(transparent 35%, rgba(11, 12, 14, .88) 80%); }
+  }
+  @media (prefers-reduced-motion: reduce) { .hint::after { animation: none; } section .copy { transition: none; } }
+</style>
+</head>
+<body>
+<canvas id="scene" aria-hidden="true"></canvas>
+<div class="shade" aria-hidden="true"></div>
+
+<header>
+  <a class="logo" href="../"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a>
+  <a class="btn" href="../">Build a site</a>
+</header>
+
+<main>
+  <section class="bottom">
+    <div class="copy">
+      <h1>Websites that don't look like <em>everyone else's.</em></h1>
+      <p>Describe a business in a sentence. Get a finished site with a look of its own.</p>
+    </div>
+  </section>
+  <section>
+    <div class="copy">
+      <h2>Most builders hand everyone the same page.</h2>
+      <p>Same opening. Same three boxes. Same everything. Your client's customers have seen it a hundred times.</p>
+    </div>
+  </section>
+  <section class="right">
+    <div class="copy">
+      <h2>Unbland gives every business <em>its own look.</em></h2>
+      <p>The style, colors, photos and motion are chosen for that one business, so a barbershop never looks like a dentist.</p>
+    </div>
+  </section>
+  <section>
+    <div class="copy">
+      <h2>One message in. A finished site out.</h2>
+      <ul class="points">
+        <li>Change words and photos by hand, free</li>
+        <li>Ask for anything else in the chat</li>
+        <li>Publish with a link when it's ready</li>
+      </ul>
+    </div>
+  </section>
+  <section class="center bottom">
+    <div class="copy">
+      <h2>Make one that's <em>theirs.</em></h2>
+      <p>Your first site is free to try. No account needed.</p>
+      <p class="cta"><a class="btn big" href="../">Build a site <span aria-hidden="true">→</span></a></p>
+    </div>
+  </section>
+</main>
+<div class="hint" id="hint">Scroll</div>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.160.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/" } }
+</script>
+<script type="module">
+  // The Unbland showpiece: a 3D scene that tells the pitch as you scroll.
+  //   1. The orange "u" badge floats among drifting gray template sites.
+  //   2. The gray sites line up into a wall of identical pages.
+  //   3. The badge sends out a pulse and each page flips into a different, colorful site.
+  //   4. The sites form a slow carousel around the badge.
+  // Everything is built in code with three.js; the colorful sites are screenshots of real Unbland sites.
+  import * as THREE from "three";
+  import { RoundedBoxGeometry } from "three/addons/geometries/RoundedBoxGeometry.js";
+  import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+  const canvas = document.getElementById("scene");
+  const sections = [...document.querySelectorAll("section")];
+  const small = () => innerWidth < 720;
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const forced = new URLSearchParams(location.search).get("p");   // ?p=0.5 shows a fixed point of the story, for checking
+
+  let renderer;
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: "high-performance" });
+  } catch {
+    document.documentElement.classList.add("nogl");
+  }
+
+  if (renderer) {
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, small() ? 1.5 : 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.05;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color("#0B0C0E");
+    scene.fog = new THREE.Fog("#0B0C0E", 14, 34);
+    const pmrem = new THREE.PMREMGenerator(renderer);
+    scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+
+    const camera = new THREE.PerspectiveCamera(40, 1, 0.1, 80);
+    scene.add(new THREE.AmbientLight("#ffffff", 0.35));
+    const key = new THREE.DirectionalLight("#fff1e6", 2.2);
+    key.position.set(4, 6, 8);
+    scene.add(key);
+    const rim = new THREE.PointLight("#FF4F1A", 60, 30);
+    rim.position.set(-5, -2, 4);
+    scene.add(rim);
+
+    // Everything sits in one group, so the whole scene can slide to the side of the words on wide screens.
+    const world = new THREE.Group();
+    scene.add(world);
+
+    // ---- The badge: a rounded orange block with a white "u" and a dot ----
+    const badge = new THREE.Group();
+    const block = new THREE.Mesh(
+      new RoundedBoxGeometry(2, 2, 0.55, 10, 0.44),
+      new THREE.MeshPhysicalMaterial({ color: "#FF4F1A", roughness: 0.28, metalness: 0.05, clearcoat: 1, clearcoatRoughness: 0.18 })
+    );
+    badge.add(block);
+    const white = new THREE.MeshPhysicalMaterial({ color: "#ffffff", roughness: 0.22, clearcoat: 1, clearcoatRoughness: 0.1 });
+    const pts = [];
+    const R = 0.42, top = 0.42, bend = -0.06, z = 0.3;
+    for (let i = 0; i <= 6; i++) pts.push(new THREE.Vector3(-R, top + (bend - top) * (i / 6), z));
+    for (let i = 1; i < 24; i++) { const a = Math.PI + (Math.PI * i) / 24; pts.push(new THREE.Vector3(Math.cos(a) * R, bend + Math.sin(a) * R, z)); }
+    for (let i = 0; i <= 6; i++) pts.push(new THREE.Vector3(R, bend + (top - bend) * (i / 6), z));
+    const tube = 0.125;
+    badge.add(new THREE.Mesh(new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts, false, "centripetal"), 120, tube, 24), white));
+    for (const x of [-R, R]) { const cap = new THREE.Mesh(new THREE.SphereGeometry(tube, 24, 16), white); cap.position.set(x, top, z); badge.add(cap); }
+    const dot = new THREE.Mesh(new THREE.SphereGeometry(0.15, 32, 24), white);
+    dot.position.set(0.56, -0.56, z);
+    badge.add(dot);
+    world.add(badge);
+
+    // The pulse: a ring that sweeps outward when the pages change.
+    const pulse = new THREE.Mesh(
+      new THREE.RingGeometry(0.96, 1, 96),
+      new THREE.MeshBasicMaterial({ color: "#FF4F1A", transparent: true, opacity: 0, side: THREE.DoubleSide, depthWrite: false })
+    );
+    pulse.position.z = -2.6;
+    world.add(pulse);
+
+    // ---- The pages ----
+    const CW = 1.5, CH = 1.75;
+    // One gray "template" picture, shared by every page: the same opening and the same three boxes.
+    const grayTexture = (() => {
+      const c = document.createElement("canvas");
+      c.width = 480; c.height = 560;
+      const g = c.getContext("2d");
+      g.fillStyle = "#D7D6D2"; g.fillRect(0, 0, 480, 560);
+      g.fillStyle = "#C3C2BD"; g.fillRect(0, 0, 480, 44);
+      g.fillStyle = "#A9A8A3"; g.fillRect(20, 16, 70, 12);
+      for (let i = 0; i < 3; i++) g.fillRect(330 + i * 44, 18, 30, 8);
+      g.fillStyle = "#9A9994"; g.fillRect(110, 110, 260, 26); g.fillRect(150, 148, 180, 26);
+      g.fillStyle = "#B4B3AE"; g.fillRect(130, 196, 220, 10); g.fillRect(160, 214, 160, 10);
+      g.fillStyle = "#8E8D88"; g.fillRect(190, 248, 100, 30);
+      g.fillStyle = "#C3C2BD";
+      for (let i = 0; i < 3; i++) { g.fillRect(34 + i * 142, 340, 128, 150); }
+      g.fillStyle = "#A9A8A3";
+      for (let i = 0; i < 3; i++) { g.beginPath(); g.arc(98 + i * 142, 384, 20, 0, 7); g.fill(); g.fillRect(58 + i * 142, 424, 80, 9); g.fillRect(68 + i * 142, 442, 60, 9); }
+      const t = new THREE.CanvasTexture(c);
+      t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4;
+      return t;
+    })();
+    const loader = new THREE.TextureLoader();
+    const colorTextures = [0, 1, 2, 3, 4, 5].map(i => { const t = loader.load(`../wall/${i}.jpg`); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; });
+
+    // A page-shaped piece with rounded corners.
+    const pageShape = (() => {
+      const s = new THREE.Shape(), w = CW / 2, h = CH / 2, r = 0.07;
+      s.moveTo(-w + r, -h); s.lineTo(w - r, -h); s.quadraticCurveTo(w, -h, w, -h + r); s.lineTo(w, h - r); s.quadraticCurveTo(w, h, w - r, h);
+      s.lineTo(-w + r, h); s.quadraticCurveTo(-w, h, -w, h - r); s.lineTo(-w, -h + r); s.quadraticCurveTo(-w, -h, -w + r, -h);
+      const g = new THREE.ShapeGeometry(s, 6), pos = g.attributes.position, uv = g.attributes.uv;
+      for (let i = 0; i < pos.count; i++) uv.setXY(i, pos.getX(i) / CW + 0.5, pos.getY(i) / CH + 0.5);
+      return g;
+    })();
+
+    const COLS = small() ? 4 : 8, ROWS = small() ? 4 : 3, COUNT = COLS * ROWS;
+    const rand = (() => { let s = 7; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();   // same layout every visit
+    const pages = [];
+    for (let i = 0; i < COUNT; i++) {
+      const group = new THREE.Group();
+      const front = new THREE.Mesh(pageShape, new THREE.MeshBasicMaterial({ map: grayTexture }));
+      front.position.z = 0.006;
+      const back = new THREE.Mesh(pageShape, new THREE.MeshBasicMaterial({ map: colorTextures[i % colorTextures.length] }));
+      back.rotation.y = Math.PI; back.position.z = -0.006;
+      group.add(front, back);
+      world.add(group);
+
+      const col = i % COLS, row = Math.floor(i / COLS);
+      // Drifting: scattered around the badge, kept clear of the middle.
+      let sx, sy, sz;
+      do { sx = (rand() - 0.5) * (small() ? 9 : 20); sy = (rand() - 0.5) * 11; sz = -9 + rand() * 9; } while (Math.abs(sx) < 2.2 && Math.abs(sy) < 2.2 && sz > -3);
+      // The wall: a strict grid behind the badge.
+      const gx = (col - (COLS - 1) / 2) * (CW + 0.28), gy = ((ROWS - 1) / 2 - row) * (CH + 0.28);
+      // The carousel: two rings around the badge.
+      const perRing = COUNT / 2, ring = i < perRing ? 0 : 1, a = ((i % perRing) / perRing) * Math.PI * 2 + ring * (Math.PI / perRing);
+      pages.push({
+        group, front, color: colorTextures[i % colorTextures.length], swapped: false,
+        scatter: new THREE.Vector3(sx, sy, sz), tilt: new THREE.Vector3((rand() - 0.5) * 0.7, (rand() - 0.5) * 1.1, (rand() - 0.5) * 0.4),
+        grid: new THREE.Vector3(gx, gy, -3),
+        angle: a, ringY: ring ? -1.02 : 1.02,
+        delay: Math.hypot(gx, gy) / Math.hypot((COLS / 2) * (CW + 0.28), (ROWS / 2) * (CH + 0.28)),   // the pulse reaches the middle first
+        phase: rand() * 6.28
+      });
+    }
+
+    // Dust in the air, for depth.
+    const dustCount = small() ? 220 : 520, dustPos = new Float32Array(dustCount * 3);
+    for (let i = 0; i < dustCount; i++) { dustPos[i * 3] = (rand() - 0.5) * 34; dustPos[i * 3 + 1] = (rand() - 0.5) * 22; dustPos[i * 3 + 2] = -16 + rand() * 24; }
+    const dustGeo = new THREE.BufferGeometry();
+    dustGeo.setAttribute("position", new THREE.BufferAttribute(dustPos, 3));
+    const dust = new THREE.Points(dustGeo, new THREE.PointsMaterial({ color: "#FFD9C8", size: 0.045, transparent: true, opacity: 0.55, depthWrite: false }));
+    scene.add(dust);
+
+    // ---- Story ----
+    const clamp01 = v => Math.min(1, Math.max(0, v));
+    const ease = v => { v = clamp01(v); return v * v * (3 - 2 * v); };
+    const span = (p, a, b) => ease((p - a) / (b - a));
+    const RADIUS = small() ? 4.2 : 6.2;
+    const v = new THREE.Vector3(), ringPos = new THREE.Vector3();
+    let target = 0, smooth = 0, pointerX = 0, pointerY = 0, px = 0, py = 0;
+    const readScroll = () => { const max = document.documentElement.scrollHeight - innerHeight; target = forced != null ? Number(forced) : max > 0 ? scrollY / max : 0; };
+    addEventListener("scroll", readScroll, { passive: true });
+    addEventListener("pointermove", e => { pointerX = e.clientX / innerWidth - 0.5; pointerY = e.clientY / innerHeight - 0.5; });
+
+    function resize() {
+      renderer.setSize(innerWidth, innerHeight, false);
+      camera.aspect = innerWidth / innerHeight;
+      camera.fov = innerWidth < innerHeight ? 58 : 40;   // a wider view on tall phone screens
+      camera.updateProjectionMatrix();
+      readScroll();
+    }
+    addEventListener("resize", resize);
+    resize();
+    if (forced != null) smooth = Number(forced);
+
+    function showCopy(p) {
+      const at = p * (sections.length - 1);
+      sections.forEach((s, i) => s.classList.toggle("on", Math.abs(at - i) < 0.42));
+      document.getElementById("hint").style.opacity = p < 0.04 ? 1 : 0;
+    }
+
+    const clock = new THREE.Clock();
+    function frame() {
+      const t = calm ? 0 : clock.getElapsedTime();
+      smooth += (target - smooth) * (forced != null ? 1 : 0.07);
+      const p = smooth;
+      px += (pointerX - px) * 0.05; py += (pointerY - py) * 0.05;
+
+      const toGrid = span(p, 0.08, 0.3), flip = span(p, 0.36, 0.6), toRing = span(p, 0.66, 0.9), spin = t * 0.07 + p * 1.2;
+
+      for (const pg of pages) {
+        // Where it is: drifting, then the wall, then the carousel.
+        v.copy(pg.scatter);
+        v.y += Math.sin(t * 0.5 + pg.phase) * 0.25; v.x += Math.cos(t * 0.35 + pg.phase) * 0.18;
+        v.lerp(pg.grid, toGrid);
+        const a = pg.angle + spin;
+        ringPos.set(Math.sin(a) * RADIUS, pg.ringY, Math.cos(a) * RADIUS);
+        v.lerp(ringPos, toRing);
+        pg.group.position.copy(v);
+        // Which way it faces, and whether it has flipped to its colorful side.
+        const turned = ease((flip * 1.6 - pg.delay * 0.6));
+        const loose = 1 - toGrid;
+        pg.group.rotation.set(pg.tilt.x * loose, pg.tilt.y * loose + a * toRing + Math.PI * turned, pg.tilt.z * loose);
+        // Once a page has turned, both of its sides are colorful, so the far side of the carousel is too.
+        if ((turned > 0.5) !== pg.swapped) { pg.swapped = turned > 0.5; pg.front.material.map = pg.swapped ? pg.color : grayTexture; pg.front.material.needsUpdate = true; }
+        const pop = Math.sin(clamp01(turned) * Math.PI) * 0.6 * (1 - toRing);
+        pg.group.position.z += pop;
+      }
+
+      // The badge floats, turns toward the pointer, and swells as it sends the pulse.
+      const swell = Math.sin(span(p, 0.34, 0.5) * Math.PI);
+      badge.position.set(0, Math.sin(t * 0.8) * 0.08, 0);
+      // It always faces forward, except for one quick full turn as it sends the pulse.
+      badge.rotation.set(-py * 0.5 + Math.sin(t * 0.6) * 0.06, px * 0.9 + Math.sin(t * 0.4) * 0.25 + span(p, 0.3, 0.46) * Math.PI * 2, Math.sin(t * 0.5) * 0.04);
+      badge.scale.setScalar((small() ? 0.8 : 1) * (1 + swell * 0.22));
+      rim.intensity = 60 + swell * 240;
+      const wave = span(p, 0.36, 0.62);
+      pulse.scale.setScalar(0.5 + wave * 12);
+      pulse.material.opacity = Math.sin(wave * Math.PI) * 0.55;
+
+      dust.rotation.y = t * 0.012 + p * 0.5;
+      dust.position.y = p * 3;
+
+      // The camera pulls back to take in the wall, then rises over the carousel.
+      const back = span(p, 0.05, 0.32), rise = span(p, 0.62, 0.95);
+      const narrow = innerWidth < innerHeight ? 1.35 : 1;
+      camera.position.set(px * 1.2, 0.2 + rise * 2.6 - py * 0.6, (7.2 + back * 5.6 + rise * 2.4) * narrow);
+      camera.lookAt(0, rise * -0.2, -1.2 * back * (1 - rise));
+      // Slide the scene beside the words: right, right, left, right, then centered and raised for the ending.
+      const wide = innerWidth >= 900 ? 1 : 0;
+      const side = 2.3 * (1 - span(p, 0.4, 0.52) * 2 + span(p, 0.64, 0.76) * 2 - span(p, 0.88, 0.98));
+      world.position.set(side * wide, span(p, 0.86, 1) * (wide ? 1.7 : 2.4) + (wide ? 0 : 1.2 * (1 - span(p, 0.86, 1))), 0);
+
+      showCopy(p);
+      renderer.render(scene, camera);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+</script>
+</body>
+</html>
