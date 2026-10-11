@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <script>
-  // First-time visitors see the 3D introduction once; it leads back here. Anyone returning, signed in,
-  // mid-build, or arriving from a sign-in or payment link comes straight to the builder.
+  // The 3D landing page is the front door. This address shows the builder only when someone arrives on purpose:
+  // from a "Build a site" button (?build), from a sign-in or payment link (which carry their own details in the
+  // address), or by reloading while already working in the builder in this tab. Anyone else is sent to the landing page.
   try {
-    var fresh = !location.search && !location.hash && !localStorage.getItem("unbland.seenIntro") && !localStorage.getItem("unbland.site.v2") &&
-      !Object.keys(localStorage).some(function (k) { return k.indexOf("sb-") === 0; });
-    localStorage.setItem("unbland.seenIntro", "1");
-    if (fresh) location.replace("lab/");
+    var working = sessionStorage.getItem("unbland.inBuilder");
+    if (location.search || location.hash || working) sessionStorage.setItem("unbland.inBuilder", "1");
+    else location.replace("lab/");
   } catch (e) {}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1">
