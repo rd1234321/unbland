@@ -876,7 +876,7 @@
       if (!seen.has(slug) && name && name.length < 40) { seen.add(slug); pages.push({ slug, name }); }
     });
     if (!source.querySelector('main[data-page]') || !pages.length) {
-      bubble("bot", "This design came out as a single page, so no extra pages were added and you were only charged for the one design. Try again, or ask for a section in the chat.", "bad");
+      bubble("bot", "This design came out as a single page, so no extra pages were added. Try the build again.", "bad");
       return;
     }
     pages.length = Math.min(pages.length, 4);
@@ -921,7 +921,7 @@
     drawChat();
     const made = pages.filter(p => !failed.includes(p.name)).map(p => p.name);
     if (made.length) bubble("bot", `Your site has ${made.length + 1} pages: Home, ${made.join(", ")}. Use the site's own menu in the preview to move between them.`);
-    if (failed.length) bubble("bot", `These pages couldn't be written, and you weren't charged for them: ${failed.join(", ")}. Their menu links lead to the home page for now.`, "bad");
+    if (failed.length) bubble("bot", `These pages couldn't be written: ${failed.join(", ")}. Their menu links lead to the home page for now.`, "bad");
   }
 
   // Asks the server to design the site and draws it in the preview as the code arrives.
@@ -1074,7 +1074,7 @@
   const siteName = () => (site.html.match(/<title>([^<]*)<\/title>/i)?.[1] || "Untitled site").replace(/&amp;/g, "&").trim().slice(0, 120);
 
   // Pixels: the balance that pays for AI work. Shown wherever the person is signed in.
-  let costs = { build: 5, chat: 1, fresh: 8, page: 4 }, pixelPlan = "", allowance = 0, planId = "";
+  let costs = { build: 5, chat: 1, fresh: 8, page: 0, multi: 10 }, pixelPlan = "", allowance = 0, planId = "";
   // Quick build or brand new design: the choice next to the Build button, remembered for next time.
   let buildKind = "quick";
   try { const k = localStorage.getItem("unbland.kind"); if (k === "new" || k === "multi") buildKind = k; } catch {}
@@ -1087,7 +1087,7 @@
       const which = el.dataset.cost;
       el.textContent = which === "build" ? (user ? ` · ${costs.build} pixels` : " · Free to try")
         : !paying ? " · Paid plans"
-        : which === "multi" ? ` · ${costs.fresh} + ${costs.page} a page` : ` · ${costs.fresh} pixels`;
+        : which === "multi" ? ` · ${costs.multi}${costs.page ? ` + ${costs.page} a page` : " pixels"}` : ` · ${costs.fresh} pixels`;
     });
     $("restyle").textContent = `Try another style · ${costs.build}`;
     $("renew").textContent = `Brand new design · ${costs.fresh}`;
@@ -1108,13 +1108,13 @@
     const { data, error } = await sb.rpc("my_pixels");
     const row = Array.isArray(data) ? data[0] : data;
     if (error || !row) { showPixels(null); return; }
-    costs = { build: row.cost_build, chat: row.cost_chat, fresh: row.cost_fresh ?? 8, page: row.cost_page ?? 4 };
+    costs = { build: row.cost_build, chat: row.cost_chat, fresh: row.cost_fresh ?? 8, page: row.cost_page ?? 0, multi: row.cost_multi ?? 10 };
     pixelPlan = row.plan; allowance = row.allowance || 0; planId = row.plan_id || "";
     showPixels(row.pixels);
     showCosts();
     const planLabel = row.plan_name ? `${row.plan_name} plan` : row.plan === "owner" ? "owner account" : "Free plan";
     $("set-plan").textContent = row.plan_name ? `of ${allowance} a month · ${planLabel}` : allowance ? `of ${allowance} · ${planLabel}` : `· ${planLabel}`;
-    $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A multi-page site uses ${costs.fresh} plus ${costs.page} for each extra page. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
+    $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A multi-page site uses ${costs.multi}${costs.page ? ` plus ${costs.page} for each extra page` : ""}. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
   }
 
   function accountUI() {
