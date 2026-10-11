@@ -111,7 +111,7 @@
   .status .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s infinite; }
   .status .meter { width: 120px; height: 4px; border-radius: 2px; background: var(--rule); overflow: hidden; }
   .status .meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .4s linear; }
-  .building #sizes, .building #restyle, .building #renew, .building #open { display: none; }
+  .building #sizes, .building #effects, .building #restyle, .building #renew, .building #open { display: none; }
   .note { font-size: 13px; color: var(--error); }
   .top-right { display: inline-flex; align-items: center; gap: 10px; }
   .acct { font-size: 13px; font-weight: 600; color: #F3F1EC; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
@@ -428,6 +428,7 @@
       <div class="tools" role="group" aria-label="Site tools">
         <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
         <button class="btn" type="button" id="logo">Add logo</button>
+        <button class="btn" type="button" id="effects" aria-pressed="false" title="Adds or removes immersive effects: drifting particles, a glow that follows the cursor, and photos that move with depth as you scroll. Free.">Effects</button>
         <button class="btn" type="button" id="tabicon" title="The small picture shown in the browser tab and in bookmarks.">Tab icon</button>
         <button class="btn" type="button" id="restyle" title="Rebuilds the same business in a different style from our library.">Try another style</button>
         <button class="btn" type="button" id="renew" title="Designs the same business again from nothing. Paid plans.">Brand new design</button>
@@ -694,6 +695,10 @@
     // Older multi-page sites get the latest page-switching script (it adds a phone menu when a site lacks one).
     const pager = source.querySelector("script[data-pages]");
     if (pager && pager.textContent !== PAGES_SCRIPT) { pager.textContent = PAGES_SCRIPT; html = "<!doctype html>\n" + source.documentElement.outerHTML; }
+    const fx = source.querySelector("script[data-fx]");
+    if (fx && fx.textContent !== FX_SCRIPT) { fx.textContent = FX_SCRIPT; html = "<!doctype html>\n" + source.documentElement.outerHTML; }
+    $("effects").textContent = fx ? "Effects: on" : "Effects";
+    $("effects").setAttribute("aria-pressed", String(!!fx));
     let n = 0;
     source.querySelectorAll("body *").forEach(el => el.setAttribute("data-u", n++));
     site.html = html;
@@ -957,6 +962,17 @@
     reader.readAsDataURL(file);
   });
 
+  // Switch the immersive effects on or off for this site. Free, and Undo reverses it.
+  $("effects").onclick = () => {
+    if (busy || !site.html || !source) return;
+    const had = source.querySelector("script[data-fx]");
+    setEditing(false);
+    if (had) had.remove();
+    else { const sc = source.createElement("script"); sc.setAttribute("data-fx", ""); sc.textContent = FX_SCRIPT; source.body.append(sc); }
+    setSite(plain());
+    bubble("bot", had ? "Immersive effects are off." : "Immersive effects are on: drifting particles, a soft glow that follows the cursor, and photos and headings that move with a little depth as you scroll. Computers get the full effect, tablets a lighter one, and phones just a few slow particles. Press Effects again to switch it off. Publish again to update a live site.");
+  };
+
   function setEditing(on) {
     editing = on;
     $("edit").setAttribute("aria-pressed", on);
@@ -965,6 +981,10 @@
     frame.contentDocument?.activeElement?.blur?.();
   }
 
+  // Immersive effects: an optional layer any site can switch on. Drifting particles with depth, a soft glow
+  // that follows the cursor, and photos and headings that move slightly slower than the page. Computers get
+  // the full effect, tablets a lighter one, phones only a few slow particles. It is plain code, not AI, so it is free.
+  const FX_SCRIPT = `(function(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var W=innerWidth,H=innerHeight,big=W>1024&&matchMedia('(hover:hover) and (pointer:fine)').matches,n=W>1024?70:W>640?30:14;var col=getComputedStyle(document.body).color.match(/[0-9.]+/g)||[255,255,255];var rgb=col[0]+','+col[1]+','+col[2];var c=document.createElement('canvas');c.id='__fx';c.setAttribute('aria-hidden','true');c.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:2147482000;opacity:'+(big?.55:.35);document.body.appendChild(c);var x=c.getContext('2d'),d=Math.min(window.devicePixelRatio||1,2);function size(){W=innerWidth;H=innerHeight;c.width=W*d;c.height=H*d;x.setTransform(d,0,0,d,0,0);}size();addEventListener('resize',size);var p=[];for(var i=0;i<n;i++)p.push({x:Math.random()*W,y:Math.random()*H,z:.3+Math.random()*.7,r:.6+Math.random()*1.8,vx:(Math.random()-.5)*.25,vy:-.08-Math.random()*.22,a:.25+Math.random()*.5});var sy=window.scrollY,mx=-999,my=-999,gx=0,gy=0,g=null;if(big){g=document.createElement('div');g.id='__fxg';g.setAttribute('aria-hidden','true');g.style.cssText='position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;z-index:2147481999;background:radial-gradient(circle,rgba('+rgb+',.10),rgba('+rgb+',0) 65%);opacity:0;transition:opacity .6s';document.body.appendChild(g);addEventListener('pointermove',function(e){mx=e.clientX;my=e.clientY;g.style.opacity=1;});}var els=[];function collect(){var old=els;els=[];if(!big)return;document.querySelectorAll('img,h1,h2').forEach(function(e){if(e.closest('header,nav,footer,#__pm'))return;var r=e.getBoundingClientRect();if(e.tagName==='IMG'&&(r.width<220||r.height<160))return;var was=0;for(var k=0;k<old.length;k++)if(old[k][0]===e)was=old[k][2];els.push([e,e.tagName==='IMG'?.07:.03,was]);});}collect();addEventListener('load',collect);setInterval(collect,4000);function frame(){var dy=window.scrollY-sy;sy=window.scrollY;x.clearRect(0,0,W,H);for(var i=0;i<p.length;i++){var q=p[i];q.x+=q.vx*q.z;q.y+=q.vy*q.z-dy*q.z*.35;if(q.y<-10)q.y=H+10;if(q.y>H+10)q.y=-10;if(q.x<-10)q.x=W+10;if(q.x>W+10)q.x=-10;x.beginPath();x.arc(q.x,q.y,q.r*q.z,0,6.283);x.fillStyle='rgba('+rgb+','+(q.a*q.z).toFixed(3)+')';x.fill();}if(g){gx+=(mx-gx)*.12;gy+=(my-gy)*.12;g.style.transform='translate('+gx.toFixed(1)+'px,'+gy.toFixed(1)+'px)';}for(var j=0;j<els.length;j++){var it=els[j],r=it[0].getBoundingClientRect();if(!r.width||r.bottom<-200||r.top>H+200)continue;var t=(r.top-it[2]+r.height/2-H/2)*-it[1];t=Math.max(-40,Math.min(40,t));it[2]=t;it[0].style.translate='0 '+t.toFixed(1)+'px';}requestAnimationFrame(frame);}requestAnimationFrame(frame);})();`;
   // Multi-page sites live in one file: a shared header and footer, and one <main data-page> per page.
   // This small script, added to the site, shows one page at a time when a menu link is clicked.
   const PAGES_SCRIPT = `(function(){var s=document.createElement('style');s.textContent='main[data-page][hidden]{display:none!important}#__pm{position:fixed;left:14px;bottom:14px;z-index:2147483000;font:600 15px/1 system-ui,sans-serif}#__pm button{font:inherit;color:#fff;background:#141414;border:0;border-radius:999px;padding:13px 18px;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer}#__pm div{position:absolute;left:0;bottom:54px;min-width:190px;background:#141414;border-radius:14px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.4)}#__pm a{display:block;color:#fff;text-decoration:none;padding:12px 14px;border-radius:9px}#__pm a.current{background:rgba(255,255,255,.14)}';document.head.appendChild(s);var cur='home';function show(n,top){var all=document.querySelectorAll('main[data-page]'),ok=false;all.forEach(function(p){if(p.getAttribute('data-page')===n)ok=true;});if(!ok)n='home';cur=n;all.forEach(function(p){p.hidden=p.getAttribute('data-page')!==n;});document.querySelectorAll('a[href^="#/"]').forEach(function(a){var on=a.getAttribute('href')==='#/'+n;a.classList.toggle('current',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});if(top)window.scrollTo(0,0);window.dispatchEvent(new Event('scroll'));window.dispatchEvent(new Event('resize'));}function seen(e){return !!(e&&e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden');}function menu(){var box=document.getElementById('__pm');var names={},order=[];document.querySelectorAll('main[data-page]').forEach(function(p){order.push(p.getAttribute('data-page'));});var reach={};document.querySelectorAll('a[href^="#/"]').forEach(function(a){if(a.closest('#__pm'))return;var g=a.getAttribute('href').slice(2),t=a.textContent.replace(/\\s+/g,' ').trim();if(t&&t.length<40&&!names[g])names[g]=t;if(seen(a))reach[g]=1;});var own=false;document.querySelectorAll('header button,nav button,header [aria-expanded]').forEach(function(b){if(seen(b))own=true;});var need=order.length>1&&!own&&order.some(function(g){return !reach[g];});if(!need){if(box)box.style.display='none';return;}if(!box){box=document.createElement('div');box.id='__pm';box.innerHTML='<div hidden></div><button type="button" aria-expanded="false">Menu</button>';document.body.appendChild(box);box.querySelector('button').onclick=function(){var d=box.querySelector('div');d.hidden=!d.hidden;this.setAttribute('aria-expanded',String(!d.hidden));};}box.style.display='';var d=box.querySelector('div');d.innerHTML='';order.forEach(function(g){var a=document.createElement('a');a.href='#/'+g;a.textContent=names[g]||(g.charAt(0).toUpperCase()+g.slice(1).replace(/-/g,' '));if(g===cur)a.className='current';d.appendChild(a);});}document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a)return;e.preventDefault();show(a.getAttribute('href').slice(2),true);var box=document.getElementById('__pm');if(box){box.querySelector('div').hidden=true;box.querySelector('button').setAttribute('aria-expanded','false');}});var t;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(menu,150);});show('home',false);menu();window.addEventListener('load',menu);})();`;
