@@ -67,6 +67,9 @@
   .writer-two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
   .writer-two > div { display: grid; }
   @media (max-width: 560px) { .writer-two { grid-template-columns: 1fr; } }
+  .kind .pages { display: inline-flex; align-items: center; gap: 6px; padding: 0 8px 0 4px; font-size: 13px; color: #B4B0A8; white-space: nowrap; }
+  .kind select { background: rgba(255, 255, 255, .1); color: #F3F1EC; border: 0; border-radius: 6px; padding: 5px 6px; font: inherit; cursor: pointer; }
+  .kind { flex-wrap: wrap; }
   .kind small { font-size: inherit; opacity: .6; }
   .go i { font-style: normal; transition: transform .25s; }
   .go:hover i { transform: translateX(5px); }
@@ -361,6 +364,7 @@
           <button type="button" data-kind="quick" aria-pressed="true" title="Starts from a design in our library and rebuilds it around this business. Faster.">Quick build<small data-cost="build"></small></button>
           <button type="button" data-kind="new" aria-pressed="false" title="Designs a site from nothing, only for this business. Takes longer. Paid plans.">Brand new design<small data-cost="fresh"></small></button>
           <button type="button" data-kind="multi" aria-pressed="false" title="A brand new design with several pages, such as Home, Services and Contact. Takes a few minutes. Paid plans.">Multi-page<small data-cost="multi"></small></button>
+          <label class="pages" id="pages-pick" hidden>Pages <select id="page-count"><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label>
         </div>
         <button class="go" id="go" type="button">Build the site <i aria-hidden="true">→</i></button>
       </div>
@@ -867,7 +871,7 @@
   // This small script, added to the site, shows one page at a time when a menu link is clicked.
   const PAGES_SCRIPT = `(function(){var s=document.createElement('style');s.textContent='main[data-page][hidden]{display:none!important}';document.head.appendChild(s);function show(n,top){var all=document.querySelectorAll('main[data-page]'),ok=false;all.forEach(function(p){if(p.getAttribute('data-page')===n)ok=true;});if(!ok)n='home';all.forEach(function(p){p.hidden=p.getAttribute('data-page')!==n;});document.querySelectorAll('a[href^="#/"]').forEach(function(a){var on=a.getAttribute('href')==='#/'+n;a.classList.toggle('current',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});if(top)window.scrollTo(0,0);window.dispatchEvent(new Event('scroll'));window.dispatchEvent(new Event('resize'));}document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a)return;e.preventDefault();show(a.getAttribute('href').slice(2),true);});show('home',false);})();`;
   // After the home page of a multi-page site is designed, write each other page in turn and add it to the file.
-  async function buildPages(prompt, token, status) {
+  async function buildPages(prompt, token, wanted, status) {
     const seen = new Set(["home", ""]);
     const pages = [];
     source.querySelectorAll('a[href^="#/"]').forEach(a => {
@@ -879,7 +883,7 @@
       bubble("bot", "This design came out as a single page, so no extra pages were added. Try the build again.", "bad");
       return;
     }
-    pages.length = Math.min(pages.length, 4);
+    pages.length = Math.min(pages.length, 4, Math.max(1, wanted - 1));
     // Add the page-switching script now, so the menu already works while the other pages are written.
     source.querySelectorAll("script[data-pages]").forEach(el => el.remove());
     const router = source.createElement("script");
@@ -936,10 +940,13 @@
     let timer;
     try {
       const token = await bearer();
+      // For a multi-page site, the number of pages chosen is sent along with the description.
+      const pagesWanted = kind === "multi" ? pageCount() : 1;
+      const sent = kind === "multi" ? `Make this site exactly ${pagesWanted} pages in total, including the home page.\n\n${prompt}` : prompt;
       const request = fresh => fetch(`${FUNCTIONS_URL}/design-site`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, apikey: ANON_KEY },
-        body: JSON.stringify({ prompt, avoid, fresh, mode: kind === "new" || kind === "multi" ? kind : "quick" })
+        body: JSON.stringify({ prompt: sent, avoid, fresh, mode: kind === "new" || kind === "multi" ? kind : "quick" })
       });
       let res = await request(false);
       if (res.status === 409 && kind !== "new") say("That library design didn't fit. Designing a new one");
@@ -997,7 +1004,7 @@
       site = { html: "", prompt, used: [...(avoid || []), direction].filter(Boolean) };
       setSite(html, false);   // reload cleanly so entrance animations play from the top
       drawChat();
-      if (kind === "multi") await buildPages(prompt, token, text => { phase = text; $("status-text").textContent = label(); });
+      if (kind === "multi") await buildPages(prompt, token, pagesWanted, text => { phase = text; $("status-text").textContent = label(); });
     } catch (err) {
       if (!result.hidden && !site.html) show(false);
       if (site.html && !result.hidden) { display(site.html); drawChat(); bubble("bot", err.message, "bad"); }
@@ -1074,12 +1081,16 @@
   const siteName = () => (site.html.match(/<title>([^<]*)<\/title>/i)?.[1] || "Untitled site").replace(/&amp;/g, "&").trim().slice(0, 120);
 
   // Pixels: the balance that pays for AI work. Shown wherever the person is signed in.
-  let costs = { build: 5, chat: 1, fresh: 8, page: 0, multi: 10 }, pixelPlan = "", allowance = 0, planId = "";
+  let costs = { build: 5, chat: 1, fresh: 8, page: 2, multi: 10 }, pixelPlan = "", allowance = 0, planId = "";
   // Quick build or brand new design: the choice next to the Build button, remembered for next time.
   let buildKind = "quick";
   try { const k = localStorage.getItem("unbland.kind"); if (k === "new" || k === "multi") buildKind = k; } catch {}
   const kindButtons = document.querySelectorAll(".kind button");
-  const showKind = () => kindButtons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.kind === buildKind)));
+  const showKind = () => { kindButtons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.kind === buildKind))); $("pages-pick").hidden = buildKind !== "multi"; };
+  // A multi-page site: the base price covers three pages, and each page after that adds a little.
+  const pageCount = () => Math.min(5, Math.max(2, Number($("page-count").value) || 3));
+  const multiCost = () => costs.multi + Math.max(0, pageCount() - 3) * costs.page;
+  $("page-count").onchange = () => showCosts();
   const showCosts = () => {
     // Say who can use each kind of build, and what it costs once signed in.
     const paying = pixelPlan === "paid" || pixelPlan === "owner";
@@ -1087,7 +1098,7 @@
       const which = el.dataset.cost;
       el.textContent = which === "build" ? (user ? ` · ${costs.build} pixels` : " · Free to try")
         : !paying ? " · Paid plans"
-        : which === "multi" ? ` · ${costs.multi}${costs.page ? ` + ${costs.page} a page` : " pixels"}` : ` · ${costs.fresh} pixels`;
+        : which === "multi" ? ` · ${multiCost()} pixels` : ` · ${costs.fresh} pixels`;
     });
     $("restyle").textContent = `Try another style · ${costs.build}`;
     $("renew").textContent = `Brand new design · ${costs.fresh}`;
@@ -1108,13 +1119,13 @@
     const { data, error } = await sb.rpc("my_pixels");
     const row = Array.isArray(data) ? data[0] : data;
     if (error || !row) { showPixels(null); return; }
-    costs = { build: row.cost_build, chat: row.cost_chat, fresh: row.cost_fresh ?? 8, page: row.cost_page ?? 0, multi: row.cost_multi ?? 10 };
+    costs = { build: row.cost_build, chat: row.cost_chat, fresh: row.cost_fresh ?? 8, page: row.cost_page ?? 2, multi: row.cost_multi ?? 10 };
     pixelPlan = row.plan; allowance = row.allowance || 0; planId = row.plan_id || "";
     showPixels(row.pixels);
     showCosts();
     const planLabel = row.plan_name ? `${row.plan_name} plan` : row.plan === "owner" ? "owner account" : "Free plan";
     $("set-plan").textContent = row.plan_name ? `of ${allowance} a month · ${planLabel}` : allowance ? `of ${allowance} · ${planLabel}` : `· ${planLabel}`;
-    $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A multi-page site uses ${costs.multi}${costs.page ? ` plus ${costs.page} for each extra page` : ""}. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
+    $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A multi-page site uses ${costs.multi} for up to 3 pages, plus ${costs.page} for each page after that. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
   }
 
   function accountUI() {
