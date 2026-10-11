@@ -65,6 +65,7 @@
   form input, form select, form textarea { width: 100%; background: #121D22; border: 1px solid var(--line); border-radius: 10px; padding: 13px 14px; color: var(--ink); font: inherit; font-size: 16px; }
   form input:focus, form select:focus, form textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
   footer { display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; padding: 28px clamp(18px, 6vw, 90px) 60px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  .fade { position: fixed; inset: 0; z-index: 1; background: #0C1418; opacity: 0; pointer-events: none; }
   .hint { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 4; font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--ink); opacity: .8; transition: opacity .4s; }
   .demo { position: fixed; right: 12px; bottom: 12px; z-index: 6; max-width: calc(100vw - 24px); font-size: 10.5px; color: #C9C9C2; background: rgba(12, 20, 24, .8); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; text-decoration: none; }
   .nogl canvas#scene, .nogl .hint { display: none; }
@@ -82,7 +83,7 @@
 
 <header>
   <a class="brand" href="#top">Halden &amp; Pike</a>
-  <nav><a href="#levels">Levels</a><a href="#light">Light</a><a href="#features">Features</a><a href="#viewing">Viewing</a></nav>
+  <nav><a href="#design">Design</a><a href="#light">Light</a><a href="#inside">Inside</a><a href="#features">Features</a><a href="#viewing">Viewing</a></nav>
   <a class="btn" href="#viewing">Book a viewing</a>
 </header>
 
@@ -91,31 +92,33 @@
     <section class="low">
       <div class="copy">
         <h1>A house that <b>follows the ridge.</b></h1>
-        <p>The Ridgeline Residence. Three levels of concrete, cedar and glass, set into the hillside.</p>
+        <p>The Ridgeline Residence. A modern villa of glass, timber and concrete, with a lap pool and a roof terrace.</p>
         <div class="stats"><span><b>4</b>Bedrooms</span><span><b>4.5</b>Bathrooms</span><span><b>4,850</b>Square feet</span><span><b>$3,950,000</b>Asking</span></div>
       </div>
     </section>
-    <section class="right" id="levels">
+    <section class="right" id="design">
       <div class="copy">
-        <h2>Three levels, <b>each with a job.</b></h2>
-        <ul class="levels">
-          <li><b>Upper level</b>Primary suite and two bedrooms, wrapped in cedar and cantilevered over the entry.</li>
-          <li><b>Main level</b>Kitchen, dining and living in one glass pavilion that opens onto the pool terrace.</li>
-          <li><b>Lower level</b>Three-car garage, guest suite, gym and wine room, cut into the slope.</li>
-        </ul>
+        <h2>Glass, timber <b>and concrete.</b></h2>
+        <p>Two stories of floor-to-ceiling glass open onto the lawn and a full-length lap pool. A timber spine runs up through the house to the roof terrace.</p>
       </div>
     </section>
     <section id="light">
       <div class="copy">
         <h2>Built around <b>the light.</b></h2>
-        <p>Floor-to-ceiling glass faces the valley. Deep roof overhangs shade the rooms at midday and let the low evening sun reach all the way in.</p>
+        <p>The glass faces the garden, so the main rooms have daylight from morning to evening. As the sun drops, the house starts to glow from inside.</p>
       </div>
     </section>
-    <section class="right" id="features">
+    <section class="right" id="inside">
+      <div class="copy">
+        <h2>Step <b>inside.</b></h2>
+        <p>The kitchen sits at the center of the main level: a long island under three pendant lights, built-in ovens, and stairs up to the bedrooms.</p>
+      </div>
+    </section>
+    <section id="features">
       <div class="copy">
         <h2>The details.</h2>
         <ul class="feats">
-          <li>Heated lap pool</li><li>Cedar and board-formed concrete</li><li>Chef's kitchen with island</li><li>Radiant floors</li><li>Three-car garage</li><li>1.2 acre hillside lot</li>
+          <li>Full-length lap pool</li><li>Roof terrace</li><li>Kitchen with island</li><li>Floor-to-ceiling glass</li><li>Walled garden</li><li>1.2 acre hillside lot</li>
         </ul>
       </div>
     </section>
@@ -154,17 +157,20 @@
   </div>
 </main>
 <div class="hint" id="hint">Scroll</div>
-<a class="demo" href="../">Concept page by Unbland · fictional listing</a>
+<div class="fade" id="fade" aria-hidden="true"></div>
+<a class="demo" href="../">Concept page by Unbland · fictional listing · Models: "Modern luxury villa house building with pool" by zigurat architecture and "Modern Kitchen" by dylanheyes, Sketchfab, CC BY</a>
 
 <script type="importmap">
 { "imports": { "three": "https://unpkg.com/three@0.165.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/" } }
 </script>
 <script type="module">
-  // A 3D listing page for a (fictional) hillside house, built entirely in code with three.js.
-  // As you scroll: the house at golden hour, its three levels lifting apart, the day turning to dusk with the
-  // rooms lighting up, a look from above at night, and a last view from the driveway. Drag to turn the house.
+  // A 3D listing page for a (fictional) house, using a detailed villa model and a kitchen model on a hillside
+  // built in code. As you scroll: the house in afternoon light, a closer look, the day turning to dusk, a step
+  // inside to the kitchen, a look from above at night with the rooms lit, and a last view from the front.
+  // Drag to turn the house. The earlier all-code version is kept beside this file as code-built.html.
   import * as THREE from "three";
   import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+  import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
   const canvas = document.getElementById("scene");
   const story = document.getElementById("story");
@@ -224,40 +230,55 @@
       parent.add(m); return m;
     };
 
-    // ---- The house: three levels, each its own group so they can lift apart ----
-    const lower = new THREE.Group(), main = new THREE.Group(), upper = new THREE.Group();
-    world.add(lower, main, upper);
-    // Lower level: concrete, cut into the slope, with the garage.
-    box(lower, 11, 3, 7.5, concrete, -1.5, 1.5, -0.2);
-    box(lower, 6.6, 2.3, 0.12, darkMetal, -3, 1.2, 3.58);                        // garage door
-    box(lower, 1.1, 2.3, 0.12, cedar, 1.9, 1.2, 3.58);                           // entry door
-    box(lower, 2.4, 0.9, 0.1, warm, 3.2, 2.2, 3.57, false);                      // guest suite window
-    // Main level: a glass pavilion on a wide floor slab, with the pool terrace.
-    box(main, 17, 0.36, 11.5, slab, 2, 3.18, 1.2);
-    box(main, 12, 0.08, 6.4, floorWood, 2, 3.4, -0.6, false);
-    box(main, 12, 3, 0.1, glass, 2, 4.9, 2.6, false); box(main, 12, 3, 0.1, glass, 2, 4.9, -3.8, false);
-    box(main, 0.1, 3, 6.4, glass, -4, 4.9, -0.6, false); box(main, 0.1, 3, 6.4, glass, 8, 4.9, -0.6, false);
-    for (const x of [-4, 0, 4, 8]) for (const z of [2.6, -3.8]) box(main, 0.14, 3, 0.14, darkMetal, x, 4.9, z);
-    box(main, 5, 3, 0.4, warm, 0.5, 4.9, -2.2, false);                           // lit timber core wall
-    box(main, 3.2, 0.95, 1.2, soft, 5.2, 3.9, -0.4); box(main, 1.2, 0.95, 2.6, soft, 6.8, 3.9, 0.9);   // sofa
-    box(main, 3.6, 1, 1.1, slab, -1.2, 3.94, 0.4);                               // kitchen island
-    box(main, 14.4, 0.3, 8.6, slab, 2, 6.55, -0.3);                              // roof with deep overhang
-    box(main, 7, 0.2, 3, water, 4.6, 3.3, 5);                                    // pool
-    box(main, 7.6, 0.16, 3.6, concrete, 4.6, 3.3, 5, false).position.y = 3.27;   // pool surround
-    // Upper level: cedar, cantilevered over the entry.
-    box(upper, 8.4, 3, 6.2, cedar, -3.4, 8.3, -0.4);
-    box(upper, 5.6, 1.7, 0.1, glass, -3.4, 8.4, 2.72, false);
-    box(upper, 5.4, 1.6, 0.1, warm, -3.4, 8.4, 2.6, false);                      // bedroom light behind the glass
-    box(upper, 0.1, 1.7, 3.4, glass, -7.62, 8.4, -0.4, false);
-    box(upper, 9.4, 0.26, 7.2, slab, -3.4, 9.93, -0.4);
-    box(upper, 0.16, 3.2, 0.16, darkMetal, -7.3, 5.05, 2.4); box(upper, 0.16, 3.2, 0.16, darkMetal, -7.3, 5.05, -3.2);   // slim posts under the cantilever
-
-    // Interior lamps, switched up as evening comes.
-    const lamps = [[2, 5.6, -0.6, main], [6, 5.6, 0.5, main], [-3.4, 8.9, 0.6, upper], [3.2, 2.2, 2.4, lower]].map(([x, y, z, parent]) => {
-      const l = new THREE.PointLight("#FFB866", 0, 22, 1.6); l.position.set(x, y, z); parent.add(l); return l;
+    // ---- The house: a detailed villa model, with its own garden, pool and boundary wall ----
+    // "Modern luxury villa house building with pool" by zigurat architecture (Sketchfab, CC Attribution).
+    const glow = [];   // interior surfaces that light up in the evening
+    const houseLights = [[0, 5, 0], [3, 9, -2], [-3, 5, 3]].map(([x, y, z]) => { const l = new THREE.PointLight("#FFB866", 0, 34, 1.5); l.position.set(x, y, z); world.add(l); return l; });
+    const loader = new GLTFLoader();
+    loader.load("house.glb", gltf => {
+      const model = gltf.scene;
+      model.updateMatrixWorld(true);
+      const b = new THREE.Box3().setFromObject(model), size = b.getSize(new THREE.Vector3()), mid = b.getCenter(new THREE.Vector3());
+      const holder = new THREE.Group();
+      holder.add(model);
+      model.position.set(-mid.x, -b.min.y, -mid.z);
+      holder.scale.setScalar(44 / Math.max(size.x, size.z));
+      holder.position.y = 0.04;
+      model.traverse(o => {
+        if (!o.isMesh) return;
+        o.castShadow = true; o.receiveShadow = true;
+        const m = o.material, n = m.name || "";
+        if (/glass/i.test(n)) { m.color.set("#9CC3CF"); m.transparent = true; m.opacity = 0.3; m.roughness = 0.04; m.metalness = 0.2; m.envMapIntensity = 1.6; m.depthWrite = false; o.castShadow = false; glow.push([m, "glass"]); }
+        else if (/interior|kafinterior/i.test(n)) { m.emissive = new THREE.Color("#FFB866"); m.emissiveIntensity = 0; glow.push([m, "room"]); }
+        else if (/fire/i.test(n)) { m.emissive = new THREE.Color("#FF7A2E"); m.emissiveIntensity = 0; glow.push([m, "fire"]); }
+        else m.roughness = Math.max(m.roughness ?? 0.8, 0.6);
+      });
+      world.add(holder);
     });
-    const poolLight = new THREE.PointLight("#3BE0F0", 0, 16, 1.6);
-    poolLight.position.set(4.6, 3.9, 5); main.add(poolLight);
+
+    // ---- Inside: a kitchen, shown as its own scene partway through the story ----
+    // "Modern Kitchen" by dylanheyes (Sketchfab, CC Attribution). Skipped on phones: it is a large file.
+    const inside = new THREE.Scene();
+    inside.background = new THREE.Color("#E9E4DA");
+    inside.environment = scene.environment;
+    inside.add(new THREE.HemisphereLight("#FFF6E8", "#B9B2A6", 0.9));
+    const windowLight = new THREE.DirectionalLight("#FFE9C8", 2.2);
+    windowLight.position.set(-6, 8, 10);
+    inside.add(windowLight);
+    for (const z of [-3, 0, 3]) { const l = new THREE.PointLight("#FFC98A", 14, 12, 1.6); l.position.set(-2, 4.6, z); inside.add(l); }
+    const insideCam = new THREE.PerspectiveCamera(56, 1, 0.05, 120);
+    let kitchenReady = false;
+    if (!small()) loader.load("kitchen.glb", gltf => {
+      const model = gltf.scene;
+      model.updateMatrixWorld(true);
+      const b = new THREE.Box3().setFromObject(model), size = b.getSize(new THREE.Vector3()), mid = b.getCenter(new THREE.Vector3());
+      const holder = new THREE.Group();
+      holder.add(model);
+      model.position.set(-mid.x, -b.min.y, -mid.z);
+      holder.scale.setScalar(20 / Math.max(size.x, size.y, size.z));
+      inside.add(holder);
+      kitchenReady = true;
+    });
 
     // ---- The hillside ----
     const rand = (() => { let s = 11; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
@@ -265,7 +286,7 @@
     land.rotateX(-Math.PI / 2);
     const lp = land.attributes.position;
     for (let i = 0; i < lp.count; i++) {
-      const x = lp.getX(i), z = lp.getZ(i), far = Math.min(1, Math.max(0, (Math.hypot(x - 1, z - 1) - 14) / 22));
+      const x = lp.getX(i), z = lp.getZ(i), far = Math.min(1, Math.max(0, (Math.hypot(x, z) - 31) / 26));
       const hill = Math.sin(x * 0.045 + 1) * 3.4 + Math.cos(z * 0.05) * 2.8 + Math.sin((x + z) * 0.11) * 1.1 - z * 0.06;
       lp.setY(i, hill * far * far - 0.02);
     }
@@ -273,15 +294,13 @@
     const hillside = new THREE.Mesh(land, ground);
     hillside.receiveShadow = true;
     world.add(hillside);
-    box(world, 7.4, 0.06, 26, drive, -3, 0.02, 16.6, false);                     // driveway
 
     const trunkGeo = new THREE.CylinderGeometry(0.16, 0.24, 2.6, 6), coneGeo = new THREE.ConeGeometry(1.7, 5.2, 7);
     const treeCount = small() ? 26 : 60;
     for (let i = 0; i < treeCount; i++) {
-      const a = rand() * Math.PI * 2, r = 17 + rand() * 60, x = Math.cos(a) * r + 1, z = Math.sin(a) * r + 1;
-      if (Math.abs(x + 3) < 6 && z > 3) continue;                                // keep the driveway clear
-      if (z > 4 && r < 52) continue;                                              // and the views of the front of the house
-      const far = Math.min(1, Math.max(0, (Math.hypot(x - 1, z - 1) - 14) / 22));
+      const a = rand() * Math.PI * 2, r = 36 + rand() * 62, x = Math.cos(a) * r, z = Math.sin(a) * r;
+      if (z > 0 && r < 74) continue;                                              // keep the views of the front of the house clear
+      const far = Math.min(1, Math.max(0, (Math.hypot(x, z) - 31) / 26));
       const y = (Math.sin(x * 0.045 + 1) * 3.4 + Math.cos(z * 0.05) * 2.8 + Math.sin((x + z) * 0.11) * 1.1 - z * 0.06) * far * far;
       const s = 0.8 + rand() * 0.9, tree = new THREE.Group();
       const trunk = new THREE.Mesh(trunkGeo, bark); trunk.position.y = 1.3;
@@ -301,13 +320,13 @@
     // ---- Story ----
     const ss = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
     const path = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(26, 9, 30), new THREE.Vector3(34, 13, 10), new THREE.Vector3(-22, 8, 30),
-      new THREE.Vector3(-8, 34, 26), new THREE.Vector3(-2, 4.2, 40)
+      new THREE.Vector3(34, 12, 44), new THREE.Vector3(20, 7, 30), new THREE.Vector3(-30, 10, 38),
+      new THREE.Vector3(-16, 12, 46), new THREE.Vector3(-14, 52, 40), new THREE.Vector3(4, 6, 58)
     ], false, "centripetal");
     const sky = [new THREE.Color("#6C9CC4"), new THREE.Color("#E89A62"), new THREE.Color("#0A1320")];   // day, sunset, night
     const sunTint = [new THREE.Color("#FFF3DC"), new THREE.Color("#FF9A52"), new THREE.Color("#5C76A8")];
     const mix3 = (out, set, d) => d < 0.5 ? out.copy(set[0]).lerp(set[1], d * 2) : out.copy(set[1]).lerp(set[2], d * 2 - 1);
-    const look = new THREE.Vector3(1, 4.6, 0), camAt = new THREE.Vector3(), skyNow = new THREE.Color();
+    const look = new THREE.Vector3(0, 4.5, 0), camAt = new THREE.Vector3(), skyNow = new THREE.Color();
 
     let target = 0, smooth = 0, pointerX = 0, pointerY = 0, px = 0, py = 0, yaw = 0, yawTo = 0, dragX = null;
     const readScroll = () => { const max = story.offsetHeight - innerHeight; target = forced != null ? Number(forced) : max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0; };
@@ -338,12 +357,8 @@
       yaw += (yawTo - yaw) * 0.12;
       world.rotation.y = yaw;
 
-      // The levels lift apart around the second section, then settle back.
-      const apart = ss(0.12, 0.24, p) * (1 - ss(0.34, 0.44, p));
-      main.position.y = apart * 3.4; upper.position.y = apart * 7.2;
-
       // Time of day: golden afternoon, sunset, then night with the rooms and pool lit.
-      const day = ss(0.42, 0.72, p);
+      const day = ss(0.3, 0.5, p) * 0.5 + ss(0.7, 0.8, p) * 0.5;
       mix3(skyNow, sky, day);
       scene.background.copy(skyNow); scene.fog.color.copy(skyNow);
       mix3(sun.color, sunTint, day);
@@ -354,20 +369,22 @@
       hemi.color.copy(skyNow).lerp(new THREE.Color("#ffffff"), 0.5);
       renderer.toneMappingExposure = 1.0 + day * 0.25;
       const evening = ss(0.3, 0.9, day);
-      warm.emissiveIntensity = 0.15 + evening * 2.6;
-      for (const l of lamps) l.intensity = evening * 90;
-      poolLight.intensity = evening * 60; water.emissiveIntensity = 0.15 + evening * 1.4;
-      glass.opacity = 0.26 - evening * 0.1;
+      for (const [m, kind] of glow) {
+        if (kind === "room") m.emissiveIntensity = evening * 1.5;
+        else if (kind === "fire") m.emissiveIntensity = evening * 3;
+        else m.opacity = 0.3 - evening * 0.12;
+      }
+      for (const l of houseLights) l.intensity = evening * 160;
       stars.material.opacity = ss(0.75, 1, day) * 0.9;
       scene.environmentIntensity = 1 - day * 0.8;
 
       path.getPoint(Math.min(1, Math.max(0, p)), camAt);
-      const far = (innerWidth < innerHeight ? 1.45 : 1) * (1 + apart * 0.3);   // step back while the levels are apart
+      const far = innerWidth < innerHeight ? 1.45 : 1;
       camera.position.set(camAt.x * far + px * 2 + Math.sin(t * 0.1) * 0.6, camAt.y + (far - 1) * 4 - py * 1.4, camAt.z * far);
-      camera.lookAt(look.x, look.y + apart * 2.6, look.z);
+      camera.lookAt(look);
       // Slide the house beside the words on wide screens: right, left, right, left, then centered and raised.
       const wide = innerWidth >= 900;
-      const side = 0.2 * (1 - ss(0.1, 0.2, p) * 2 + ss(0.36, 0.46, p) * 2 - ss(0.62, 0.72, p) * 2 + ss(0.88, 0.98, p));
+      const side = 0.2 * (1 - ss(0.08, 0.16, p) * 2 + ss(0.28, 0.36, p) * 2 - ss(0.48, 0.56, p) * 2 + ss(0.68, 0.76, p) * 2 - ss(0.9, 0.98, p));
       const lift = wide ? ss(0.88, 1, p) * 0.16 : 0.2;
       camera.setViewOffset(innerWidth, innerHeight, wide ? -side * innerWidth : 0, lift * innerHeight, innerWidth, innerHeight);
 
@@ -375,7 +392,19 @@
       sections.forEach((s, i) => s.classList.toggle("on", Math.abs(here - i) < 0.42));
       document.getElementById("hint").style.opacity = p < 0.04 ? 0.8 : 0;
 
-      renderer.render(scene, camera);
+      // The kitchen takes over for the fourth section, with a short fade through dark on the way in and out.
+      const inRoom = kitchenReady && p > 0.52 && p < 0.72;
+      document.getElementById("fade").style.opacity = kitchenReady ? Math.max(1 - Math.abs(p - 0.52) / 0.03, 1 - Math.abs(p - 0.72) / 0.03, 0) : 0;
+      if (inRoom) {
+        const k = (p - 0.52) / 0.2, swing = Math.sin(t * 0.25) * 0.15;
+        insideCam.aspect = innerWidth / innerHeight;
+        insideCam.setViewOffset(innerWidth, innerHeight, wide ? 0.12 * innerWidth : 0, 0, innerWidth, innerHeight);
+        insideCam.updateProjectionMatrix();
+        insideCam.position.set(-8.7 + k * 3.2, 3.3 - k * 0.3, -1.2 + k * 2 + swing + px * 0.6);
+        insideCam.lookAt(3, 2.5 - py * 0.6, 0);
+        renderer.toneMappingExposure = 1.05;
+        renderer.render(inside, insideCam);
+      } else renderer.render(scene, camera);
       requestAnimationFrame(frame);
     }
     requestAnimationFrame(frame);
