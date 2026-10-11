@@ -311,7 +311,7 @@
 
     // Paint that can be dull or glossy on either side of a moving line (the light arch).
     const wipe = { value: 3 };
-    const paint = new THREE.MeshPhysicalMaterial({ color: "#11141C", metalness: 0.55, roughness: 0.14, envMapIntensity: 1.7, clearcoat: 1, clearcoatRoughness: 0.06 });
+    const paint = new THREE.MeshPhysicalMaterial({ color: "#35C81A", metalness: 0.3, roughness: 0.16, envMapIntensity: 1.25, clearcoat: 1, clearcoatRoughness: 0.06 });
     const foamLine = { value: 3 }, carSpace = { value: new THREE.Matrix4() };
     paint.onBeforeCompile = shader => {
       shader.uniforms.uWipe = wipe; shader.uniforms.uFoam = foamLine; shader.uniforms.uCar = carSpace;
