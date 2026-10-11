@@ -239,6 +239,10 @@
   .result, .mine { --bg: #0B0C0E; --panel: #14161A; --ink: #F3F1EC; --muted: #8E8A82; --rule: rgba(255, 255, 255, .09); background: var(--bg); color: var(--ink); }
   .result .bar { gap: 8px; padding: 8px 12px; min-height: 54px; background: #0E1013; border-bottom: 1px solid var(--rule); }
   .site-name { font-size: 13px; color: var(--muted); max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-left: 14px; margin-left: 6px; border-left: 1px solid var(--rule); }
+  .pagepick { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--rule); border-radius: 10px; background: var(--panel); padding: 0 6px 0 10px; color: var(--muted); }
+  .pagepick select { background: transparent; border: 0; color: var(--ink); font: 500 13px "Inter", sans-serif; padding: 8px 4px; cursor: pointer; max-width: 150px; outline-offset: 2px; }
+  .pagepick select option { color: #141414; }
+  .building .pagepick { pointer-events: none; opacity: .6; }
   .result .seg { border: 1px solid var(--rule); border-radius: 10px; background: var(--panel); padding: 3px; }
   .result .seg button { color: var(--muted); border-radius: 7px; padding: 6px 12px; }
   .result .seg button[aria-pressed="true"] { background: #2A2E36; color: var(--ink); }
@@ -382,6 +386,7 @@
     <a class="logo" href="./"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a>
     <span class="site-name" id="site-name"></span>
     <div class="status" id="status" role="status" aria-live="polite"><span class="pulse" aria-hidden="true"></span><span id="status-text"></span><span class="meter" aria-hidden="true"><i id="meter"></i></span></div>
+    <label class="pagepick" id="pagepick" hidden title="Choose which page to see and edit"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><select id="page-pick" aria-label="Page being shown"></select></label>
     <div class="seg" role="group" aria-label="Preview size" id="sizes">
       <button type="button" data-size="desktop" aria-pressed="true">Desktop</button>
       <button type="button" data-size="phone" aria-pressed="false">Phone</button>
@@ -610,6 +615,40 @@
   const plain = () => numbered().replace(/ data-u="\d+"/g, "");
   const inSource = el => source.querySelector(`[data-u="${el.getAttribute("data-u")}"]`);
 
+  // Multi-page sites: a picker in the toolbar chooses which page the preview shows and edits apply to.
+  let currentPage = "home";
+  const pageList = () => !source ? [] : [...source.querySelectorAll("main[data-page]")].map(m => {
+    const slug = m.getAttribute("data-page");
+    const name = source.querySelector(`a[href="#/${slug}"]`)?.textContent.trim().replace(/\s+/g, " ");
+    return { slug, name: name && name.length < 40 ? name : slug.replace(/-/g, " ").replace(/^./, c => c.toUpperCase()) };
+  });
+  function drawPages() {
+    const pages = pageList(), pick = $("page-pick");
+    $("pagepick").hidden = pages.length < 2;
+    pick.textContent = "";
+    for (const p of pages) { const o = document.createElement("option"); o.value = p.slug; o.textContent = p.name; pick.append(o); }
+    if (!pages.some(p => p.slug === currentPage)) currentPage = "home";
+    pick.value = currentPage;
+  }
+  function showPage(slug) {
+    const doc = frame.contentDocument;
+    const mains = doc ? [...doc.querySelectorAll("main[data-page]")] : [];
+    if (mains.length < 2) return;
+    if (!mains.some(m => m.getAttribute("data-page") === slug)) slug = "home";
+    currentPage = slug;
+    mains.forEach(m => { m.hidden = m.getAttribute("data-page") !== slug; });
+    doc.querySelectorAll('a[href^="#/"]').forEach(a => {
+      const on = a.getAttribute("href") === "#/" + slug;
+      a.classList.toggle("current", on);
+      if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    const win = frame.contentWindow;
+    win.scrollTo(0, 0);
+    win.dispatchEvent(new win.Event("scroll")); win.dispatchEvent(new win.Event("resize"));
+    $("page-pick").value = slug;
+  }
+  $("page-pick").onchange = e => showPage(e.target.value);
+
   function setSite(html, remember = true) {
     if (remember && site.html && site.html !== html) { history.push(site.html); if (history.length > 40) history.shift(); }
     source = new DOMParser().parseFromString(html, "text/html");
@@ -619,6 +658,7 @@
     save();
     $("site-name").textContent = siteName().split(/[|·—–]/)[0].trim();
     $("undo").disabled = !history.length;
+    drawPages();
     if (remember && site.slug) $("publish").textContent = "Publish changes";
     frame.onload = wire;
     frame.srcdoc = numbered();
@@ -646,6 +686,15 @@
   function wire() {
     const doc = frame.contentDocument;
     tameLinks();
+    // Stay on the page being worked on after the preview reloads, and follow the site's own menu.
+    if (currentPage !== "home") showPage(currentPage);
+    doc.addEventListener("click", e => {
+      const a = e.target.closest?.('a[href^="#/"]');
+      if (!a || editing) return;
+      const slug = a.getAttribute("href").slice(2);
+      currentPage = doc.querySelector(`main[data-page="${slug.replace(/[^a-z0-9-]/gi, "")}"]`) ? slug : "home";
+      $("page-pick").value = currentPage;
+    });
     const style = doc.createElement("style");
     style.textContent = `.__hot{outline:2px dashed #FF4F1A!important;outline-offset:3px!important;cursor:text!important}img.__hot{cursor:pointer!important}[contenteditable]{outline:2px solid #FF4F1A!important;outline-offset:3px!important}`;
     doc.head.append(style);
@@ -918,13 +967,15 @@
         got.querySelectorAll("style").forEach(st => { st.setAttribute("data-page", page.slug); source.head.append(source.importNode(st, true)); });
         const last = [...source.querySelectorAll("main[data-page]")].pop();
         last.after(source.importNode(main, true));
+        currentPage = page.slug;   // show the page that was just written
         setSite(plain(), false);
       } catch { failed.push(page.name); }
     }
+    if (currentPage !== "home") { currentPage = "home"; setSite(plain(), false); }
     loadPixels();
     drawChat();
     const made = pages.filter(p => !failed.includes(p.name)).map(p => p.name);
-    if (made.length) bubble("bot", `Your site has ${made.length + 1} pages: Home, ${made.join(", ")}. Use the site's own menu in the preview to move between them.`);
+    if (made.length) bubble("bot", `Your site has ${made.length + 1} pages: Home, ${made.join(", ")}. Pick a page at the top to see and edit it, or use the site's own menu.`);
     if (failed.length) bubble("bot", `These pages couldn't be written: ${failed.join(", ")}. Their menu links lead to the home page for now.`, "bad");
   }
 
@@ -1000,6 +1051,7 @@
       if (!/<\/html>\s*$/i.test(html)) throw new Error("The design was cut off before it finished. Try again.");
 
       history.length = 0;
+      currentPage = "home";
       $("publish").textContent = "Publish";
       site = { html: "", prompt, used: [...(avoid || []), direction].filter(Boolean) };
       setSite(html, false);   // reload cleanly so entrance animations play from the top
@@ -1520,6 +1572,7 @@
         const { data: full, error: e2 } = await sb.from("sites").select("id, prompt, direction, html, chat").eq("id", row.id).single();
         if (e2 || !full) { note.textContent = "Couldn't open that site. Try again."; return; }
         history.length = 0;
+        currentPage = "home";
         site = { id: full.id, html: "", prompt: full.prompt || "", used: full.direction ? [full.direction] : [], chat: Array.isArray(full.chat) ? full.chat : [] };
         show(true);
         setSite(full.html, false);
