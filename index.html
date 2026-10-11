@@ -942,6 +942,9 @@
     const photos = [];
     const base = site.html.replace(/data:image\/[a-z+.-]+;base64,[A-Za-z0-9+\/=]+/g, m => { photos.push(m); return `data:photo-${photos.length}`; });
     const failed = [];
+    // What each written page covers, so the next page doesn't repeat it.
+    const outline = () => [...source.querySelectorAll("main[data-page]")].map(m =>
+      `- ${m.getAttribute("data-page")}: ${[...m.querySelectorAll("h1, h2, h3")].map(h => h.textContent.trim().replace(/\s+/g, " ")).filter(Boolean).slice(0, 12).join(" / ")}`).join("\n");
     for (let i = 0; i < pages.length; i++) {
       const page = pages[i];
       status(`Writing page ${i + 2} of ${pages.length + 1}: ${page.name}`);
@@ -949,7 +952,7 @@
         const res = await fetch(`${FUNCTIONS_URL}/add-page`, {
           method: "POST",
           headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, apikey: ANON_KEY },
-          body: JSON.stringify({ html: base, prompt, slug: page.slug, name: page.name, pages: pages.map(p => p.slug) })
+          body: JSON.stringify({ html: base, prompt, slug: page.slug, name: page.name, pages: pages.map(p => p.slug), written: outline() })
         });
         if (!res.ok) {
           const data = await res.json().catch(() => ({}));
