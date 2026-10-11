@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>The Ridgeline Residence | Halden &amp; Pike (concept listing)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0C1418; --ink: #F3EFE6; --muted: #B7B9B2; --accent: #D9A066; --line: rgba(243, 239, 230, .16); }
+  * { box-sizing: border-box; margin: 0; }
+  html { background: var(--bg); scroll-behavior: smooth; }
+  body { color: var(--ink); font: 400 16.5px/1.6 "Manrope", system-ui, sans-serif; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+  canvas#scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; cursor: grab; }
+  canvas#scene.dragging { cursor: grabbing; }
+
+  header { position: fixed; inset: 0 0 auto 0; z-index: 5; display: flex; align-items: center; gap: 18px; padding: 18px clamp(18px, 4vw, 44px) 30px; background: linear-gradient(rgba(12, 20, 24, .6), rgba(12, 20, 24, 0)); }
+  .brand { font-weight: 700; font-size: 15px; letter-spacing: .2em; text-transform: uppercase; color: inherit; text-decoration: none; white-space: nowrap; }
+  nav { display: flex; gap: clamp(14px, 2vw, 28px); margin-left: auto; }
+  nav a { color: var(--ink); text-decoration: none; font-size: 14.5px; white-space: nowrap; opacity: .85; }
+  nav a:hover { opacity: 1; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; background: var(--accent); color: #1A1208; font-weight: 600; font-size: 15px; text-decoration: none; border: 0; border-radius: 999px; padding: 12px 20px; white-space: nowrap; font-family: inherit; cursor: pointer; transition: transform .2s ease-out; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn.big { font-size: 18px; padding: 17px 28px; }
+  @media (max-width: 900px) { nav { display: none; } header .btn { margin-left: auto; } }
+
+  main { position: relative; z-index: 2; pointer-events: none; }
+  .copy, .solid { pointer-events: auto; }
+  #story section { min-height: 100vh; min-height: 100dvh; display: flex; align-items: center; padding: 110px clamp(18px, 6vw, 90px); }
+  .copy { position: relative; max-width: 500px; opacity: 0; transform: translateY(24px); transition: opacity .5s ease-out, transform .5s ease-out; }
+  section.on .copy { opacity: 1; transform: none; }
+  .copy::before { content: ""; position: absolute; inset: -90px -140px; z-index: -1; background: radial-gradient(closest-side, rgba(12, 20, 24, .62), rgba(12, 20, 24, .4) 55%, rgba(12, 20, 24, 0)); }
+  section.right { justify-content: flex-end; }
+  section.low { align-items: flex-end; padding-bottom: 10vh; }
+  section.center { justify-content: center; text-align: center; align-items: flex-end; padding-bottom: 9vh; }
+  h1, h2 { font-weight: 300; letter-spacing: -.035em; line-height: 1.04; text-shadow: 0 2px 26px rgba(12, 20, 24, .55); }
+  p, .stats, .levels, .feats { text-shadow: 0 1px 14px rgba(12, 20, 24, .7); }
+  h1 { font-size: clamp(44px, 6.6vw, 92px); }
+  h2 { font-size: clamp(34px, 4.6vw, 62px); }
+  h1 b, h2 b { font-weight: 600; color: var(--accent); }
+  p { color: #DAD9D2; margin-top: 18px; max-width: 44ch; }
+  section.center p { margin-left: auto; margin-right: auto; }
+  .stats { display: flex; flex-wrap: wrap; gap: 10px 26px; margin-top: 22px; font-weight: 500; }
+  .stats span b { display: block; font-size: 24px; font-weight: 600; color: var(--ink); letter-spacing: -.02em; }
+  .stats span { font-size: 12.5px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+  .cta { margin-top: 26px; display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  section.center .cta { justify-content: center; }
+  .levels { list-style: none; padding: 0; margin-top: 24px; display: grid; gap: 12px; max-width: 440px; }
+  .levels li { border-left: 2px solid var(--accent); padding: 4px 0 4px 16px; color: var(--muted); font-size: 15.5px; line-height: 1.45; }
+  .levels b { display: block; color: var(--ink); font-weight: 600; font-size: 17px; }
+  .feats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 22px; margin-top: 24px; list-style: none; padding: 0; max-width: 460px; }
+  .feats li { padding-top: 10px; border-top: 1px solid var(--line); font-size: 15px; }
+
+  .solid { position: relative; background: var(--bg); border-top: 1px solid var(--line); }
+  .block { padding: clamp(70px, 10vw, 130px) clamp(18px, 6vw, 90px); display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 6vw, 80px); align-items: start; }
+  .info { margin-top: 28px; display: grid; gap: 14px; }
+  .info div { display: grid; grid-template-columns: 90px 1fr; gap: 12px; padding-top: 14px; border-top: 1px solid var(--line); }
+  .info dt { color: var(--accent); font-size: 12px; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; padding-top: 3px; }
+  .info dd { margin: 0; }
+  form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  form label { display: grid; gap: 6px; font-size: 13.5px; font-weight: 500; color: var(--muted); }
+  form .full { grid-column: 1 / -1; }
+  form input, form select, form textarea { width: 100%; background: #121D22; border: 1px solid var(--line); border-radius: 10px; padding: 13px 14px; color: var(--ink); font: inherit; font-size: 16px; }
+  form input:focus, form select:focus, form textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  footer { display: flex; flex-wrap: wrap; gap: 10px 28px; justify-content: space-between; padding: 28px clamp(18px, 6vw, 90px) 60px; border-top: 1px solid var(--line); color: var(--muted); font-size: 14px; }
+  .hint { position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%); z-index: 4; font-size: 11px; font-weight: 600; letter-spacing: .22em; text-transform: uppercase; color: var(--ink); opacity: .8; transition: opacity .4s; }
+  .demo { position: fixed; right: 12px; bottom: 12px; z-index: 6; max-width: calc(100vw - 24px); font-size: 10.5px; color: #C9C9C2; background: rgba(12, 20, 24, .8); border: 1px solid var(--line); border-radius: 999px; padding: 6px 12px; text-decoration: none; }
+  .nogl canvas#scene, .nogl .hint { display: none; }
+  .nogl .copy { opacity: 1; transform: none; }
+  @media (max-width: 760px) {
+    #story section, #story section.right { justify-content: flex-start; align-items: flex-end; padding-bottom: 12vh; }
+    #story section.center { justify-content: center; }
+    .block, form, .feats { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { .copy { transition: none; } html { scroll-behavior: auto; } }
+</style>
+</head>
+<body>
+<canvas id="scene" aria-hidden="true"></canvas>
+
+<header>
+  <a class="brand" href="#top">Halden &amp; Pike</a>
+  <nav><a href="#levels">Levels</a><a href="#light">Light</a><a href="#features">Features</a><a href="#viewing">Viewing</a></nav>
+  <a class="btn" href="#viewing">Book a viewing</a>
+</header>
+
+<main id="top">
+  <div id="story">
+    <section class="low">
+      <div class="copy">
+        <h1>A house that <b>follows the ridge.</b></h1>
+        <p>The Ridgeline Residence. Three levels of concrete, cedar and glass, set into the hillside.</p>
+        <div class="stats"><span><b>4</b>Bedrooms</span><span><b>4.5</b>Bathrooms</span><span><b>4,850</b>Square feet</span><span><b>$3,950,000</b>Asking</span></div>
+      </div>
+    </section>
+    <section class="right" id="levels">
+      <div class="copy">
+        <h2>Three levels, <b>each with a job.</b></h2>
+        <ul class="levels">
+          <li><b>Upper level</b>Primary suite and two bedrooms, wrapped in cedar and cantilevered over the entry.</li>
+          <li><b>Main level</b>Kitchen, dining and living in one glass pavilion that opens onto the pool terrace.</li>
+          <li><b>Lower level</b>Three-car garage, guest suite, gym and wine room, cut into the slope.</li>
+        </ul>
+      </div>
+    </section>
+    <section id="light">
+      <div class="copy">
+        <h2>Built around <b>the light.</b></h2>
+        <p>Floor-to-ceiling glass faces the valley. Deep roof overhangs shade the rooms at midday and let the low evening sun reach all the way in.</p>
+      </div>
+    </section>
+    <section class="right" id="features">
+      <div class="copy">
+        <h2>The details.</h2>
+        <ul class="feats">
+          <li>Heated lap pool</li><li>Cedar and board-formed concrete</li><li>Chef's kitchen with island</li><li>Radiant floors</li><li>Three-car garage</li><li>1.2 acre hillside lot</li>
+        </ul>
+      </div>
+    </section>
+    <section class="center">
+      <div class="copy">
+        <h2>See it <b>in person.</b></h2>
+        <p>Drag the house to look around. Then book a private viewing.</p>
+        <p class="cta"><a class="btn big" href="#viewing">Book a viewing</a></p>
+      </div>
+    </section>
+  </div>
+
+  <div class="solid">
+    <section class="block" id="viewing">
+      <div>
+        <h2>Book a <b>private viewing.</b></h2>
+        <p>Viewings are by appointment. Tell us when suits you and an agent will confirm.</p>
+        <dl class="info">
+          <div><dt>Listing</dt><dd>The Ridgeline Residence, 18 Ridgeline Drive</dd></div>
+          <div><dt>Agent</dt><dd>Halden &amp; Pike Real Estate</dd></div>
+          <div><dt>Phone</dt><dd>(555) 010-0142</dd></div>
+          <div><dt>Asking</dt><dd>$3,950,000</dd></div>
+        </dl>
+      </div>
+      <form id="book">
+        <label>Name<input name="name" autocomplete="name" required></label>
+        <label>Phone<input name="phone" type="tel" autocomplete="tel" required></label>
+        <label class="full">Email<input name="email" type="email" autocomplete="email" required></label>
+        <label>Preferred day<input name="day" type="date"></label>
+        <label>Time<select name="time"><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label>
+        <label class="full">Anything we should know<textarea name="note" rows="3"></textarea></label>
+        <button class="btn big full" type="submit">Request a viewing</button>
+      </form>
+    </section>
+    <footer><span>Halden &amp; Pike Real Estate</span><span>This is a design concept. The property, agent, price and phone number are fictional.</span></footer>
+  </div>
+</main>
+<div class="hint" id="hint">Scroll</div>
+<a class="demo" href="../">Concept page by Unbland · fictional listing</a>
+
+<script type="importmap">
+{ "imports": { "three": "https://unpkg.com/three@0.165.0/build/three.module.js", "three/addons/": "https://unpkg.com/three@0.165.0/examples/jsm/" } }
+</script>
+<script type="module">
+  // A 3D listing page for a (fictional) hillside house, built entirely in code with three.js.
+  // As you scroll: the house at golden hour, its three levels lifting apart, the day turning to dusk with the
+  // rooms lighting up, a look from above at night, and a last view from the driveway. Drag to turn the house.
+  import * as THREE from "three";
+  import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
+
+  const canvas = document.getElementById("scene");
+  const story = document.getElementById("story");
+  const sections = [...story.querySelectorAll("section")];
+  const small = () => innerWidth < 760;
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const forced = new URLSearchParams(location.search).get("p");   // ?p=0.5 holds one point of the story, for checking
+
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, powerPreference: "high-performance" }); }
+  catch { document.documentElement.classList.add("nogl"); }
+
+  document.getElementById("book").addEventListener("submit", e => { e.preventDefault(); const b = e.target.querySelector("button"); b.textContent = "Thanks. An agent will be in touch."; b.disabled = true; });
+
+  if (renderer) {
+    renderer.setPixelRatio(Math.min(devicePixelRatio || 1, small() ? 1.5 : 2));
+    renderer.outputColorSpace = THREE.SRGBColorSpace;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.shadowMap.enabled = !small();
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+    const scene = new THREE.Scene();
+    scene.background = new THREE.Color();
+    scene.fog = new THREE.Fog(0x000000, 60, 170);
+    scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+
+    const camera = new THREE.PerspectiveCamera(34, 1, 0.5, 400);
+    const hemi = new THREE.HemisphereLight("#ffffff", "#3a4a3a", 1);
+    const sun = new THREE.DirectionalLight("#ffffff", 3);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(2048, 2048);
+    Object.assign(sun.shadow.camera, { left: -30, right: 30, top: 30, bottom: -30, near: 1, far: 140 });
+    sun.shadow.bias = -0.0004;
+    scene.add(hemi, sun, sun.target);
+
+    const world = new THREE.Group();
+    scene.add(world);
+
+    // ---- Materials ----
+    const concrete = new THREE.MeshStandardMaterial({ color: "#B9B6AE", roughness: 0.9 });
+    const slab = new THREE.MeshStandardMaterial({ color: "#EDEAE2", roughness: 0.75 });
+    const cedar = new THREE.MeshStandardMaterial({ color: "#8A5A36", roughness: 0.7 });
+    const darkMetal = new THREE.MeshStandardMaterial({ color: "#1B1E21", roughness: 0.5, metalness: 0.6 });
+    const glass = new THREE.MeshPhysicalMaterial({ color: "#9CC3CF", roughness: 0.04, metalness: 0.2, transparent: true, opacity: 0.26, envMapIntensity: 1.6, depthWrite: false });
+    const warm = new THREE.MeshStandardMaterial({ color: "#3A2A1C", emissive: "#FFB866", emissiveIntensity: 0, roughness: 1 });   // lit interior walls
+    const floorWood = new THREE.MeshStandardMaterial({ color: "#B08A62", roughness: 0.6 });
+    const soft = new THREE.MeshStandardMaterial({ color: "#D8D2C6", roughness: 0.95 });
+    const water = new THREE.MeshStandardMaterial({ color: "#1E8FA6", emissive: "#2BD0E0", emissiveIntensity: 0.15, roughness: 0.08, metalness: 0.3 });
+    const ground = new THREE.MeshStandardMaterial({ color: "#44563A", roughness: 1 });
+    const drive = new THREE.MeshStandardMaterial({ color: "#6E6E6A", roughness: 0.95 });
+    const bark = new THREE.MeshStandardMaterial({ color: "#3B2B20", roughness: 1 });
+    const leaf = new THREE.MeshStandardMaterial({ color: "#2F4A2F", roughness: 1, flatShading: true });
+
+    const box = (parent, w, h, d, mat, x, y, z, shadow = true) => {
+      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+      m.position.set(x, y, z); m.castShadow = shadow && mat !== glass; m.receiveShadow = true;
+      parent.add(m); return m;
+    };
+
+    // ---- The house: three levels, each its own group so they can lift apart ----
+    const lower = new THREE.Group(), main = new THREE.Group(), upper = new THREE.Group();
+    world.add(lower, main, upper);
+    // Lower level: concrete, cut into the slope, with the garage.
+    box(lower, 11, 3, 7.5, concrete, -1.5, 1.5, -0.2);
+    box(lower, 6.6, 2.3, 0.12, darkMetal, -3, 1.2, 3.58);                        // garage door
+    box(lower, 1.1, 2.3, 0.12, cedar, 1.9, 1.2, 3.58);                           // entry door
+    box(lower, 2.4, 0.9, 0.1, warm, 3.2, 2.2, 3.57, false);                      // guest suite window
+    // Main level: a glass pavilion on a wide floor slab, with the pool terrace.
+    box(main, 17, 0.36, 11.5, slab, 2, 3.18, 1.2);
+    box(main, 12, 0.08, 6.4, floorWood, 2, 3.4, -0.6, false);
+    box(main, 12, 3, 0.1, glass, 2, 4.9, 2.6, false); box(main, 12, 3, 0.1, glass, 2, 4.9, -3.8, false);
+    box(main, 0.1, 3, 6.4, glass, -4, 4.9, -0.6, false); box(main, 0.1, 3, 6.4, glass, 8, 4.9, -0.6, false);
+    for (const x of [-4, 0, 4, 8]) for (const z of [2.6, -3.8]) box(main, 0.14, 3, 0.14, darkMetal, x, 4.9, z);
+    box(main, 5, 3, 0.4, warm, 0.5, 4.9, -2.2, false);                           // lit timber core wall
+    box(main, 3.2, 0.95, 1.2, soft, 5.2, 3.9, -0.4); box(main, 1.2, 0.95, 2.6, soft, 6.8, 3.9, 0.9);   // sofa
+    box(main, 3.6, 1, 1.1, slab, -1.2, 3.94, 0.4);                               // kitchen island
+    box(main, 14.4, 0.3, 8.6, slab, 2, 6.55, -0.3);                              // roof with deep overhang
+    box(main, 7, 0.2, 3, water, 4.6, 3.3, 5);                                    // pool
+    box(main, 7.6, 0.16, 3.6, concrete, 4.6, 3.3, 5, false).position.y = 3.27;   // pool surround
+    // Upper level: cedar, cantilevered over the entry.
+    box(upper, 8.4, 3, 6.2, cedar, -3.4, 8.3, -0.4);
+    box(upper, 5.6, 1.7, 0.1, glass, -3.4, 8.4, 2.72, false);
+    box(upper, 5.4, 1.6, 0.1, warm, -3.4, 8.4, 2.6, false);                      // bedroom light behind the glass
+    box(upper, 0.1, 1.7, 3.4, glass, -7.62, 8.4, -0.4, false);
+    box(upper, 9.4, 0.26, 7.2, slab, -3.4, 9.93, -0.4);
+    box(upper, 0.16, 3.2, 0.16, darkMetal, -7.3, 5.05, 2.4); box(upper, 0.16, 3.2, 0.16, darkMetal, -7.3, 5.05, -3.2);   // slim posts under the cantilever
+
+    // Interior lamps, switched up as evening comes.
+    const lamps = [[2, 5.6, -0.6, main], [6, 5.6, 0.5, main], [-3.4, 8.9, 0.6, upper], [3.2, 2.2, 2.4, lower]].map(([x, y, z, parent]) => {
+      const l = new THREE.PointLight("#FFB866", 0, 22, 1.6); l.position.set(x, y, z); parent.add(l); return l;
+    });
+    const poolLight = new THREE.PointLight("#3BE0F0", 0, 16, 1.6);
+    poolLight.position.set(4.6, 3.9, 5); main.add(poolLight);
+
+    // ---- The hillside ----
+    const rand = (() => { let s = 11; return () => (s = (s * 16807) % 2147483647) / 2147483647; })();
+    const land = new THREE.PlaneGeometry(240, 240, 90, 90);
+    land.rotateX(-Math.PI / 2);
+    const lp = land.attributes.position;
+    for (let i = 0; i < lp.count; i++) {
+      const x = lp.getX(i), z = lp.getZ(i), far = Math.min(1, Math.max(0, (Math.hypot(x - 1, z - 1) - 14) / 22));
+      const hill = Math.sin(x * 0.045 + 1) * 3.4 + Math.cos(z * 0.05) * 2.8 + Math.sin((x + z) * 0.11) * 1.1 - z * 0.06;
+      lp.setY(i, hill * far * far - 0.02);
+    }
+    land.computeVertexNormals();
+    const hillside = new THREE.Mesh(land, ground);
+    hillside.receiveShadow = true;
+    world.add(hillside);
+    box(world, 7.4, 0.06, 26, drive, -3, 0.02, 16.6, false);                     // driveway
+
+    const trunkGeo = new THREE.CylinderGeometry(0.16, 0.24, 2.6, 6), coneGeo = new THREE.ConeGeometry(1.7, 5.2, 7);
+    const treeCount = small() ? 26 : 60;
+    for (let i = 0; i < treeCount; i++) {
+      const a = rand() * Math.PI * 2, r = 17 + rand() * 60, x = Math.cos(a) * r + 1, z = Math.sin(a) * r + 1;
+      if (Math.abs(x + 3) < 6 && z > 3) continue;                                // keep the driveway clear
+      if (z > 4 && r < 52) continue;                                              // and the views of the front of the house
+      const far = Math.min(1, Math.max(0, (Math.hypot(x - 1, z - 1) - 14) / 22));
+      const y = (Math.sin(x * 0.045 + 1) * 3.4 + Math.cos(z * 0.05) * 2.8 + Math.sin((x + z) * 0.11) * 1.1 - z * 0.06) * far * far;
+      const s = 0.8 + rand() * 0.9, tree = new THREE.Group();
+      const trunk = new THREE.Mesh(trunkGeo, bark); trunk.position.y = 1.3;
+      const top = new THREE.Mesh(coneGeo, leaf); top.position.y = 4.6; top.castShadow = i < 26;
+      tree.add(trunk, top); tree.position.set(x, y, z); tree.scale.setScalar(s); tree.rotation.y = rand() * 6;
+      world.add(tree);
+    }
+
+    // Stars for the night.
+    const starPos = new Float32Array(900);
+    for (let i = 0; i < 300; i++) { const a = rand() * 6.283, e = 0.15 + rand() * 1.3, r = 150; starPos[i * 3] = Math.cos(a) * Math.cos(e) * r; starPos[i * 3 + 1] = Math.sin(e) * r; starPos[i * 3 + 2] = Math.sin(a) * Math.cos(e) * r; }
+    const starGeo = new THREE.BufferGeometry();
+    starGeo.setAttribute("position", new THREE.BufferAttribute(starPos, 3));
+    const stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: "#ffffff", size: 0.7, sizeAttenuation: true, transparent: true, opacity: 0, fog: false, depthWrite: false }));
+    scene.add(stars);
+
+    // ---- Story ----
+    const ss = (a, b, x) => { const t = Math.min(1, Math.max(0, (x - a) / (b - a))); return t * t * (3 - 2 * t); };
+    const path = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(26, 9, 30), new THREE.Vector3(34, 13, 10), new THREE.Vector3(-22, 8, 30),
+      new THREE.Vector3(-8, 34, 26), new THREE.Vector3(-2, 4.2, 40)
+    ], false, "centripetal");
+    const sky = [new THREE.Color("#6C9CC4"), new THREE.Color("#E89A62"), new THREE.Color("#0A1320")];   // day, sunset, night
+    const sunTint = [new THREE.Color("#FFF3DC"), new THREE.Color("#FF9A52"), new THREE.Color("#5C76A8")];
+    const mix3 = (out, set, d) => d < 0.5 ? out.copy(set[0]).lerp(set[1], d * 2) : out.copy(set[1]).lerp(set[2], d * 2 - 1);
+    const look = new THREE.Vector3(1, 4.6, 0), camAt = new THREE.Vector3(), skyNow = new THREE.Color();
+
+    let target = 0, smooth = 0, pointerX = 0, pointerY = 0, px = 0, py = 0, yaw = 0, yawTo = 0, dragX = null;
+    const readScroll = () => { const max = story.offsetHeight - innerHeight; target = forced != null ? Number(forced) : max > 0 ? Math.min(1, Math.max(0, scrollY / max)) : 0; };
+    addEventListener("scroll", () => { readScroll(); if (dragX == null) yawTo *= 0.9; }, { passive: true });
+    addEventListener("pointermove", e => { pointerX = e.clientX / innerWidth - 0.5; pointerY = e.clientY / innerHeight - 0.5; });
+    canvas.addEventListener("pointerdown", e => { dragX = e.clientX; canvas.classList.add("dragging"); canvas.setPointerCapture(e.pointerId); });
+    canvas.addEventListener("pointermove", e => { if (dragX == null) return; yawTo += (e.clientX - dragX) * 0.008; dragX = e.clientX; });
+    const drop = () => { dragX = null; canvas.classList.remove("dragging"); };
+    canvas.addEventListener("pointerup", drop); canvas.addEventListener("pointercancel", drop);
+    function resize() {
+      renderer.setSize(innerWidth, innerHeight, false);
+      camera.aspect = innerWidth / innerHeight;
+      camera.fov = innerWidth < innerHeight ? 50 : 34;
+      camera.updateProjectionMatrix();
+      readScroll();
+    }
+    addEventListener("resize", resize);
+    resize();
+    if (forced != null) smooth = Number(forced);
+
+    const clock = new THREE.Clock();
+    function frame() {
+      if (forced == null && scrollY > story.offsetHeight + 40) { requestAnimationFrame(frame); return; }
+      const t = calm ? 0 : clock.getElapsedTime();
+      smooth += (target - smooth) * (forced != null ? 1 : 0.07);
+      const p = smooth;
+      px += (pointerX - px) * 0.05; py += (pointerY - py) * 0.05;
+      yaw += (yawTo - yaw) * 0.12;
+      world.rotation.y = yaw;
+
+      // The levels lift apart around the second section, then settle back.
+      const apart = ss(0.12, 0.24, p) * (1 - ss(0.34, 0.44, p));
+      main.position.y = apart * 3.4; upper.position.y = apart * 7.2;
+
+      // Time of day: golden afternoon, sunset, then night with the rooms and pool lit.
+      const day = ss(0.42, 0.72, p);
+      mix3(skyNow, sky, day);
+      scene.background.copy(skyNow); scene.fog.color.copy(skyNow);
+      mix3(sun.color, sunTint, day);
+      sun.intensity = 3.4 * (1 - day) + 0.35;
+      const sunAngle = 0.9 - day * 0.75;
+      sun.position.set(Math.cos(sunAngle) * 40 + 10, Math.sin(sunAngle) * 46 + 4, 26);
+      hemi.intensity = 1.1 - day * 0.85;
+      hemi.color.copy(skyNow).lerp(new THREE.Color("#ffffff"), 0.5);
+      renderer.toneMappingExposure = 1.0 + day * 0.25;
+      const evening = ss(0.3, 0.9, day);
+      warm.emissiveIntensity = 0.15 + evening * 2.6;
+      for (const l of lamps) l.intensity = evening * 90;
+      poolLight.intensity = evening * 60; water.emissiveIntensity = 0.15 + evening * 1.4;
+      glass.opacity = 0.26 - evening * 0.1;
+      stars.material.opacity = ss(0.75, 1, day) * 0.9;
+      scene.environmentIntensity = 1 - day * 0.8;
+
+      path.getPoint(Math.min(1, Math.max(0, p)), camAt);
+      const far = (innerWidth < innerHeight ? 1.45 : 1) * (1 + apart * 0.3);   // step back while the levels are apart
+      camera.position.set(camAt.x * far + px * 2 + Math.sin(t * 0.1) * 0.6, camAt.y + (far - 1) * 4 - py * 1.4, camAt.z * far);
+      camera.lookAt(look.x, look.y + apart * 2.6, look.z);
+      // Slide the house beside the words on wide screens: right, left, right, left, then centered and raised.
+      const wide = innerWidth >= 900;
+      const side = 0.2 * (1 - ss(0.1, 0.2, p) * 2 + ss(0.36, 0.46, p) * 2 - ss(0.62, 0.72, p) * 2 + ss(0.88, 0.98, p));
+      const lift = wide ? ss(0.88, 1, p) * 0.16 : 0.2;
+      camera.setViewOffset(innerWidth, innerHeight, wide ? -side * innerWidth : 0, lift * innerHeight, innerWidth, innerHeight);
+
+      const here = p * (sections.length - 1);
+      sections.forEach((s, i) => s.classList.toggle("on", Math.abs(here - i) < 0.42));
+      document.getElementById("hint").style.opacity = p < 0.04 ? 0.8 : 0;
+
+      renderer.render(scene, camera);
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+</script>
+</body>
+</html>
