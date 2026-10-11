@@ -58,6 +58,15 @@
   .kind { display: inline-flex; padding: 3px; border-radius: 9px; background: rgba(255, 255, 255, .06); }
   .kind button { border: 0; background: transparent; color: #B4B0A8; font-weight: 500; font-size: 13.5px; padding: 8px 12px; border-radius: 7px; cursor: pointer; white-space: nowrap; }
   .kind button[aria-pressed="true"] { background: rgba(255, 255, 255, .13); color: #F3F1EC; }
+  .helper { margin-top: 12px; font-size: 13.5px; color: #B4B0A8; opacity: 0; animation: fade .8s .8s forwards; }
+  .helper .linkish { text-align: left; }
+  .ask .helper { max-width: none; }
+  .writer { width: min(620px, calc(100vw - 32px)); }
+  .auth form.writer-form { gap: 4px; }
+  .writer-form textarea { width: 100%; background: #0B0C0E; border: 1px solid var(--rule); color: var(--ink); border-radius: 9px; padding: 10px 12px; font: inherit; font-size: 15px; min-height: 64px; resize: vertical; }
+  .writer-two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  .writer-two > div { display: grid; }
+  @media (max-width: 560px) { .writer-two { grid-template-columns: 1fr; } }
   .kind small { font-size: inherit; opacity: .6; }
   .go i { font-style: normal; transition: transform .25s; }
   .go:hover i { transform: translateX(5px); }
@@ -351,10 +360,12 @@
         <div class="kind" role="group" aria-label="Kind of build">
           <button type="button" data-kind="quick" aria-pressed="true" title="Starts from a design in our library and rebuilds it around this business. Faster.">Quick build<small data-cost="build"></small></button>
           <button type="button" data-kind="new" aria-pressed="false" title="Designs a site from nothing, only for this business. Takes longer. Paid plans.">Brand new design<small data-cost="fresh"></small></button>
+          <button type="button" data-kind="multi" aria-pressed="false" title="A brand new design with several pages, such as Home, Services and Contact. Takes a few minutes. Paid plans.">Multi-page<small data-cost="multi"></small></button>
         </div>
         <button class="go" id="go" type="button">Build the site <i aria-hidden="true">→</i></button>
       </div>
     </div>
+    <p class="helper"><button type="button" class="linkish" id="writer-open">Not sure what to write? Answer a few questions and we'll write the description for you.</button></p>
     <p class="msg" id="msg" role="status" aria-live="polite"></p>
     <div class="examples" id="examples"><span>Try an example:</span></div>
   </main>
@@ -488,6 +499,32 @@
 </dialog>
 
 <!-- Sign in or create an account -->
+<dialog class="auth writer" id="writer" aria-labelledby="writer-title">
+  <form class="writer-form" id="writer-form">
+    <h2 id="writer-title">Describe the business</h2>
+    <p class="auth-sub">Fill in what you know and skip the rest. The more real details you give, the fuller the site. Nothing is made up for you.</p>
+    <div class="writer-two">
+      <div><label for="w-name">Business name</label><input id="w-name" type="text" maxlength="80" required></div>
+      <div><label for="w-what">What it does</label><input id="w-what" type="text" maxlength="120" required placeholder="Roof cleaning, barbershop, bakery…"></div>
+      <div><label for="w-where">Town or area served</label><input id="w-where" type="text" maxlength="120"></div>
+      <div><label for="w-phone">Phone</label><input id="w-phone" type="text" maxlength="40"></div>
+      <div><label for="w-email">Email</label><input id="w-email" type="text" maxlength="80"></div>
+      <div><label for="w-address">Address</label><input id="w-address" type="text" maxlength="140"></div>
+    </div>
+    <label for="w-services">Services and prices</label>
+    <textarea id="w-services" maxlength="900" placeholder="One per line, for example: Soft wash roof cleaning, from $350"></textarea>
+    <label for="w-hours">Opening hours</label>
+    <input id="w-hours" type="text" maxlength="160" placeholder="Mon to Fri 8am to 5pm, Sat 9am to 1pm">
+    <label for="w-special">What makes it different</label>
+    <textarea id="w-special" maxlength="600" placeholder="Only true things: family run, licensed and insured, free quotes…"></textarea>
+    <label for="w-look">Look and colors (optional)</label>
+    <input id="w-look" type="text" maxlength="160" placeholder="Navy blue and white, clean and modern">
+    <p class="auth-msg" id="writer-msg" role="status" aria-live="polite"></p>
+    <button class="go" type="submit">Write my description <i aria-hidden="true">→</i></button>
+    <button class="auth-x" type="button" id="writer-close" aria-label="Close">×</button>
+  </form>
+</dialog>
+
 <dialog class="auth settings plans" id="plans" aria-labelledby="plans-title">
   <div class="plans-body">
     <h2 id="plans-title">Get more pixels</h2>
@@ -684,7 +721,7 @@
     chatLog.textContent = "";
     bubble("bot", "Your site is ready. Tell me what to change and I'll do it. For quick fixes to wording or photos, press Edit and change them yourself; that's free.");
     const asked = site.prompt || "";
-    if (/\b(\d+|two|three|four|five|six|multi|multiple|several)[- ]?pages?\b/i.test(asked)) bubble("bot", "Unbland builds one-page sites for now, so what you asked for as separate pages is laid out as sections of a single page, with the menu jumping between them.");
+    if (/\b(\d+|two|three|four|five|six|multi|multiple|several)[- ]?pages?\b/i.test(asked) && !/<main[^>]+data-page=/i.test(site.html)) bubble("bot", "This is a one-page site, so what you asked for as separate pages is laid out as sections of a single page. For real separate pages, start a new site and choose Multi-page next to the Build button (paid plans).");
     if (asked && asked.length < 220) bubble("bot", "Your description was short, so the site is light on detail. Unbland only uses facts you give it. For a fuller site, start again with the services, prices, areas covered, opening hours and contact details.");
     if (!user) bubble("bot", "This site is only stored in this browser for now. Create a free account to save it, publish it, and get free pixels for chat changes.");
     const chips = document.createElement("div");
@@ -826,6 +863,67 @@
     frame.contentDocument?.activeElement?.blur?.();
   }
 
+  // Multi-page sites live in one file: a shared header and footer, and one <main data-page> per page.
+  // This small script, added to the site, shows one page at a time when a menu link is clicked.
+  const PAGES_SCRIPT = `(function(){var s=document.createElement('style');s.textContent='main[data-page][hidden]{display:none!important}';document.head.appendChild(s);function show(n,top){var all=document.querySelectorAll('main[data-page]'),ok=false;all.forEach(function(p){if(p.getAttribute('data-page')===n)ok=true;});if(!ok)n='home';all.forEach(function(p){p.hidden=p.getAttribute('data-page')!==n;});document.querySelectorAll('a[href^="#/"]').forEach(function(a){var on=a.getAttribute('href')==='#/'+n;a.classList.toggle('current',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});if(top)window.scrollTo(0,0);window.dispatchEvent(new Event('scroll'));window.dispatchEvent(new Event('resize'));}document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a)return;e.preventDefault();show(a.getAttribute('href').slice(2),true);});show('home',false);})();`;
+  // After the home page of a multi-page site is designed, write each other page in turn and add it to the file.
+  async function buildPages(prompt, token, status) {
+    const seen = new Set(["home", ""]);
+    const pages = [];
+    source.querySelectorAll('a[href^="#/"]').forEach(a => {
+      const slug = a.getAttribute("href").slice(2).toLowerCase().replace(/[^a-z0-9-]/g, "");
+      const name = a.textContent.trim().replace(/\s+/g, " ");
+      if (!seen.has(slug) && name && name.length < 40) { seen.add(slug); pages.push({ slug, name }); }
+    });
+    if (!source.querySelector('main[data-page]') || !pages.length) {
+      bubble("bot", "This design came out as a single page, so no extra pages were added and you were only charged for the one design. Try again, or ask for a section in the chat.", "bad");
+      return;
+    }
+    pages.length = Math.min(pages.length, 4);
+    // Add the page-switching script now, so the menu already works while the other pages are written.
+    source.querySelectorAll("script[data-pages]").forEach(el => el.remove());
+    const router = source.createElement("script");
+    router.setAttribute("data-pages", ""); router.textContent = PAGES_SCRIPT;
+    source.body.append(router);
+    setSite(plain(), false);
+    const photos = [];
+    const base = site.html.replace(/data:image\/[a-z+.-]+;base64,[A-Za-z0-9+\/=]+/g, m => { photos.push(m); return `data:photo-${photos.length}`; });
+    const failed = [];
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i];
+      status(`Writing page ${i + 2} of ${pages.length + 1}: ${page.name}`);
+      try {
+        const res = await fetch(`${FUNCTIONS_URL}/add-page`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, apikey: ANON_KEY },
+          body: JSON.stringify({ html: base, prompt, slug: page.slug, name: page.name, pages: pages.map(p => p.slug) })
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          if (data.code === "pixels") { showPixels(data.have); failed.push(...pages.slice(i).map(p => p.name)); bubble("bot", data.error, "bad"); break; }
+          throw new Error(data.error || "failed");
+        }
+        if (res.headers.get("x-pixels") != null) showPixels(Number(res.headers.get("x-pixels")));
+        const text = (await res.text()).replace(/data:photo-(\d+)/g, (m, n) => photos[n - 1] || m);
+        const got = new DOMParser().parseFromString(`<body>${text.replace(/^[\s\S]*?(?=<style|<main)/i, "").replace(/```\s*$/, "")}</body>`, "text/html");
+        const main = got.querySelector("main[data-page]");
+        if (!main || !/<\/main>/i.test(text)) throw new Error("incomplete");
+        main.setAttribute("data-page", page.slug); main.setAttribute("hidden", "");
+        main.querySelectorAll("script").forEach(el => el.remove());
+        source.querySelectorAll(`main[data-page="${page.slug}"], style[data-page="${page.slug}"]`).forEach(el => el.remove());
+        got.querySelectorAll("style").forEach(st => { st.setAttribute("data-page", page.slug); source.head.append(source.importNode(st, true)); });
+        const last = [...source.querySelectorAll("main[data-page]")].pop();
+        last.after(source.importNode(main, true));
+        setSite(plain(), false);
+      } catch { failed.push(page.name); }
+    }
+    loadPixels();
+    drawChat();
+    const made = pages.filter(p => !failed.includes(p.name)).map(p => p.name);
+    if (made.length) bubble("bot", `Your site has ${made.length + 1} pages: Home, ${made.join(", ")}. Use the site's own menu in the preview to move between them.`);
+    if (failed.length) bubble("bot", `These pages couldn't be written, and you weren't charged for them: ${failed.join(", ")}. Their menu links lead to the home page for now.`, "bad");
+  }
+
   // Asks the server to design the site and draws it in the preview as the code arrives.
   async function design(prompt, avoid, kind = buildKind) {
     if (busy) return;
@@ -841,7 +939,7 @@
       const request = fresh => fetch(`${FUNCTIONS_URL}/design-site`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, apikey: ANON_KEY },
-        body: JSON.stringify({ prompt, avoid, fresh, mode: kind === "new" ? "new" : "quick" })
+        body: JSON.stringify({ prompt, avoid, fresh, mode: kind === "new" || kind === "multi" ? kind : "quick" })
       });
       let res = await request(false);
       if (res.status === 409 && kind !== "new") say("That library design didn't fit. Designing a new one");
@@ -861,7 +959,8 @@
       result.classList.add("building");
       chatLog.textContent = "";
       bubble("bot", "Designing your site. You'll see it appear on the right as it's written", "wait");
-      const label = () => `Designing${direction ? " · " + pretty(direction) : ""} · ${Math.floor((Date.now() - started) / 1000)}s`;
+      let phase = "";
+      const label = () => `${phase || `Designing${direction ? " · " + pretty(direction) : ""}`} · ${Math.floor((Date.now() - started) / 1000)}s`;
       $("status-text").textContent = label();
       timer = setInterval(() => { $("status-text").textContent = label(); }, 1000);
 
@@ -898,6 +997,7 @@
       site = { html: "", prompt, used: [...(avoid || []), direction].filter(Boolean) };
       setSite(html, false);   // reload cleanly so entrance animations play from the top
       drawChat();
+      if (kind === "multi") await buildPages(prompt, token, text => { phase = text; $("status-text").textContent = label(); });
     } catch (err) {
       if (!result.hidden && !site.html) show(false);
       if (site.html && !result.hidden) { display(site.html); drawChat(); bubble("bot", err.message, "bad"); }
@@ -974,18 +1074,20 @@
   const siteName = () => (site.html.match(/<title>([^<]*)<\/title>/i)?.[1] || "Untitled site").replace(/&amp;/g, "&").trim().slice(0, 120);
 
   // Pixels: the balance that pays for AI work. Shown wherever the person is signed in.
-  let costs = { build: 5, chat: 1, fresh: 8 }, pixelPlan = "", allowance = 0, planId = "";
+  let costs = { build: 5, chat: 1, fresh: 8, page: 4 }, pixelPlan = "", allowance = 0, planId = "";
   // Quick build or brand new design: the choice next to the Build button, remembered for next time.
   let buildKind = "quick";
-  try { if (localStorage.getItem("unbland.kind") === "new") buildKind = "new"; } catch {}
+  try { const k = localStorage.getItem("unbland.kind"); if (k === "new" || k === "multi") buildKind = k; } catch {}
   const kindButtons = document.querySelectorAll(".kind button");
   const showKind = () => kindButtons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.kind === buildKind)));
   const showCosts = () => {
     // Say who can use each kind of build, and what it costs once signed in.
     const paying = pixelPlan === "paid" || pixelPlan === "owner";
     document.querySelectorAll("[data-cost]").forEach(el => {
-      const fresh = el.dataset.cost === "fresh";
-      el.textContent = fresh ? (paying ? ` · ${costs.fresh} pixels` : " · Paid plans") : (user ? ` · ${costs.build} pixels` : " · Free to try");
+      const which = el.dataset.cost;
+      el.textContent = which === "build" ? (user ? ` · ${costs.build} pixels` : " · Free to try")
+        : !paying ? " · Paid plans"
+        : which === "multi" ? ` · ${costs.fresh} + ${costs.page} a page` : ` · ${costs.fresh} pixels`;
     });
     $("restyle").textContent = `Try another style · ${costs.build}`;
     $("renew").textContent = `Brand new design · ${costs.fresh}`;
@@ -1006,13 +1108,13 @@
     const { data, error } = await sb.rpc("my_pixels");
     const row = Array.isArray(data) ? data[0] : data;
     if (error || !row) { showPixels(null); return; }
-    costs = { build: row.cost_build, chat: row.cost_chat, fresh: row.cost_fresh ?? 8 };
+    costs = { build: row.cost_build, chat: row.cost_chat, fresh: row.cost_fresh ?? 8, page: row.cost_page ?? 4 };
     pixelPlan = row.plan; allowance = row.allowance || 0; planId = row.plan_id || "";
     showPixels(row.pixels);
     showCosts();
     const planLabel = row.plan_name ? `${row.plan_name} plan` : row.plan === "owner" ? "owner account" : "Free plan";
     $("set-plan").textContent = row.plan_name ? `of ${allowance} a month · ${planLabel}` : allowance ? `of ${allowance} · ${planLabel}` : `· ${planLabel}`;
-    $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
+    $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A multi-page site uses ${costs.fresh} plus ${costs.page} for each extra page. A chat change uses ${costs.chat}. Editing by hand, adding a logo and publishing are free.`;
   }
 
   function accountUI() {
@@ -1237,6 +1339,32 @@
     $("set-danger").hidden = !!data;   // the owner's account can't be deleted from here
   }
   $("set-close").onclick = () => settings.close();
+
+  // The description writer: a few questions whose answers are turned into the description for the builder.
+  // It only arranges what the person typed; it never adds facts.
+  const writer = $("writer");
+  $("writer-open").onclick = () => { $("writer-msg").textContent = ""; writer.showModal(); $("w-name").focus(); };
+  $("writer-close").onclick = () => writer.close();
+  $("writer-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const v = id => $(id).value.trim().replace(/\s+\n/g, "\n");
+    const end = t => /[.!?]$/.test(t) ? t : t + ".";
+    const name = v("w-name"), what = v("w-what");
+    if (!name || !what) { $("writer-msg").textContent = "Add the business name and what it does."; return; }
+    const parts = [end(`${name} is a business that does: ${what}${v("w-where") ? `, serving ${v("w-where")}` : ""}`)];
+    const services = v("w-services").split(/\n+/).map(t => t.trim()).filter(Boolean);
+    if (services.length) parts.push(`Services and prices:\n${services.map(t => `- ${t}`).join("\n")}`);
+    if (v("w-special")) parts.push(end(`What makes it different: ${v("w-special")}`));
+    if (v("w-hours")) parts.push(end(`Opening hours: ${v("w-hours")}`));
+    const contact = [v("w-phone") && `phone ${v("w-phone")}`, v("w-email") && `email ${v("w-email")}`, v("w-address") && `address ${v("w-address")}`].filter(Boolean);
+    if (contact.length) parts.push(end(`Contact: ${contact.join(", ")}`));
+    if (v("w-look")) parts.push(end(`Look and colors: ${v("w-look")}`));
+    promptBox.value = parts.join("\n\n").slice(0, 3000);
+    promptBox.dispatchEvent(new Event("input", { bubbles: true }));
+    writer.close();
+    say("Your description is in the box. Change anything you like, then press Build the site.");
+    promptBox.focus();
+  });
 
   // Plans and top-ups. The prices come from the database; paying happens on Stripe's own page.
   const plans = $("plans");
