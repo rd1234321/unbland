@@ -61,9 +61,17 @@
   .helper { margin-top: 12px; font-size: 13.5px; color: #B4B0A8; opacity: 0; animation: fade .8s .8s forwards; }
   .helper .linkish { text-align: left; }
   .ask .helper { max-width: none; }
-  .writer { width: min(620px, calc(100vw - 32px)); }
+  .writer { width: min(680px, calc(100vw - 32px)); }
   .auth form.writer-form { gap: 4px; }
   .writer-form textarea { width: 100%; background: #0B0C0E; border: 1px solid var(--rule); color: var(--ink); border-radius: 9px; padding: 10px 12px; font: inherit; font-size: 15px; min-height: 64px; resize: vertical; }
+  .sugg { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+  .sugg .btn { border: 1px solid var(--accent); background: transparent; color: var(--ink); border-radius: 9px; padding: 8px 13px; font-weight: 600; font-size: 13.5px; cursor: pointer; white-space: nowrap; }
+  .sugg .btn[disabled] { opacity: .6; cursor: progress; }
+  .sugg .set-note { flex: 1; min-width: 180px; font-size: 13px; }
+  .ticks { display: flex; flex-wrap: wrap; gap: 7px; }
+  .ticks button { border: 1px solid var(--rule); background: transparent; color: var(--muted); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 13.5px; cursor: pointer; }
+  .ticks button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .ticks button[aria-pressed="true"]::before { content: "✓ "; }
   .writer-two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
   .writer-two > div { display: grid; }
   @media (max-width: 560px) { .writer-two { grid-template-columns: 1fr; } }
@@ -511,7 +519,7 @@
 <dialog class="auth writer" id="writer" aria-labelledby="writer-title">
   <form class="writer-form" id="writer-form">
     <h2 id="writer-title">Describe the business</h2>
-    <p class="auth-sub">Fill in what you know and skip the rest. The more real details you give, the fuller the site. Nothing is made up for you.</p>
+    <p class="auth-sub">Fill in what you know and skip the rest. The more real details you give, the fuller the site. We never make up facts about the business.</p>
     <div class="writer-two">
       <div><label for="w-name">Business name</label><input id="w-name" type="text" maxlength="80" required></div>
       <div><label for="w-what">What it does</label><input id="w-what" type="text" maxlength="120" required placeholder="Roof cleaning, barbershop, bakery…"></div>
@@ -520,7 +528,17 @@
       <div><label for="w-email">Email</label><input id="w-email" type="text" maxlength="80"></div>
       <div><label for="w-address">Address</label><input id="w-address" type="text" maxlength="140"></div>
     </div>
-    <label for="w-services">Services and prices</label>
+    <div class="sugg">
+      <button class="btn" type="button" id="sugg-go">Suggest things to tick</button>
+      <span class="set-note" id="sugg-note">We'll list what this kind of business usually offers. Tick only what's true.</span>
+    </div>
+    <div id="sugg-box" hidden>
+      <label>Services they offer</label>
+      <div class="ticks" id="sugg-services"></div>
+      <label>Also true</label>
+      <div class="ticks" id="sugg-facts"></div>
+    </div>
+    <label for="w-services">Other services, and any prices</label>
     <textarea id="w-services" maxlength="900" placeholder="One per line, for example: Soft wash roof cleaning, from $350"></textarea>
     <label for="w-hours">Opening hours</label>
     <input id="w-hours" type="text" maxlength="160" placeholder="Mon to Fri 8am to 5pm, Sat 9am to 1pm">
@@ -775,7 +793,7 @@
     bubble("bot", "Your site is ready. Tell me what to change and I'll do it. For quick fixes to wording or photos, press Edit and change them yourself; that's free.");
     const asked = site.prompt || "";
     if (/\b(\d+|two|three|four|five|six|multi|multiple|several)[- ]?pages?\b/i.test(asked) && !/<main[^>]+data-page=/i.test(site.html)) bubble("bot", "This is a one-page site, so what you asked for as separate pages is laid out as sections of a single page. For real separate pages, start a new site and choose Multi-page next to the Build button (paid plans).");
-    if (asked && asked.length < 220) bubble("bot", "Your description was short, so the site is light on detail. Unbland only uses facts you give it. For a fuller site, start again with the services, prices, areas covered, opening hours and contact details.");
+    if (asked && asked.length < 220) bubble("bot", "Your description was short, so the site is light on detail. For a fuller site, start again and use the \"Answer a few questions\" link under the description box: it suggests services to tick and takes a minute.");
     if (!user) bubble("bot", "This site is only stored in this browser for now. Create a free account to save it, publish it, and get free pixels for chat changes.");
     const chips = document.createElement("div");
     chips.className = "chips";
@@ -1411,6 +1429,32 @@
   const writer = $("writer");
   $("writer-open").onclick = () => { $("writer-msg").textContent = ""; writer.showModal(); $("w-name").focus(); };
   $("writer-close").onclick = () => writer.close();
+  // Suggestions: what this kind of business usually offers, shown as buttons to tick. Only ticked ones are used.
+  const ticked = id => [...$(id).querySelectorAll('button[aria-pressed="true"]')].map(b => b.textContent);
+  $("sugg-go").onclick = async () => {
+    const what = $("w-what").value.trim(), btn = $("sugg-go"), note = $("sugg-note");
+    if (what.length < 3) { note.textContent = "Fill in what the business does first."; $("w-what").focus(); return; }
+    btn.disabled = true; note.textContent = "Thinking…";
+    try {
+      const res = await fetch(`${FUNCTIONS_URL}/suggest`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${ANON_KEY}`, apikey: ANON_KEY }, body: JSON.stringify({ what }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Couldn't get suggestions just now. You can still type the details in.");
+      if (!data.services?.length && !data.facts?.length) throw new Error("No suggestions for that. Try describing what the business does in a few words.");
+      for (const [id, items] of [["sugg-services", data.services], ["sugg-facts", data.facts]]) {
+        const box = $(id);
+        box.textContent = "";
+        for (const text of items || []) {
+          const b = document.createElement("button");
+          b.type = "button"; b.textContent = text; b.setAttribute("aria-pressed", "false");
+          b.onclick = () => b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true"));
+          box.append(b);
+        }
+      }
+      $("sugg-box").hidden = false;
+      note.textContent = "Tick only what's true of this business.";
+    } catch (err) { note.textContent = err.message; }
+    btn.disabled = false;
+  };
   $("writer-form").addEventListener("submit", e => {
     e.preventDefault();
     const v = id => $(id).value.trim().replace(/\s+\n/g, "\n");
@@ -1418,8 +1462,9 @@
     const name = v("w-name"), what = v("w-what");
     if (!name || !what) { $("writer-msg").textContent = "Add the business name and what it does."; return; }
     const parts = [end(`${name} is a business that does: ${what}${v("w-where") ? `, serving ${v("w-where")}` : ""}`)];
-    const services = v("w-services").split(/\n+/).map(t => t.trim()).filter(Boolean);
+    const services = [...ticked("sugg-services"), ...v("w-services").split(/\n+/).map(t => t.trim()).filter(Boolean)];
     if (services.length) parts.push(`Services and prices:\n${services.map(t => `- ${t}`).join("\n")}`);
+    if (ticked("sugg-facts").length) parts.push(end(`Also true of this business: ${ticked("sugg-facts").join(", ")}`));
     if (v("w-special")) parts.push(end(`What makes it different: ${v("w-special")}`));
     if (v("w-hours")) parts.push(end(`Opening hours: ${v("w-hours")}`));
     const contact = [v("w-phone") && `phone ${v("w-phone")}`, v("w-email") && `email ${v("w-email")}`, v("w-address") && `address ${v("w-address")}`].filter(Boolean);
