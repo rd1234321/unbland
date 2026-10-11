@@ -205,7 +205,9 @@
   .building .chat-form { opacity: .5; pointer-events: none; }
   .frame-wrap { flex: 1; min-width: 0; display: flex; justify-content: center; background: #E2E0D9; padding: 16px; }
   iframe { width: 100%; height: 100%; border: 1px solid var(--ink); border-radius: 6px; background: #fff; transition: width .3s ease; }
-  .phone iframe { width: 390px; }
+  .frame-wrap { overflow: hidden; }
+  .frame-wrap iframe { flex: none; transform-origin: top left; transition: none; }
+  .frame-wrap.scaled { justify-content: flex-start; }
 
   /* Optional editing drawer, closed unless asked for */
   .drawer { width: 380px; border-left: 1px solid var(--ink); overflow-y: auto; padding: 4px 22px 28px; background: var(--bg); }
@@ -273,6 +275,10 @@
   .bubble.bad { border-color: rgba(255, 154, 138, .6); color: #FF9A8A; }
   .chips button { background: transparent; border: 1px solid var(--rule); color: #CFCBC3; padding: 6px 11px; transition: border-color .15s, color .15s; }
   .chips button:hover { border-color: var(--accent); color: var(--ink); }
+  .scope { display: flex; align-items: center; gap: 6px; margin: 0 14px 8px; font-size: 12.5px; color: var(--muted); }
+  .scope select { background: var(--panel); border: 1px solid var(--rule); color: var(--ink); border-radius: 8px; padding: 4px 6px; font: inherit; cursor: pointer; }
+  .scope select option { color: #141414; }
+  .building .scope { opacity: .5; pointer-events: none; }
   .chat-form { margin: 0 12px 12px; padding: 10px 10px 10px 14px; border: 1px solid var(--rule); border-radius: 16px; background: var(--panel); transition: border-color .15s; }
   .chat-form:focus-within { border-color: rgba(255, 255, 255, .3); }
   .chat-form textarea { border: 0; background: transparent; color: var(--ink); padding: 6px 0; font-size: 14.5px; outline: 0; }
@@ -397,6 +403,7 @@
     <label class="pagepick" id="pagepick" hidden title="Choose which page to see and edit"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><select id="page-pick" aria-label="Page being shown"></select></label>
     <div class="seg" role="group" aria-label="Preview size" id="sizes">
       <button type="button" data-size="desktop" aria-pressed="true">Desktop</button>
+      <button type="button" data-size="tablet" aria-pressed="false">Tablet</button>
       <button type="button" data-size="phone" aria-pressed="false">Phone</button>
     </div>
     <span class="spacer"></span>
@@ -422,6 +429,7 @@
         <button class="btn" type="button" id="restyle" title="Rebuilds the same business in a different style from our library.">Try another style</button>
         <button class="btn" type="button" id="renew" title="Designs the same business again from nothing. Paid plans.">Brand new design</button>
       </div>
+      <label class="scope" title="Choose whether a chat change applies to every screen size or only one">Change applies to <select id="scope"><option value="">all screen sizes</option><option value="computer">computer only</option><option value="tablet">tablet only</option><option value="phone">phone only</option></select></label>
       <form class="chat-form" id="chat-form">
         <label for="chat-input" style="position:absolute;clip:rect(0 0 0 0);margin:0">Ask for a change</label>
         <textarea id="chat-input" rows="2" maxlength="1500" placeholder="Ask for a change…"></textarea>
@@ -680,6 +688,7 @@
     if (remember && site.slug) $("publish").textContent = "Publish changes";
     frame.onload = wire;
     frame.srcdoc = numbered();
+    requestAnimationFrame(fitPreview); setTimeout(fitPreview, 60);
   }
   // Records an edit already visible in the preview, without reloading it.
   function commit() {
@@ -807,6 +816,11 @@
     for (const m of site.chat || []) bubble(m.role, m.text);
   }
 
+  // A chat change can be limited to one screen size; the editor then makes it inside a media query.
+  const SCOPES = { computer: "computer screens (1025px and wider)", tablet: "tablet screens (641px to 1024px wide)", phone: "phone screens (640px and narrower)" };
+  const scopeNote = () => SCOPES[$("scope").value] ? `Apply this change only on ${SCOPES[$("scope").value]}. Leave the other screen sizes exactly as they are.\n\n` : "";
+  // Choosing a size to change also shows that size in the preview.
+  $("scope").onchange = e => { const b = sizeBtns.find(x => x.dataset.size === (e.target.value === "computer" ? "desktop" : e.target.value)); if (b) b.click(); };
   async function ask(request) {
     if (busy || !site.html) return;
     busy = true;
@@ -823,7 +837,7 @@
       const res = await fetch(`${FUNCTIONS_URL}/edit-site`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${await bearer()}`, apikey: ANON_KEY },
-        body: JSON.stringify({ html: lean, request, history, page: pageList().find(p => p.slug === currentPage)?.name || "" })
+        body: JSON.stringify({ html: lean, request: scopeNote() + request, history, page: pageList().find(p => p.slug === currentPage)?.name || "" })
       });
       const data = await res.json().catch(() => ({}));
       if (data.pixels != null) showPixels(data.pixels);
@@ -1128,7 +1142,24 @@
 
   // Bar controls
   const sizeBtns = [...document.querySelectorAll("[data-size]")];
-  sizeBtns.forEach(b => b.onclick = () => { $("wrap").classList.toggle("phone", b.dataset.size === "phone"); sizeBtns.forEach(x => x.setAttribute("aria-pressed", x === b)); });
+  // The preview always shows the site at a true screen width for the size chosen (computer 1280, tablet 820,
+  // phone 390). When the window is too narrow for that, the preview is shrunk to fit rather than reflowed,
+  // so what you see is what that device shows.
+  let previewSize = "desktop";
+  function fitPreview() {
+    const wrap = $("wrap"), cs = getComputedStyle(wrap);
+    const availW = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const availH = wrap.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    if (availW <= 0 || availH <= 0) return;
+    const want = previewSize === "phone" ? 390 : previewSize === "tablet" ? 820 : Math.max(1280, Math.min(availW, 1600));
+    const k = Math.min(1, availW / want);
+    frame.style.width = want + "px";
+    frame.style.height = k < 1 ? availH / k + "px" : "";
+    frame.style.transform = k < 1 ? `scale(${k})` : "";
+    wrap.classList.toggle("scaled", k < 1);
+  }
+  new ResizeObserver(fitPreview).observe($("wrap"));
+  sizeBtns.forEach(b => b.onclick = () => { previewSize = b.dataset.size; sizeBtns.forEach(x => x.setAttribute("aria-pressed", x === b)); fitPreview(); });
   $("again").onclick = () => newSite();
   $("restyle").onclick = () => { if (site.prompt) design(site.prompt, site.used, "quick"); };
   $("renew").onclick = () => { if (site.prompt) design(site.prompt, site.used, "new"); };
