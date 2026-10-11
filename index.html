@@ -823,7 +823,7 @@
       const res = await fetch(`${FUNCTIONS_URL}/edit-site`, {
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${await bearer()}`, apikey: ANON_KEY },
-        body: JSON.stringify({ html: lean, request, history })
+        body: JSON.stringify({ html: lean, request, history, page: pageList().find(p => p.slug === currentPage)?.name || "" })
       });
       const data = await res.json().catch(() => ({}));
       if (data.pixels != null) showPixels(data.pixels);
