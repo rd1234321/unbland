@@ -111,7 +111,7 @@
   .status .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s infinite; }
   .status .meter { width: 120px; height: 4px; border-radius: 2px; background: var(--rule); overflow: hidden; }
   .status .meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .4s linear; }
-  .building #sizes, .building #restyle, .building #renew, .building #open, .building #download { display: none; }
+  .building #sizes, .building #restyle, .building #renew, .building #open { display: none; }
   .note { font-size: 13px; color: var(--error); }
   .top-right { display: inline-flex; align-items: center; gap: 10px; }
   .acct { font-size: 13px; font-weight: 600; color: #F3F1EC; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
@@ -417,7 +417,6 @@
     <button class="btn quiet" type="button" id="again">New site</button>
     <button class="btn quiet" type="button" id="undo" disabled>Undo</button>
     <button class="btn icon" type="button" id="open" title="Open full size in a new tab" aria-label="Open full size in a new tab">&#8599;</button>
-    <button class="btn" type="button" id="download">Download</button>
     <button class="btn primary" type="button" id="publish">Publish</button>
   </div>
   <p class="edit-hint" id="edit-hint" hidden>Click any text to change it. Click a photo to replace it. Editing by hand is free and uses no builds.</p>
@@ -926,7 +925,7 @@
   });
 
   // Tab icon (favicon): the small picture in the browser tab. Saved inside the site, so it travels with
-  // the published link and the downloaded file.
+  // the published link.
   $("tabicon").onclick = () => { if (busy || !site.html) return; $("tabicon-file").value = ""; $("tabicon-file").click(); };
   $("tabicon-file").addEventListener("change", () => {
     const file = $("tabicon-file").files[0];
@@ -947,7 +946,7 @@
         source.head.append(link);
         setEditing(false);
         setSite(plain());
-        bubble("bot", "Tab icon added. You'll see it in the browser tab when you open or publish the site (press Publish again if the site is already live). Square pictures work best.");
+        bubble("bot", "Tab icon added. You'll see it in the browser tab of the published site (press Publish again if the site is already live). Square pictures work best.");
       };
       im.src = reader.result;
     };
@@ -1182,14 +1181,6 @@
 
   const blobUrl = () => URL.createObjectURL(new Blob([site.html], { type: "text/html" }));
   $("open").onclick = () => window.open(blobUrl(), "_blank");
-  $("download").onclick = () => {
-    const title = (site.html.match(/<title>([^<]*)<\/title>/i)?.[1] || "site").split(/[|·—-]/)[0];
-    const a = document.createElement("a");
-    a.href = blobUrl();
-    a.download = (title.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "site") + ".html";
-    a.click();
-    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-  };
 
   // ---- Accounts: sign in to keep sites, and a page listing them. The builder works without an account.
   const SUPABASE_URL = "https://clssxldrgtpiajwqgghl.supabase.co";
@@ -1281,7 +1272,7 @@
   const auth = $("auth");
   async function openAuth(mode = "signin") {
     await ready;   // the accounts library may still be loading on a slow connection
-    if (!sb) { alert("Accounts aren't available right now. Your site is still here; download it to keep a copy."); return; }
+    if (!sb) { alert("Accounts aren't available right now. Your site is still here in this browser; try again in a moment."); return; }
     authMode = mode;
     const up = mode === "signup";
     $("auth-title").textContent = up ? "Create your account" : "Sign in";
