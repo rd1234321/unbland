@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <link rel="icon" type="image/svg+xml" href="icon.svg">
-<title>Design library</title>
+<title>Unbland owner tools</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif&family=Bricolage+Grotesque:wght@800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -39,6 +39,25 @@
   .btn.keep { background: var(--ok); border-color: var(--ok); color: #fff; }
   .btn.quiet { border-color: transparent; color: var(--muted); }
   .btn[disabled] { opacity: .5; cursor: progress; }
+  .agent { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; padding: 14px 16px; border: 1px solid var(--ink); border-radius: 8px; background: #fff; }
+  .agent-state b { display: block; font-size: 15px; }
+  .agent-state small { color: var(--muted); font-size: 12.5px; }
+  .agent select, .agent input { font: inherit; font-size: 14px; padding: 8px 10px; border: 1px solid var(--rule); border-radius: 4px; background: #fff; }
+  .agent input { flex: 1; min-width: 200px; }
+  .queue { display: grid; gap: 16px; }
+  .draft { border: 1px solid var(--ink); border-radius: 8px; background: #fff; padding: 16px 18px; }
+  .draft header { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: baseline; padding: 0; border: 0; }
+  .draft header b { font-size: 16px; }
+  .draft .tag { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); border: 1px solid var(--rule); border-radius: 999px; padding: 2px 8px; }
+  .draft pre { white-space: pre-wrap; font: inherit; margin: 12px 0; padding: 12px 14px; background: var(--bg); border-radius: 6px; }
+  .draft dl { display: grid; grid-template-columns: 96px 1fr; gap: 4px 12px; font-size: 13.5px; margin-bottom: 12px; }
+  .draft dt { color: var(--muted); }
+  .draft dd { margin: 0; }
+  .draft dd.warn { color: var(--error); }
+  .draft .foot { padding: 0; }
+  .runs { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .runs td, .runs th { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+  .runs th { color: var(--muted); font-weight: 500; }
   .msg { font-size: 13px; padding: 0 16px 14px; color: var(--muted); }
   .msg.err { color: var(--error); }
   .msg.ok { color: var(--ok); }
@@ -52,17 +71,47 @@
   <a class="btn" href="./?build">Back to the builder</a>
 </header>
 <main>
-  <h1>Design library</h1>
-  <p class="lede">Designs you keep are reused for new sites, with the original business's details removed. Reusing a design costs about a third of making a new one. Only keep designs you'd be happy for any customer to receive.</p>
+  <h1>Owner tools</h1>
+  <p class="lede">The marketing agent and its drafts come first, then the design library. Designs you keep are reused for new sites, with the original business's details removed. Reusing a design costs about a third of making a new one. Only keep designs you'd be happy for any customer to receive.</p>
   <p class="note" id="note" role="status" aria-live="polite">Loading…</p>
 
   <div id="content" hidden>
-    <h2>Waiting for your decision</h2>
+    <h2>Marketing agent</h2>
+    <p class="lede">Drafts posts, messages and page copy for you to use yourself. It never posts or sends anything. Every draft waits below until you approve or reject it.</p>
+    <div class="agent">
+      <div class="agent-state"><b id="mk-state">…</b><small id="mk-spend"></small></div>
+      <button class="btn" type="button" id="mk-switch">…</button>
+      <span class="spacer"></span>
+      <select id="mk-kind" aria-label="What to draft">
+        <option value="social">Social posts</option>
+        <option value="outreach">Personal messages</option>
+        <option value="landing">Landing pages</option>
+        <option value="ideas">Content ideas</option>
+      </select>
+      <input id="mk-topic" type="text" maxlength="300" placeholder="Optional focus, for example: car detailers" aria-label="Optional focus">
+      <button class="btn keep" type="button" id="mk-run">Draft</button>
+    </div>
+    <p class="note" id="mk-note" role="status" aria-live="polite"></p>
+
+    <h2>Drafts waiting for you</h2>
+    <p class="lede">Approve the ones you'd use, reject the rest. Approving only marks a draft as good; you still post it yourself. Always read the "check first" line.</p>
+    <p class="note" id="q-note"></p>
+    <div class="queue" id="queue"></div>
+
+    <h2>Approved drafts</h2>
+    <p class="note" id="ok-note"></p>
+    <div class="queue" id="approved"></div>
+
+    <h2>Recent agent runs</h2>
+    <p class="note" id="runs-note"></p>
+    <table class="runs" id="runs"></table>
+
+    <h2>Design library: waiting for your decision</h2>
     <p class="lede">Saved sites that haven't been reviewed. Click a picture to open the full site. Keeping one takes about 20 seconds and a few cents.</p>
     <p class="note" id="new-note"></p>
     <div class="grid" id="new"></div>
 
-    <h2>In the library</h2>
+    <h2>Design library: in use</h2>
     <p class="lede">Designs currently available for reuse. Switch one off to stop it being used; it isn't deleted.</p>
     <p class="note" id="lib-note"></p>
     <div class="grid" id="lib"></div>
@@ -157,6 +206,98 @@
     }
   }
 
+  // ---- Marketing agent and the approval queue ----
+  const money = cents => `$${(Number(cents) / 100).toFixed(2)}`;
+  const LABEL = { social_post: "Social post", outreach_message: "Personal message", landing_page: "Landing page", content_idea: "Content idea" };
+
+  async function loadAgent() {
+    const { data: a } = await sb.from("agent_budgets").select("enabled, monthly_cap_cents").eq("agent", "marketing").maybeSingle();
+    if (!a) { $("mk-state").textContent = "Not set up"; return; }
+    const first = new Date(Date.UTC(new Date().getUTCFullYear(), new Date().getUTCMonth(), 1)).toISOString();
+    const { data: runs } = await sb.from("agent_runs").select("cost_cents").eq("agent", "marketing").gte("started_at", first);
+    const spent = (runs || []).reduce((n, r) => n + Number(r.cost_cents || 0), 0);
+    $("mk-state").textContent = a.enabled ? "Switched on" : "Switched off";
+    $("mk-spend").textContent = `${money(spent)} of ${money(a.monthly_cap_cents)} used this month`;
+    $("mk-switch").textContent = a.enabled ? "Switch off" : "Switch on";
+    $("mk-run").disabled = !a.enabled;
+    $("mk-switch").onclick = async () => {
+      $("mk-switch").disabled = true;
+      await sb.from("agent_budgets").update({ enabled: !a.enabled, updated_at: new Date().toISOString() }).eq("agent", "marketing");
+      $("mk-switch").disabled = false;
+      loadAgent();
+    };
+  }
+
+  $("mk-run").onclick = async () => {
+    const note = $("mk-note"), btn = $("mk-run");
+    btn.disabled = true; note.className = "note"; note.textContent = "Drafting. This takes about half a minute…";
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${SUPABASE_URL}/functions/v1/marketing-agent`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token || ""}`, apikey: PUBLISHABLE_KEY },
+        body: JSON.stringify({ kind: $("mk-kind").value, topic: $("mk-topic").value })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "The agent couldn't finish that run. Try again.");
+      note.textContent = `${data.drafts} new draft${data.drafts === 1 ? "" : "s"} below. That run cost ${money(data.cost_cents)}.`;
+    } catch (err) { note.className = "note err"; note.textContent = err.message; }
+    btn.disabled = false;
+    loadAgent(); loadQueue(); loadRuns();
+  };
+
+  function draftCard(row, decided) {
+    const e = row.evidence || {}, el = document.createElement("article");
+    el.className = "draft";
+    el.innerHTML = `<header><b></b><span class="tag"></span><span class="tag ch"></span></header><pre></pre><dl><dt>Why</dt><dd class="why"></dd><dt>Check first</dt><dd class="check"></dd></dl><div class="foot"></div><p class="msg" hidden></p>`;
+    el.querySelector("b").textContent = row.summary;
+    el.querySelector(".tag").textContent = LABEL[row.action_type] || row.action_type;
+    el.querySelector(".ch").textContent = e.channel || "";
+    el.querySelector(".ch").hidden = !e.channel;
+    el.querySelector("pre").textContent = e.body || "";
+    el.querySelector(".why").textContent = e.why || "";
+    const check = el.querySelector(".check");
+    check.textContent = e.check || "Nothing";
+    if (e.check && !/^nothing\.?$/i.test(e.check.trim())) check.classList.add("warn");
+    const foot = el.querySelector(".foot"), say = (t, kind = "") => { const m = el.querySelector(".msg"); m.hidden = !t; m.textContent = t; m.className = `msg ${kind}`; };
+    const add = (label, cls, fn) => { const b = document.createElement("button"); b.type = "button"; b.className = `btn ${cls}`; b.textContent = label; b.onclick = () => fn(b); foot.append(b); };
+    add("Copy text", "", async b => { try { await navigator.clipboard.writeText(e.body || ""); b.textContent = "Copied"; } catch { say("Select the text and copy it by hand.", "err"); } });
+    if (!decided) {
+      const decide = async approve => {
+        foot.querySelectorAll("button").forEach(b => b.disabled = true);
+        const { data, error } = await sb.rpc("decide_action", { p_id: row.id, p_approve: approve });
+        if (error || !data) { say("Couldn't save that decision. Refresh and try again.", "err"); foot.querySelectorAll("button").forEach(b => b.disabled = false); return; }
+        loadQueue();
+      };
+      add("Approve", "keep", () => decide(true));
+      add("Reject", "quiet", () => decide(false));
+    }
+    return el;
+  }
+
+  async function loadQueue() {
+    const { data, error } = await sb.from("agent_actions").select("id, action_type, summary, evidence, status, created_at").in("status", ["proposed", "approved"]).order("created_at", { ascending: false }).limit(80);
+    if (error) { $("q-note").className = "note err"; $("q-note").textContent = "Couldn't load the drafts."; return; }
+    const waiting = data.filter(d => d.status === "proposed"), ok = data.filter(d => d.status === "approved");
+    $("queue").textContent = ""; $("approved").textContent = "";
+    $("q-note").className = "note"; $("q-note").textContent = waiting.length ? `${waiting.length} waiting.` : "Nothing waiting. Press Draft above to get some.";
+    $("ok-note").textContent = ok.length ? `${ok.length} approved. Copy one when you're ready to post it.` : "None yet.";
+    waiting.forEach(d => $("queue").append(draftCard(d, false)));
+    ok.forEach(d => $("approved").append(draftCard(d, true)));
+  }
+
+  async function loadRuns() {
+    const { data } = await sb.from("agent_runs").select("agent, started_at, status, summary, cost_cents, error").order("started_at", { ascending: false }).limit(12);
+    const t = $("runs");
+    t.innerHTML = "<tr><th>When</th><th>Agent</th><th>Result</th><th>What happened</th><th>Cost</th></tr>";
+    $("runs-note").textContent = data?.length ? "" : "No runs yet.";
+    for (const r of data || []) {
+      const tr = document.createElement("tr");
+      for (const text of [new Date(r.started_at).toLocaleString(undefined, { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }), r.agent, r.status, r.error || r.summary || "", money(r.cost_cents)]) { const td = document.createElement("td"); td.textContent = text; tr.append(td); }
+      t.append(tr);
+    }
+  }
+
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
     $("note").innerHTML = 'You need to sign in first. <a href="./?build">Go to the builder</a>, sign in, then come back to this page.';
@@ -164,7 +305,7 @@
     $("who").textContent = session.user.email || "";
     const { data: admin } = await sb.from("admins").select("user_id").eq("user_id", session.user.id).maybeSingle();
     if (!admin) $("note").textContent = "This page is only for the site owner.";
-    else { $("note").textContent = ""; $("content").hidden = false; loadNew(); loadLibrary(); }
+    else { $("note").textContent = ""; $("content").hidden = false; loadAgent(); loadQueue(); loadRuns(); loadNew(); loadLibrary(); }
   }
 </script>
 </body>
