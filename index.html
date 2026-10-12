@@ -376,8 +376,10 @@
     .start header { padding: 14px 16px; gap: 10px; }
     .start .logo { font-size: 20px; }
     .top-right { gap: 8px; }
-    .top-right .chip:not(a) { display: none; }              /* keep "See how it works", drop the extra badge */
-    .top-right .chip { font-size: 10.5px; padding: 6px 10px; letter-spacing: .06em; }
+    .top-right .chip { display: none; }                      /* no room for badges; the logo already opens the intro */
+    .start header { flex-wrap: wrap; row-gap: 8px; }
+    .top-right { flex-wrap: wrap; justify-content: flex-end; margin-left: auto; min-width: 0; }
+    .top-right .btn, .top-right button, .top-right .pixels { padding: 7px 11px; font-size: 13px; }
     .ask { padding-left: 16px; padding-right: 16px; }
     .box textarea { min-height: 120px; padding: 18px 18px 6px; font-size: 16px; }
     .box-foot { padding: 10px 12px 12px; gap: 10px; }
