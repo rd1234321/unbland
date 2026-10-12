@@ -1,0 +1,1830 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
+<title>Unbland — Describe the business, get the site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:wght@800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #F4F3EF; --ink: #141414; --muted: #5E5C57; --rule: #D4D1C8; --accent: #FF4F1A; --error: #B3261E; --serif: "Instrument Serif", Georgia, serif; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--ink); font: 400 15px/1.5 "Inter", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .logo { display: inline-flex; align-items: center; gap: 9px; font: 800 22px/1 "Bricolage Grotesque", "Inter", system-ui, sans-serif; letter-spacing: -.04em; text-decoration: none; color: inherit; }
+  .logo .mark { width: 28px; height: 28px; flex: none; }
+  [hidden] { display: none !important; }
+
+  /* Start: one box, on a drifting wall of example sites */
+  @property --spin { syntax: "<angle>"; initial-value: 0deg; inherits: false; }
+  .start { position: relative; min-height: 100%; display: flex; flex-direction: column; overflow: hidden; background: #08090B; color: #F3F1EC; isolation: isolate; }
+  .wall { position: absolute; inset: -30% -12%; z-index: -3; display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px; transform: rotate(-9deg); opacity: .5; }
+  .col { overflow: hidden; }
+  .track { display: grid; gap: 22px; animation: drift 70s linear infinite; }
+  .col:nth-child(even) .track { animation-direction: reverse; animation-duration: 86s; }
+  .track img { display: block; width: 100%; border-radius: 10px; border: 1px solid rgba(255, 255, 255, .14); }
+  @keyframes drift { from { transform: translateY(0); } to { transform: translateY(calc(-50% - 11px)); } }
+  .veil { position: absolute; inset: 0; z-index: -2; background: radial-gradient(ellipse 70% 64% at 50% 50%, rgba(8, 9, 11, .97) 0, rgba(8, 9, 11, .93) 42%, rgba(8, 9, 11, .3) 100%); }
+  .spot { position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(520px circle at var(--mx, 50%) var(--my, 40%), rgba(255, 79, 26, .16), transparent 62%); }
+  .start header { display: flex; justify-content: space-between; align-items: center; padding: 22px 32px; }
+  .chip { font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; border: 1px solid rgba(255, 255, 255, .22); border-radius: 999px; padding: 6px 12px; color: #CFCBC3; display: inline-flex; align-items: center; gap: 8px; }
+  .chip::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 0 rgba(255, 79, 26, .7); animation: pulse 2s infinite; }
+  @keyframes pulse { 70% { box-shadow: 0 0 0 9px rgba(255, 79, 26, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 79, 26, 0); } }
+  .ask { flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; max-width: 980px; margin: 0 auto; padding: 24px 24px 88px; }
+  .ask h1 { font: 400 clamp(40px, 7vw, 96px)/.94 var(--serif); letter-spacing: -.025em; margin-bottom: 20px; }
+  .ask h1 .ln { display: block; overflow: hidden; padding-bottom: .1em; margin-bottom: -.1em; }
+  .ask h1 .ln > span { display: block; transform: translateY(105%); animation: rise 1s cubic-bezier(.2, .7, .1, 1) forwards; }
+  .ask h1 .ln:nth-child(2) > span { animation-delay: .14s; }
+  .ask h1 em { background: linear-gradient(100deg, #FF4F1A 10%, #FFB36B 55%, #FF4F1A 90%); background-size: 200% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: sheen 6s linear infinite; padding-right: .08em; }
+  @keyframes rise { to { transform: none; } }
+  @keyframes sheen { to { background-position: -200% 0; } }
+  .ask > p { color: #B4B0A8; font-size: 18px; max-width: 50ch; margin-bottom: 30px; opacity: 0; animation: fade .8s .5s forwards; }
+  @keyframes fade { to { opacity: 1; } }
+  .box { position: relative; border-radius: 14px; background: rgba(18, 20, 24, .86); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); box-shadow: 0 30px 80px -20px rgba(0, 0, 0, .8); opacity: 0; animation: fade .8s .65s forwards; }
+  .box::before { content: ""; position: absolute; inset: -1.5px; z-index: -1; border-radius: 15.5px; background: conic-gradient(from var(--spin), rgba(255, 255, 255, .14), #FF4F1A 12%, rgba(255, 255, 255, .14) 26%, rgba(255, 255, 255, .14) 50%, #FFB36B 62%, rgba(255, 255, 255, .14) 76%); animation: spin 7s linear infinite; }
+  .box::after { content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 14px; background: #121418; }
+  .box:focus-within::before { animation-duration: 3s; }
+  @keyframes spin { to { --spin: 360deg; } }
+  .box textarea { display: block; width: 100%; min-height: 150px; border: 0; background: transparent; resize: none; padding: 22px 24px 8px; font-size: 18px; line-height: 1.5; outline: 0; color: #F3F1EC; caret-color: var(--accent); }
+  .box textarea::placeholder { color: #7C7972; }
+  .box-foot { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 10px 14px 14px 24px; }
+  .box-foot span { font-size: 13px; color: #8E8A82; }
+  .go { display: inline-flex; align-items: center; gap: 12px; background: var(--accent); color: #fff; font-weight: 600; font-size: 16px; border: 0; border-radius: 9px; padding: 15px 24px; cursor: pointer; white-space: nowrap; box-shadow: 0 10px 34px -8px rgba(255, 79, 26, .75); transition: transform .2s, box-shadow .2s; }
+  .go:hover { transform: translateY(-2px); box-shadow: 0 16px 40px -8px rgba(255, 79, 26, .9); }
+  .kind { display: inline-flex; padding: 3px; border-radius: 9px; background: rgba(255, 255, 255, .06); }
+  .kind button { border: 0; background: transparent; color: #B4B0A8; font-weight: 500; font-size: 13.5px; padding: 8px 12px; border-radius: 7px; cursor: pointer; white-space: nowrap; }
+  .kind button[aria-pressed="true"] { background: rgba(255, 255, 255, .13); color: #F3F1EC; }
+  .helper { margin-top: 12px; font-size: 13.5px; color: #B4B0A8; opacity: 0; animation: fade .8s .8s forwards; }
+  .helper .linkish { text-align: left; }
+  .ask .helper { max-width: none; }
+  .writer { width: min(680px, calc(100vw - 32px)); }
+  .auth form.writer-form { gap: 4px; }
+  .writer-form textarea { width: 100%; background: #0B0C0E; border: 1px solid var(--rule); color: var(--ink); border-radius: 9px; padding: 10px 12px; font: inherit; font-size: 15px; min-height: 64px; resize: vertical; }
+  .sugg { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 12px; }
+  .sugg .btn { border: 1px solid var(--accent); background: transparent; color: var(--ink); border-radius: 9px; padding: 8px 13px; font-weight: 600; font-size: 13.5px; cursor: pointer; white-space: nowrap; }
+  .sugg .btn[disabled] { opacity: .6; cursor: progress; }
+  .sugg .set-note { flex: 1; min-width: 180px; font-size: 13px; }
+  .ticks { display: flex; flex-wrap: wrap; gap: 7px; }
+  .ticks button { border: 1px solid var(--rule); background: transparent; color: var(--muted); border-radius: 999px; padding: 6px 12px; font: inherit; font-size: 13.5px; cursor: pointer; }
+  .ticks button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .ticks button[aria-pressed="true"]::before { content: "✓ "; }
+  .go.danger { background: #C2362B; box-shadow: none; flex: 1; justify-content: center; }
+  .go.danger:disabled { background: rgba(194, 54, 43, .35); color: rgba(255, 255, 255, .7); cursor: default; }
+  .writer-two { display: grid; grid-template-columns: 1fr 1fr; gap: 0 12px; }
+  .writer-two > div { display: grid; }
+  @media (max-width: 560px) { .writer-two { grid-template-columns: 1fr; } }
+  .kind .pages { display: inline-flex; align-items: center; gap: 6px; padding: 0 8px 0 4px; font-size: 13px; color: #B4B0A8; white-space: nowrap; }
+  .kind select { background: rgba(255, 255, 255, .1); color: #F3F1EC; border: 0; border-radius: 6px; padding: 5px 6px; font: inherit; cursor: pointer; }
+  .kind { flex-wrap: wrap; }
+  .kind small { font-size: inherit; opacity: .6; }
+  .go i { font-style: normal; transition: transform .25s; }
+  .go:hover i { transform: translateX(5px); }
+  .go[disabled] { opacity: .7; cursor: progress; transform: none; }
+  .start :focus-visible { outline-color: #F3F1EC; }
+  .msg { min-height: 22px; margin-top: 14px; font-size: 14px; color: #B4B0A8; }
+  .msg.err { color: #FF9A8A; }
+  .examples { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 16px; font-size: 13px; color: #8E8A82; opacity: 0; animation: fade .8s .85s forwards; }
+  .examples button { border: 1px solid rgba(255, 255, 255, .2); background: rgba(255, 255, 255, .04); color: #DAD6CE; border-radius: 999px; padding: 7px 13px; cursor: pointer; font-size: 13px; transition: border-color .2s, background .2s; }
+  .examples button:hover { border-color: var(--accent); background: rgba(255, 79, 26, .12); }
+  .legal { display: flex; gap: 20px; justify-content: center; padding: 0 24px 22px; font-size: 13px; }
+  .legal a { color: #8E8A82; text-decoration: none; }
+  .legal a:hover { color: #F3F1EC; text-decoration: underline; }
+  .dots::after { content: ""; animation: dots 1.4s steps(4, end) infinite; }
+  @keyframes dots { 0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; } }
+
+  /* Result: the site, with a slim bar */
+  .result { height: 100%; display: flex; flex-direction: column; }
+  .bar { display: flex; align-items: center; gap: 14px; padding: 10px 16px; border-bottom: 1px solid var(--ink); }
+  .bar .spacer { flex: 1; }
+  .seg { display: inline-flex; border: 1px solid var(--ink); border-radius: 4px; overflow: hidden; }
+  .seg button { font-weight: 500; font-size: 13px; padding: 7px 12px; border: 0; background: transparent; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .btn { font-weight: 600; font-size: 13px; padding: 8px 13px; border: 1px solid var(--ink); border-radius: 4px; background: transparent; cursor: pointer; white-space: nowrap; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn.quiet { border-color: transparent; color: var(--muted); }
+  .status { display: none; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; }
+  .building .status { display: inline-flex; }
+  .status .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); animation: pulse 1.6s infinite; }
+  .status .meter { width: 120px; height: 4px; border-radius: 2px; background: var(--rule); overflow: hidden; }
+  .status .meter i { display: block; height: 100%; width: 0; background: var(--accent); transition: width .4s linear; }
+  .building #sizes, .building #effects, .building #restyle, .building #renew, .building #open { display: none; }
+  .note { font-size: 13px; color: var(--error); }
+  .top-right { display: inline-flex; align-items: center; gap: 10px; }
+  .acct { font-size: 13px; font-weight: 600; color: #F3F1EC; background: rgba(255, 255, 255, .08); border: 1px solid rgba(255, 255, 255, .25); border-radius: 999px; padding: 7px 14px; cursor: pointer; }
+  .acct:hover { border-color: var(--accent); }
+  .acct.quiet { background: transparent; border-color: transparent; color: #B4B0A8; }
+  .saved { font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+  .building [data-act], .building .saved { display: none; }
+  .mine { min-height: 100%; }
+  .mine-head { display: flex; align-items: center; gap: 12px; padding: 14px 24px; border-bottom: 1px solid var(--ink); }
+  .who { font-size: 13px; color: var(--muted); }
+  .mine-main { max-width: 1180px; margin: 0 auto; padding: 40px 24px 80px; }
+  .mine-main h1 { font: 400 clamp(40px, 6vw, 68px)/1 var(--serif); letter-spacing: -.02em; margin-bottom: 8px; }
+  .mine-note { color: var(--muted); min-height: 22px; margin-bottom: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; }
+  .card { border: 1px solid var(--ink); border-radius: 8px; overflow: hidden; background: #fff; display: flex; flex-direction: column; }
+  .thumb { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: #E2E0D9; border-bottom: 1px solid var(--ink); cursor: pointer; }
+  .thumb iframe { position: absolute; top: 0; left: 0; width: 1280px; height: 800px; border: 0; border-radius: 0; transform-origin: 0 0; pointer-events: none; }
+  .card-body { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+  .card-body b { font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-body small { color: var(--muted); font-size: 12.5px; }
+  .card-foot { display: flex; gap: 8px; padding: 0 16px 16px; }
+  .auth { margin: auto; border: 1px solid var(--ink); border-radius: 12px; padding: 0; width: min(420px, calc(100vw - 32px)); background: var(--bg); color: var(--ink); }
+  .auth::backdrop { background: rgba(8, 9, 11, .6); backdrop-filter: blur(3px); }
+  .auth form { position: relative; display: grid; gap: 6px; padding: 30px 28px 24px; }
+  .auth h2 { font: 400 36px/1 var(--serif); }
+  .auth-sub { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+  .auth label { margin: 8px 0 0; }
+  .auth input { width: 100%; background: #fff; border: 1px solid var(--ink); border-radius: 6px; padding: 10px 12px; font-size: 15px; }
+  .auth .go { justify-content: center; margin-top: 12px; box-shadow: none; }
+  .google { display: flex; align-items: center; justify-content: center; gap: 10px; width: 100%; background: #fff; border: 1px solid var(--ink); border-radius: 6px; padding: 11px 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
+  .google:hover { background: #F7F6F2; }
+  .or { display: flex; align-items: center; gap: 12px; color: var(--muted); font-size: 12.5px; margin: 8px 0 0; }
+  .or::before, .or::after { content: ""; flex: 1; height: 1px; background: var(--rule); }
+  .auth-msg { min-height: 20px; font-size: 13.5px; color: var(--error); }
+  .auth-msg.ok { color: #1F6F54; }
+  .auth-switch { font-size: 13.5px; color: var(--muted); text-align: center; margin-top: 6px; }
+  .auth-legal { font-size: 12.5px; color: var(--muted); text-align: center; margin-top: 4px; }
+  .auth-legal a { color: inherit; }
+  .auth-switch button { border: 0; background: none; text-decoration: underline; cursor: pointer; padding: 0; }
+  .pubpanel { margin: 62px 14px auto auto; width: min(420px, calc(100vw - 28px)); }
+  .pubpanel::backdrop { background: rgba(4, 5, 6, .35); backdrop-filter: none; }
+  .pub-body { padding: 20px 20px 18px; display: grid; gap: 8px; }
+  .pub-head { display: flex; align-items: center; gap: 10px; }
+  .pub-head h2 { font: 600 19px/1.2 "Inter", sans-serif; flex: 1; }
+  .pub-head .auth-x { position: static; }
+  .pub-dot { width: 10px; height: 10px; border-radius: 50%; background: #6B6862; flex: none; }
+  [data-state="live"] .pub-dot { background: #3FB97C; box-shadow: 0 0 0 4px rgba(63, 185, 124, .18); }
+  [data-state="changed"] .pub-dot { background: #F0B341; box-shadow: 0 0 0 4px rgba(240, 179, 65, .18); }
+  .pub-body .auth-sub { margin: 0; }
+  .pub-body h3 { font: 600 11px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
+  .pub-card { border: 1px solid var(--rule); border-radius: 12px; overflow: hidden; }
+  .pub-addr { display: flex; align-items: center; gap: 6px; padding: 10px 10px 10px 12px; }
+  .pub-icon { width: 26px; height: 26px; border-radius: 6px; background: rgba(255, 255, 255, .1); display: grid; place-items: center; font-weight: 700; font-size: 13px; flex: none; overflow: hidden; margin-right: 4px; }
+  .pub-icon img { width: 100%; height: 100%; object-fit: contain; }
+  .pub-url { flex: 1; min-width: 0; font-size: 13.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; direction: rtl; text-align: left; }
+  .pub-url span, .pub-url b { direction: ltr; unicode-bidi: embed; }
+  .pub-url b { color: var(--ink); font-weight: 600; }
+  .pub-tool { display: grid; place-items: center; width: 30px; height: 30px; border: 0; border-radius: 8px; background: transparent; color: var(--muted); cursor: pointer; flex: none; }
+  .pub-tool:hover { background: rgba(255, 255, 255, .08); color: var(--ink); }
+  .auth form.pub-rename { display: flex; gap: 8px; padding: 0 12px 12px; }
+  .pub-rename input { flex: 1; padding: 8px 10px; font-size: 14px; }
+  .pub-rename .btn { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 9px; padding: 8px 14px; cursor: pointer; }
+  .pub-line { display: flex; align-items: center; gap: 9px; flex-wrap: wrap; padding: 10px 14px; border-top: 1px solid var(--rule); font-size: 13.5px; color: var(--muted); }
+  .pub-line svg { flex: none; }
+  .pub-foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 4px; }
+  .pub-foot .linkish { font-size: 13.5px; color: var(--muted); }
+  .pub-foot .go { margin: 0 0 0 auto; padding: 11px 18px; font-size: 14.5px; }
+  .pub-foot .go:disabled { background: rgba(255, 255, 255, .08); color: var(--muted); box-shadow: none; cursor: default; }
+  .pub-body .auth-msg:empty { min-height: 0; }
+  [hidden] { display: none !important; }
+  .pub-row { display: flex; gap: 10px; align-items: center; margin-top: 6px; }
+  .pub-row .go { flex: 1; margin-top: 0; }
+  .pub-row .btn { padding: 13px 18px; text-decoration: none; color: inherit; font-size: 15px; }
+  .building #publish { display: none; }
+  .auth-x { position: absolute; top: 10px; right: 12px; border: 0; background: none; font-size: 24px; line-height: 1; cursor: pointer; color: var(--muted); }
+  .building #undo, .building #edit, .building #logo { display: none; }
+  .btn[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
+  .btn[disabled] { opacity: .4; cursor: default; }
+  .edit-hint { margin: 0; padding: 8px 16px; font-size: 13px; background: #FFE9DF; border-bottom: 1px solid var(--ink); }
+  .work { flex: 1; min-height: 0; display: flex; }
+  .chat { width: 340px; flex: none; display: flex; flex-direction: column; border-right: 1px solid var(--ink); background: var(--bg); min-height: 0; }
+  .chat-log { flex: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+  .bubble { max-width: 92%; padding: 10px 13px; border-radius: 12px; font-size: 14px; line-height: 1.45; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .bubble.user { align-self: flex-end; background: var(--ink); color: var(--bg); border-bottom-right-radius: 3px; }
+  .bubble.bot { align-self: flex-start; background: #fff; border: 1px solid var(--rule); border-bottom-left-radius: 3px; }
+  .bubble.bad { border-color: var(--error); color: var(--error); }
+  .bubble.wait::after { content: ""; animation: dots 1.4s steps(4, end) infinite; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chips button { font-size: 12.5px; border: 1px solid var(--rule); background: #fff; border-radius: 999px; padding: 5px 10px; cursor: pointer; }
+  .chips button:hover { border-color: var(--ink); }
+  .chat-form { display: flex; gap: 8px; align-items: flex-end; padding: 12px; border-top: 1px solid var(--rule); }
+  .chat-form textarea { flex: 1; resize: none; border: 1px solid var(--ink); border-radius: 8px; padding: 9px 11px; background: #fff; font-size: 14px; }
+  .building .chat-form { opacity: .5; pointer-events: none; }
+  .frame-wrap { flex: 1; min-width: 0; display: flex; justify-content: center; background: #E2E0D9; padding: 16px; }
+  iframe { width: 100%; height: 100%; border: 1px solid var(--ink); border-radius: 6px; background: #fff; transition: width .3s ease; }
+  .frame-wrap { overflow: hidden; }
+  .frame-wrap iframe { flex: none; transform-origin: top left; transition: none; }
+  .frame-wrap.scaled { justify-content: flex-start; }
+
+  /* Optional editing drawer, closed unless asked for */
+  .drawer { width: 380px; border-left: 1px solid var(--ink); overflow-y: auto; padding: 4px 22px 28px; background: var(--bg); }
+  fieldset { border: 0; padding: 20px 0; border-bottom: 1px solid var(--rule); min-width: 0; }
+  fieldset:last-child { border-bottom: 0; }
+  legend { font-weight: 600; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); padding: 0; margin-bottom: 12px; float: left; width: 100%; }
+  legend + * { clear: both; }
+  label { display: block; font-size: 13px; font-weight: 500; margin: 12px 0 5px; }
+  .drawer input, .drawer select, .drawer textarea { width: 100%; background: #fff; border: 1px solid var(--rule); border-radius: 4px; padding: 8px 10px; }
+  .drawer textarea { resize: vertical; min-height: 66px; }
+  .two { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .service { display: grid; grid-template-columns: 1fr 92px; gap: 8px; margin-bottom: 12px; }
+  .service input:last-child { grid-column: 1 / 3; }
+
+  @media (max-width: 860px) {
+    .start header { padding: 18px 20px; }
+    .ask { padding-bottom: 48px; }
+    .wall { grid-template-columns: repeat(2, 1fr); inset: -20% -40%; }
+    .col:nth-child(n+3) { display: none; }
+    .box-foot { flex-direction: column; align-items: stretch; }
+    .box-foot span { order: 2; }
+    .bar { flex-wrap: wrap; gap: 8px; }
+    .bar .spacer { display: none; }
+    .work { flex-direction: column-reverse; }
+    .chat { width: 100%; border-right: 0; border-top: 1px solid var(--ink); max-height: 42%; }
+    .drawer { width: 100%; border-left: 0; border-top: 1px solid var(--ink); max-height: 55%; }
+    .frame-wrap { padding: 8px; }
+    #sizes { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dots::after { animation: none; content: "..."; }
+    .go, .go i, iframe { transition: none; }
+    .track, .box::before, .chip::before, .ask h1 em { animation: none; }
+    .ask h1 .ln > span { animation: none; transform: none; }
+    .ask > p, .box, .examples { animation: none; opacity: 1; }
+  }
+
+  /* ---- Editor look: dark, to match the start screen ---- */
+  .result, .mine { --bg: #0B0C0E; --panel: #14161A; --ink: #F3F1EC; --muted: #8E8A82; --rule: rgba(255, 255, 255, .09); background: var(--bg); color: var(--ink); }
+  .result .bar { gap: 8px; padding: 8px 12px; min-height: 54px; background: #0E1013; border-bottom: 1px solid var(--rule); }
+  .site-name { font-size: 13px; color: var(--muted); max-width: 230px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-left: 14px; margin-left: 6px; border-left: 1px solid var(--rule); }
+  .pagepick { display: inline-flex; align-items: center; gap: 7px; border: 1px solid var(--rule); border-radius: 10px; background: var(--panel); padding: 0 6px 0 10px; color: var(--muted); }
+  .pagepick select { background: transparent; border: 0; color: var(--ink); font: 500 13px "Inter", sans-serif; padding: 8px 4px; cursor: pointer; max-width: 150px; outline-offset: 2px; }
+  .pagepick select option { color: #141414; }
+  .building .pagepick { pointer-events: none; opacity: .6; }
+  .result .seg { border: 1px solid var(--rule); border-radius: 10px; background: var(--panel); padding: 3px; }
+  .result .seg button { color: var(--muted); border-radius: 7px; padding: 6px 12px; }
+  .result .seg button[aria-pressed="true"] { background: #2A2E36; color: var(--ink); }
+  .result .btn, .mine .btn { border: 1px solid var(--rule); background: var(--panel); color: #DAD6CE; border-radius: 10px; padding: 8px 12px; font-weight: 500; transition: background .15s, border-color .15s, color .15s; }
+  .result .btn:hover, .mine .btn:hover { background: #1D2026; border-color: rgba(255, 255, 255, .22); color: var(--ink); }
+  .result .btn.quiet, .mine .btn.quiet { background: transparent; border-color: transparent; color: var(--muted); }
+  .result .btn.quiet:hover, .mine .btn.quiet:hover { background: var(--panel); color: var(--ink); }
+  .result .btn.primary, .mine .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; box-shadow: 0 8px 22px -10px rgba(255, 79, 26, .9); }
+  .result .btn.primary:hover, .mine .btn.primary:hover { background: #FF6233; border-color: #FF6233; }
+  .result .btn[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .result .status { color: var(--ink); }
+  .result .status .meter { background: #23262D; }
+  .edit-hint { background: rgba(255, 79, 26, .12); color: #FFD6C7; border-bottom: 1px solid rgba(255, 79, 26, .3); }
+
+  .chat { width: 370px; background: #0E1013; border-right: 1px solid var(--rule); }
+  .chat-log { padding: 18px 16px; gap: 12px; }
+  .bubble { font-size: 14.5px; line-height: 1.5; border-radius: 14px; padding: 11px 14px; }
+  .bubble.bot { background: var(--panel); border: 1px solid var(--rule); color: #E6E2DA; border-bottom-left-radius: 4px; }
+  .bubble.user { background: #2A2E36; color: var(--ink); border-bottom-right-radius: 4px; }
+  .bubble.bad { border-color: rgba(255, 154, 138, .6); color: #FF9A8A; }
+  .chips button { background: transparent; border: 1px solid var(--rule); color: #CFCBC3; padding: 6px 11px; transition: border-color .15s, color .15s; }
+  .chips button:hover { border-color: var(--accent); color: var(--ink); }
+  .bubble.used { background: transparent; border: 0; padding: 0 4px; font-size: 12.5px; color: var(--muted); }
+  #chat-price { margin-bottom: 4px; }
+  .scope { display: flex; align-items: center; gap: 6px; margin: 0 14px 8px; font-size: 12.5px; color: var(--muted); }
+  .scope select { background: var(--panel); border: 1px solid var(--rule); color: var(--ink); border-radius: 8px; padding: 4px 6px; font: inherit; cursor: pointer; }
+  .scope select option { color: #141414; }
+  .building .scope { opacity: .5; pointer-events: none; }
+  .chat-form { margin: 0 12px 12px; padding: 10px 10px 10px 14px; border: 1px solid var(--rule); border-radius: 16px; background: var(--panel); transition: border-color .15s; }
+  .chat-form:focus-within { border-color: rgba(255, 255, 255, .3); }
+  .chat-form textarea { border: 0; background: transparent; color: var(--ink); padding: 6px 0; font-size: 14.5px; outline: 0; }
+  .chat-form textarea::placeholder { color: #6F6C66; }
+  .result #chat-send { width: 36px; height: 36px; padding: 0; border-radius: 50%; font-size: 0; flex: none; display: grid; place-items: center; }
+  .result #chat-send::before { content: "\2191"; font-size: 18px; line-height: 1; }
+  .result #chat-send[disabled] { opacity: .5; }
+
+  .frame-wrap { background: radial-gradient(900px circle at 60% 0%, #15181D 0, #0B0C0E 60%); padding: 14px; }
+  .result iframe { border: 1px solid var(--rule); border-radius: 12px; box-shadow: 0 30px 80px -30px #000; }
+
+  .mine-head { border-bottom: 1px solid var(--rule); background: #0E1013; }
+  .mine .card { background: var(--panel); border: 1px solid var(--rule); border-radius: 12px; }
+  .mine .thumb { border-bottom: 1px solid var(--rule); background: #1B1E24; }
+
+  .auth { --bg: #14161A; --ink: #F3F1EC; --muted: #9A968E; --rule: rgba(255, 255, 255, .14); border: 1px solid var(--rule); border-radius: 16px; box-shadow: 0 40px 100px -20px #000; }
+  .auth::backdrop { background: rgba(4, 5, 6, .72); }
+  .auth input { background: #0B0C0E; border: 1px solid var(--rule); color: var(--ink); border-radius: 9px; }
+  .auth input:focus-visible { outline-color: var(--accent); }
+  .auth .go { border-radius: 10px; }
+  .auth-msg { color: #FF9A8A; }
+  .auth-msg.ok { color: #6FD3A8; }
+  .google { background: #fff; color: #141414; border: 0; border-radius: 9px; }
+  .pub-row .btn { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 10px; }
+  .auth-x { color: var(--muted); }
+
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 12px 10px; }
+  #chat-toggle { display: none; }
+  .result .tools .btn { font-size: 12.5px; padding: 6px 11px; border-radius: 999px; }
+  .result .btn.icon { width: 36px; padding: 8px 0; text-align: center; font-size: 15px; }
+  .building .tools { opacity: .45; pointer-events: none; }
+  .pixels { display: inline-flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: #F3F1EC; border: 1px solid rgba(255, 255, 255, .16); background: rgba(255, 255, 255, .05); border-radius: 999px; padding: 6px 12px; white-space: nowrap; }
+  .pixels::before { content: ""; width: 9px; height: 9px; background: var(--accent); border-radius: 2px; }
+  .pixels.low { border-color: rgba(255, 154, 138, .6); color: #FFB3A6; }
+  .building .pixels { display: none; }
+  .acct.icon, .result .btn.icon, .mine .btn.icon { display: inline-grid; place-items: center; width: 36px; height: 36px; padding: 0; }
+  .settings { width: min(460px, calc(100vw - 32px)); }
+  .set-body { position: relative; padding: 28px 28px 22px; color: var(--ink); }
+  .set-body h2 { font: 400 34px/1 var(--serif); margin-bottom: 6px; }
+  .set-body section { padding: 18px 0; border-top: 1px solid var(--rule); display: grid; gap: 10px; justify-items: start; }
+  .set-body section:first-of-type { border-top: 0; }
+  .set-body h3 { font: 600 11px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+  .plans { width: min(900px, calc(100vw - 32px)); }
+  .plans-body { position: relative; padding: 30px 28px 24px; display: grid; gap: 10px; }
+  .plans-body h3 { font: 600 11px "Inter", sans-serif; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); margin-top: 10px; }
+  .plan-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+  .plan { border: 1px solid var(--rule); border-radius: 12px; padding: 16px; display: grid; gap: 4px; align-content: start; }
+  .plan.best { border-color: var(--accent); }
+  .plan b { font-size: 15px; }
+  .plan .price { font: 400 32px/1.1 var(--serif); }
+  .plan .price small { font: 400 13px "Inter", sans-serif; color: var(--muted); }
+  .plan .gets { font-size: 14px; font-weight: 600; }
+  .plan p { font-size: 13px; color: var(--muted); min-height: 2.8em; }
+  .plan ul { list-style: none; padding: 0; margin: 6px 0 0; display: grid; gap: 6px; font-size: 13px; color: var(--muted); }
+  .plan li { padding-left: 18px; position: relative; }
+  .plan li::before { content: ""; position: absolute; left: 2px; top: .45em; width: 7px; height: 7px; border-radius: 2px; background: var(--accent); }
+  .plan li:first-child { color: var(--ink); font-weight: 600; }
+  .yours { font: 600 10px "Inter", sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); margin-left: 8px; }
+  .plan { grid-template-rows: auto auto 1fr auto; }
+  .plan .go { justify-content: center; padding: 10px 14px; font-size: 14px; margin-top: 8px; }
+  .linkish { border: 0; background: none; padding: 0; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
+  [data-pixels] { cursor: pointer; }
+  .set-row { display: flex; gap: 10px; align-items: baseline; font-size: 14.5px; flex-wrap: wrap; }
+  .set-row span, .set-note { color: var(--muted); font-size: 14px; }
+  .settings form.set-pass { width: 100%; display: grid; gap: 6px; padding: 0; }
+  .settings .set-pass label { margin: 0; }
+  .set-inline { display: flex; gap: 8px; }
+  .set-inline input { flex: 1; }
+  .settings .btn { border: 1px solid var(--rule); background: transparent; color: var(--ink); border-radius: 10px; padding: 9px 14px; font-weight: 500; font-size: 14px; cursor: pointer; text-decoration: none; }
+  .settings .btn:hover { border-color: rgba(255, 255, 255, .3); }
+  .settings .btn.danger { color: #FF9A8A; border-color: rgba(255, 154, 138, .45); }
+  .set-links { display: flex; gap: 18px; font-size: 14.5px; }
+  .set-links a { color: var(--ink); }
+  .settings .auth-msg { min-height: 0; }
+  @media (max-width: 860px) {
+    .chat { width: 100%; border-right: 0; border-top: 1px solid var(--rule); }
+    .site-name { display: none; }
+  }
+  /* Phones */
+  .chip, .top-right .btn, .top-right button { white-space: nowrap; }
+  @media (max-width: 640px) {
+    .start header { padding: 14px 16px; gap: 10px; }
+    .start .logo { font-size: 20px; }
+    .top-right { gap: 8px; }
+    .top-right .chip { display: none; }                      /* no room for badges; the logo already opens the intro */
+    .start header { flex-wrap: wrap; row-gap: 8px; }
+    .top-right { flex-wrap: wrap; justify-content: flex-end; margin-left: auto; min-width: 0; }
+    .top-right .btn, .top-right button, .top-right .pixels { padding: 7px 11px; font-size: 13px; }
+    .ask { padding-left: 16px; padding-right: 16px; }
+    .box textarea { min-height: 120px; padding: 18px 18px 6px; font-size: 16px; }
+    .box-foot { padding: 10px 12px 12px; gap: 10px; }
+    .kind { display: grid; grid-template-columns: 1fr; width: 100%; }
+    .kind button { text-align: left; padding: 10px 12px; font-size: 14px; }
+    .kind .pages { padding: 6px 12px 8px; }
+    .go { justify-content: center; }
+    .helper { font-size: 13px; }
+    /* Editor */
+    .bar { padding: 8px 10px; gap: 6px; }
+    .bar .logo { font-size: 0; gap: 0; }                     /* just the badge, to save room */
+    .bar .btn { padding: 8px 11px; font-size: 13px; }
+    .pagepick select { max-width: 104px; padding: 7px 2px; }
+    /* The site gets most of the screen; the conversation opens when asked for or when a reply arrives. */
+    .chat { max-height: 62%; }
+    .chat-log { display: none; min-height: 120px; }
+    .chat.log-open .chat-log { display: block; }
+    #chat-toggle { display: inline-flex; }
+    .scope { display: none; }
+    .chat.log-open .scope { display: flex; }
+    .chat-form { margin: 0 10px 10px; }
+    #chat-input { min-height: 0; }
+    /* My sites */
+    .mine-head { flex-wrap: wrap; padding: 12px 14px; gap: 8px; }
+    .mine-head .logo { font-size: 0; gap: 0; }
+    .mine-head .who { display: none; }
+    .mine-head .btn, .mine-head .pixels { padding: 7px 11px; font-size: 13px; }
+    .mine-main { padding: 26px 14px 60px; }
+    .mine-main h1 { font-size: 40px; }
+    .grid { grid-template-columns: 1fr; gap: 16px; }
+    .card-foot { flex-wrap: wrap; }
+    .tools { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .tools::-webkit-scrollbar { display: none; }
+    .tools .btn { flex: none; }
+    #chat-price { display: none; }
+    #chat-input { font-size: 16px; }                         /* stops phones zooming in when typing */
+    .auth input, .auth select, .auth textarea, .box textarea { font-size: 16px; }
+    .plans-body, .pub-body { padding: 22px 18px 18px; }
+    .pubpanel { margin: 56px 8px auto 8px; width: auto; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Start screen: one place to type -->
+<div class="start" id="start">
+  <div class="wall" aria-hidden="true">
+    <div class="col"><div class="track"><img src="/wall/0.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/1.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/2.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/0.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/1.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/2.jpg" alt="" width="720" height="844" loading="eager"></div></div>
+    <div class="col"><div class="track"><img src="/wall/3.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/4.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/5.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/3.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/4.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/5.jpg" alt="" width="720" height="844" loading="eager"></div></div>
+    <div class="col"><div class="track"><img src="/wall/2.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/0.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/4.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/2.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/0.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/4.jpg" alt="" width="720" height="844" loading="eager"></div></div>
+    <div class="col"><div class="track"><img src="/wall/5.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/3.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/1.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/5.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/3.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/1.jpg" alt="" width="720" height="844" loading="eager"></div></div>
+  </div>
+  <div class="veil" aria-hidden="true"></div>
+  <div class="spot" aria-hidden="true"></div>
+  <header><a class="logo" href="/"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a><span class="top-right"><a class="chip" href="/" style="text-decoration:none;color:inherit">See how it works</a><span class="chip">Free to try</span><span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free. Click to get more." role="button" tabindex="0"></span><button class="acct" type="button" data-act="mine" hidden>My sites</button><button class="acct" type="button" data-act="signin">Sign in</button><button class="acct quiet icon" type="button" data-act="settings" hidden title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button></span></header>
+  <main class="ask">
+    <h1><span class="ln"><span>Describe the business.</span></span><span class="ln"><span><em>Get the site.</em></span></span></h1>
+    <p>One message in. A finished, animated website out, in about a minute.</p>
+    <div class="box">
+      <label for="prompt" style="position:absolute;clip:rect(0 0 0 0);margin:0">Describe the business</label>
+      <textarea id="prompt" maxlength="3000" placeholder="Name, what they do, where, prices, hours, phone…"></textarea>
+      <div class="box-foot">
+        <div class="kind" role="group" aria-label="Kind of build">
+          <button type="button" data-kind="quick" aria-pressed="true" title="Starts from a design in our library and rebuilds it around this business. Faster.">Quick build<small data-cost="build"></small></button>
+          <button type="button" data-kind="new" aria-pressed="false" title="Designs a site from nothing, only for this business. Takes longer. Paid plans.">Brand new design<small data-cost="fresh"></small></button>
+          <button type="button" data-kind="multi" aria-pressed="false" title="A brand new design with several pages, such as Home, Services and Contact. Takes a few minutes. Paid plans.">Multi-page<small data-cost="multi"></small></button>
+          <label class="pages" id="pages-pick" hidden>Pages <select id="page-count"><option>2</option><option selected>3</option><option>4</option><option>5</option></select></label>
+        </div>
+        <button class="go" id="go" type="button">Build the site <i aria-hidden="true">→</i></button>
+      </div>
+    </div>
+    <p class="helper"><button type="button" class="linkish" id="writer-open">Not sure what to write? Answer a few questions and we'll write the description for you.</button></p>
+    <p class="msg" id="msg" role="status" aria-live="polite"></p>
+    <div class="examples" id="examples"><span>Try an example:</span></div>
+  </main>
+  <footer class="legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:unblandapp@gmail.com">Contact</a></footer>
+</div>
+
+<!-- Result screen: the site, appearing as it is designed -->
+<div class="result" id="result" hidden>
+  <div class="bar">
+    <a class="logo" href="/"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a>
+    <span class="site-name" id="site-name"></span>
+    <div class="status" id="status" role="status" aria-live="polite"><span class="pulse" aria-hidden="true"></span><span id="status-text"></span><span class="meter" aria-hidden="true"><i id="meter"></i></span></div>
+    <label class="pagepick" id="pagepick" hidden title="Choose which page to see and edit"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg><select id="page-pick" aria-label="Page being shown"></select></label>
+    <div class="seg" role="group" aria-label="Preview size" id="sizes">
+      <button type="button" data-size="desktop" aria-pressed="true">Desktop</button>
+      <button type="button" data-size="tablet" aria-pressed="false">Tablet</button>
+      <button type="button" data-size="phone" aria-pressed="false">Phone</button>
+    </div>
+    <span class="spacer"></span>
+    <span class="saved" id="saved" role="status" aria-live="polite"></span>
+    <span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free. Click to get more." role="button" tabindex="0"></span>
+    <button class="btn quiet" type="button" data-act="mine" hidden>My sites</button>
+    <button class="btn quiet icon" type="button" data-act="settings" hidden title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    <button class="btn" type="button" data-act="signin">Sign in to save</button>
+    <button class="btn quiet" type="button" id="again">New site</button>
+    <button class="btn quiet" type="button" id="undo" disabled>Undo</button>
+    <button class="btn icon" type="button" id="open" title="Open full size in a new tab" aria-label="Open full size in a new tab">&#8599;</button>
+    <button class="btn primary" type="button" id="publish">Publish</button>
+  </div>
+  <p class="edit-hint" id="edit-hint" hidden>Click any text to change it. Click a photo to replace it. Editing by hand is free and uses no builds.</p>
+  <div class="work">
+    <aside class="chat" id="chat" aria-label="Chat to change the site">
+      <div class="chat-log" id="chat-log" role="log" aria-live="polite"></div>
+      <div class="tools" role="group" aria-label="Site tools">
+        <button class="btn" type="button" id="chat-toggle" aria-expanded="false">Chat ▴</button>
+        <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
+        <button class="btn" type="button" id="logo">Add logo</button>
+        <button class="btn" type="button" id="effects" aria-pressed="false" title="Adds or removes immersive effects: drifting particles, a glow that follows the cursor, and photos that move with depth as you scroll. Free.">Effects</button>
+        <button class="btn" type="button" id="tabicon" title="The small picture shown in the browser tab and in bookmarks.">Tab icon</button>
+        <button class="btn" type="button" id="restyle" title="Rebuilds the same business in a different style from our library.">Try another style</button>
+        <button class="btn" type="button" id="renew" title="Designs the same business again from nothing. Paid plans.">Brand new design</button>
+      </div>
+      <p class="scope" id="chat-price">Small changes use 1 pixel. Bigger ones use more, up to 6.</p>
+      <label class="scope" title="Choose whether a chat change applies to every screen size or only one">Change applies to <select id="scope"><option value="">all screen sizes</option><option value="computer">computer only</option><option value="tablet">tablet only</option><option value="phone">phone only</option></select></label>
+      <form class="chat-form" id="chat-form">
+        <label for="chat-input" style="position:absolute;clip:rect(0 0 0 0);margin:0">Ask for a change</label>
+        <textarea id="chat-input" rows="2" maxlength="1500" placeholder="Ask for a change…"></textarea>
+        <button class="btn primary" type="submit" id="chat-send">Send</button>
+      </form>
+    </aside>
+    <div class="frame-wrap" id="wrap"><iframe id="frame" title="Your site"></iframe></div>
+  </div>
+  <input type="file" id="photo" accept="image/*" hidden>
+  <input type="file" id="logo-file" accept="image/*" hidden>
+  <input type="file" id="tabicon-file" accept="image/*" hidden>
+</div>
+
+<!-- My sites: everything the signed-in person has built -->
+<div class="mine" id="mine" hidden>
+  <header class="mine-head">
+    <a class="logo" href="/"><svg class="mark" viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a>
+    <span class="spacer"></span>
+    <span class="who" id="who"></span>
+    <span class="pixels" data-pixels hidden title="Pixels pay for AI work. Editing by hand is free. Click to get more." role="button" tabindex="0"></span>
+    <button class="btn quiet icon" type="button" data-act="settings" title="Settings" aria-label="Settings"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .300 1.800l.100.100a2 2 0 1 1-2.8 2.800l-.100-.100a1.7 1.7 0 0 0-1.8-.300 1.7 1.7 0 0 0-1 1.500V21a2 2 0 0 1-4 0v-.100a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.300l-.100.100a2 2 0 1 1-2.8-2.800l.100-.100a1.7 1.7 0 0 0 .300-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 0 1 0-4h.100a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.300-1.800l-.100-.100a2 2 0 1 1 2.8-2.800l.100.100a1.7 1.7 0 0 0 1.8.300H9a1.7 1.7 0 0 0 1-1.500V3a2 2 0 0 1 4 0v.100a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.300l.100-.100a2 2 0 1 1 2.8 2.800l-.100.100a1.7 1.7 0 0 0-.300 1.800V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 0 1 0 4h-.100a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
+    <button class="btn primary" type="button" id="mine-new">New site</button>
+  </header>
+  <main class="mine-main">
+    <h1>My sites</h1>
+    <p class="mine-note" id="mine-note" role="status" aria-live="polite"></p>
+    <div class="grid" id="grid"></div>
+  </main>
+</div>
+
+<!-- Publish: the live link for a site -->
+<dialog class="auth pubpanel" id="pub" aria-labelledby="pub-title" data-state="off">
+  <div class="pub-body">
+    <div class="pub-head"><i class="pub-dot" aria-hidden="true"></i><h2 id="pub-title">Not published</h2><button class="auth-x" type="button" id="pub-close" aria-label="Close">×</button></div>
+    <p class="auth-sub" id="pub-sub"></p>
+    <h3>Web address</h3>
+    <div class="pub-card">
+      <div class="pub-addr" id="pub-addr">
+        <span class="pub-icon" id="pub-icon" aria-hidden="true"></span>
+        <span class="pub-url"><span id="pub-base"></span><b id="pub-slug"></b></span>
+        <button type="button" class="pub-tool" id="pub-edit" title="Change the address" aria-label="Change the address"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></button>
+        <button type="button" class="pub-tool" id="pub-copy" title="Copy the link" aria-label="Copy the link"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg></button>
+        <a class="pub-tool" id="pub-open" target="_blank" rel="noopener" title="Open the live site" aria-label="Open the live site"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6"/><path d="M20 4l-9 9"/><path d="M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></a>
+      </div>
+      <form class="pub-rename" id="pub-rename" hidden>
+        <label for="pub-name" style="position:absolute;clip:rect(0 0 0 0)">Address name</label>
+        <input id="pub-name" type="text" maxlength="60" autocomplete="off" spellcheck="false" placeholder="business-name">
+        <button class="btn" type="submit">Save</button>
+      </form>
+      <p class="pub-line"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Anyone with the link can see it</p>
+      <p class="pub-line" id="pub-badge"></p>
+    </div>
+    <p class="auth-msg" id="pub-msg" role="status" aria-live="polite"></p>
+    <div class="pub-foot"><button type="button" class="linkish" id="pub-off">Take offline</button><button class="go" type="button" id="pub-go">Publish</button></div>
+  </div>
+</dialog>
+
+<!-- Settings -->
+<dialog class="auth settings" id="settings" aria-labelledby="set-title">
+  <div class="set-body">
+    <h2 id="set-title">Settings</h2>
+    <section>
+      <h3>Account</h3>
+      <p class="set-row"><span>Signed in as</span><b id="set-email"></b></p>
+      <p class="set-row"><span>Pixels</span><b id="set-pixels">…</b><span id="set-plan"></span></p>
+      <p class="set-note" id="set-costs"></p>
+      <button class="btn" type="button" id="set-more">Get more pixels</button>
+      <form id="set-pass-form" class="set-pass">
+        <label for="set-pass">New password</label>
+        <div class="set-inline"><input id="set-pass" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters"><button class="btn" type="submit">Change</button></div>
+        <p class="auth-msg" id="set-pass-msg" role="status" aria-live="polite"></p>
+      </form>
+      <button class="btn" type="button" data-act="signout">Sign out</button>
+    </section>
+    <section id="set-owner" hidden>
+      <h3>Owner tools</h3>
+      <p class="set-note">The marketing agent, its drafts, and the design library.</p>
+      <a class="btn" href="/admin">Open owner tools</a>
+    </section>
+    <section>
+      <h3>Help and legal</h3>
+      <p class="set-links"><a href="mailto:unblandapp@gmail.com">Contact us</a><a href="/privacy" target="_blank" rel="noopener">Privacy</a><a href="/terms" target="_blank" rel="noopener">Terms</a></p>
+    </section>
+    <section id="set-danger">
+      <h3>Delete account</h3>
+      <p class="set-note">Permanently removes your account, every saved site, and any site you've published. This can't be undone.</p>
+      <button class="btn danger" type="button" id="set-delete">Delete my account</button>
+      <p class="auth-msg" id="set-del-msg" role="status" aria-live="polite"></p>
+    </section>
+    <button class="auth-x" type="button" id="set-close" aria-label="Close">×</button>
+  </div>
+</dialog>
+
+<!-- Sign in or create an account -->
+<dialog class="auth" id="del" aria-labelledby="del-title">
+  <form method="dialog">
+    <h2 id="del-title">Delete this site?</h2>
+    <p class="auth-sub" id="del-text"></p>
+    <p class="auth-msg" id="del-live"></p>
+    <div class="pub-row"><button class="btn" type="button" id="del-no">Keep it</button><button class="go danger" type="button" id="del-yes" disabled>Delete</button></div>
+  </form>
+</dialog>
+
+<dialog class="auth writer" id="writer" aria-labelledby="writer-title">
+  <form class="writer-form" id="writer-form">
+    <h2 id="writer-title">Describe the business</h2>
+    <p class="auth-sub">Fill in what you know and skip the rest. The more real details you give, the fuller the site. We never make up facts about the business.</p>
+    <div class="writer-two">
+      <div><label for="w-name">Business name</label><input id="w-name" type="text" maxlength="80" required></div>
+      <div><label for="w-what">What it does</label><input id="w-what" type="text" maxlength="120" required placeholder="Roof cleaning, barbershop, bakery…"></div>
+      <div><label for="w-where">Town or area served</label><input id="w-where" type="text" maxlength="120"></div>
+      <div><label for="w-phone">Phone</label><input id="w-phone" type="text" maxlength="40"></div>
+      <div><label for="w-email">Email</label><input id="w-email" type="text" maxlength="80"></div>
+      <div><label for="w-address">Address</label><input id="w-address" type="text" maxlength="140"></div>
+    </div>
+    <div class="sugg">
+      <button class="btn" type="button" id="sugg-go">Suggest things to tick</button>
+      <span class="set-note" id="sugg-note">We'll list what this kind of business usually offers. Tick only what's true.</span>
+    </div>
+    <div id="sugg-box" hidden>
+      <label>Services they offer</label>
+      <div class="ticks" id="sugg-services"></div>
+      <label>Also true</label>
+      <div class="ticks" id="sugg-facts"></div>
+    </div>
+    <label for="w-services">Other services, and any prices</label>
+    <textarea id="w-services" maxlength="900" placeholder="One per line, for example: Soft wash roof cleaning, from $350"></textarea>
+    <label for="w-hours">Opening hours</label>
+    <input id="w-hours" type="text" maxlength="160" placeholder="Mon to Fri 8am to 5pm, Sat 9am to 1pm">
+    <label for="w-special">What makes it different</label>
+    <textarea id="w-special" maxlength="600" placeholder="Only true things: family run, licensed and insured, free quotes…"></textarea>
+    <label for="w-look">Look and colors (optional)</label>
+    <input id="w-look" type="text" maxlength="160" placeholder="Navy blue and white, clean and modern">
+    <p class="auth-msg" id="writer-msg" role="status" aria-live="polite"></p>
+    <button class="go" type="submit">Write my description <i aria-hidden="true">→</i></button>
+    <button class="auth-x" type="button" id="writer-close" aria-label="Close">×</button>
+  </form>
+</dialog>
+
+<dialog class="auth settings plans" id="plans" aria-labelledby="plans-title">
+  <div class="plans-body">
+    <h2 id="plans-title">Get more pixels</h2>
+    <p class="auth-sub">Pixels pay for AI work: building sites and chat changes. Editing by hand is always free. Pixels you don't use stay on your account.</p>
+    <p class="auth-msg" id="plans-msg" role="status" aria-live="polite"></p>
+    <h3>Monthly plans</h3>
+    <div class="plan-grid" id="plans-plans"></div>
+    <h3>One-time top-ups</h3>
+    <div class="plan-grid" id="plans-topups"></div>
+    <p class="set-note">Payments are handled by Stripe. Plans renew monthly until canceled, and include brand new designs. <button type="button" class="linkish" id="plans-manage">Manage billing or cancel</button></p>
+    <button class="auth-x" type="button" id="plans-close" aria-label="Close">×</button>
+  </div>
+</dialog>
+
+<dialog class="auth" id="auth" aria-labelledby="auth-title">
+  <form id="auth-form" method="dialog">
+    <h2 id="auth-title">Sign in</h2>
+    <p class="auth-sub" id="auth-sub">Save your sites and come back to them from any device.</p>
+    <button class="google" type="button" id="auth-google" hidden>
+      <svg viewBox="0 0 48 48" width="18" height="18" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9.1 3.6l6.8-6.8C35.8 2.4 30.3 0 24 0 14.6 0 6.5 5.4 2.6 13.2l7.9 6.2C12.4 13.6 17.7 9.5 24 9.5z"/><path fill="#4285F4" d="M46.1 24.5c0-1.6-.1-3.1-.4-4.5H24v9h12.4c-.5 2.9-2.2 5.3-4.6 7l7.2 5.6c4.2-3.9 7.1-9.6 7.1-17.1z"/><path fill="#FBBC05" d="M10.5 28.6c-.5-1.4-.8-3-.8-4.6s.3-3.2.8-4.6l-7.9-6.2C1 16.5 0 20.1 0 24s1 7.5 2.6 10.8l7.9-6.2z"/><path fill="#34A853" d="M24 48c6.5 0 11.9-2.1 15.9-5.8l-7.2-5.6c-2.1 1.4-4.9 2.3-8.7 2.3-6.3 0-11.6-4.1-13.5-9.9l-7.9 6.2C6.5 42.6 14.6 48 24 48z"/></svg>
+      Continue with Google
+    </button>
+    <p class="or" id="auth-or" hidden><span>or</span></p>
+    <label for="auth-email">Email</label>
+    <input id="auth-email" type="email" autocomplete="email" required>
+    <label for="auth-pass">Password</label>
+    <input id="auth-pass" type="password" autocomplete="current-password" minlength="8" required>
+    <p class="auth-msg" id="auth-msg" role="status" aria-live="polite"></p>
+    <button class="go" type="submit" id="auth-go">Sign in</button>
+    <p class="auth-switch"><span id="auth-q">New here?</span> <button type="button" id="auth-toggle">Create an account</button></p>
+    <p class="auth-legal">By continuing you agree to the <a href="/terms" target="_blank" rel="noopener">terms</a> and <a href="/privacy" target="_blank" rel="noopener">privacy policy</a>.</p>
+    <button class="auth-x" type="button" id="auth-close" aria-label="Close">×</button>
+  </form>
+</dialog>
+
+<script type="module">
+  const FUNCTIONS_URL = "https://clssxldrgtpiajwqgghl.supabase.co/functions/v1";
+  // Public browser key for the project; it only allows calling the functions and inserting sign-ups.
+  const ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNsc3N4bGRyZ3RwaWFqd3FnZ2hsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE0MDYyMTAsImV4cCI6MjEwNjk4MjIxMH0.sKa10fVoqgXD6yCYq5bxo6WryLoJIAU66X0BAQP88s4";
+  const SAVE_KEY = "unbland.site.v2";
+  const TYPICAL_SIZE = 17000;   // characters in a finished site, for the progress meter
+  const EXAMPLES = {
+    "Mobile detailer": "Shine Lab Detailing is a one-man mobile detailing business in Portland, OR. I come to your driveway and bring my own water and power. Reset wash is $149, Deep clean is $289, and paint correction with ceramic coating starts at $790. Open Monday to Friday 8am to 6pm and Saturday 9am to 4pm. Text (503) 555-0142.",
+    "Neighborhood cafe": "Northside Roasters is a small-batch coffee roaster with a cafe at 42 Northside Avenue in Portland. We roast every week behind the counter. House Blend is $18 a bag, the Ethiopian single origin is $22, and decaf is $20. Open weekdays 7am to 4pm and weekends 8am to 2pm. hello@northside.example",
+    "Landscaper": "Greenline Gardens does lawn care, planting and patio builds for homes around Raleigh, NC. Family run. We give free on-site quotes and handle everything from weekly mowing to full garden redesigns. Call (919) 555-0117 or email quotes@greenline.example."
+  };
+
+  const $ = id => document.getElementById(id);
+  const frame = $("frame"), result = $("result"), startEl = $("start");
+  const go = $("go"), msg = $("msg"), promptBox = $("prompt");
+
+  // The current site: its full HTML, the description it came from, and the styles already used for it.
+  let site = { html: "", prompt: "", used: [] };
+  let busy = false;
+
+  const pretty = name => name.replace(/-/g, " ").replace(/^./, c => c.toUpperCase());
+  const say = (text, bad) => { msg.textContent = text; msg.classList.toggle("err", !!bad); msg.classList.remove("dots"); };
+  const show = done => { startEl.hidden = done; result.hidden = !done; $("mine").hidden = true; };
+  const save = () => { try { localStorage.setItem(SAVE_KEY, JSON.stringify(site)); } catch { /* storage unavailable */ } queueCloudSave(); };
+
+  // In-page links must scroll inside the preview. Left alone, they load this whole page into the frame.
+  function tameLinks() {
+    frame.contentDocument.addEventListener("click", e => {
+      const link = e.target.closest?.("a[href]");
+      if (!link) return;
+      const href = link.getAttribute("href");
+      if (/^(tel:|mailto:|sms:)/.test(href)) return;
+      e.preventDefault();
+      const target = href.startsWith("#") && href.length > 1 ? frame.contentDocument.getElementById(href.slice(1)) : null;
+      if (target) target.scrollIntoView({ behavior: "smooth" });
+    });
+  }
+  // The site is kept as a parsed document in which every element carries a number (data-u).
+  // The preview shows that numbered copy, so an edit made in the preview can be written back to the right place.
+  let source = null;
+  let editing = false;
+  const history = [];
+  const numbered = () => "<!doctype html>\n" + source.documentElement.outerHTML;
+  const plain = () => numbered().replace(/ data-u="\d+"/g, "");
+  const inSource = el => source.querySelector(`[data-u="${el.getAttribute("data-u")}"]`);
+
+  // Multi-page sites: a picker in the toolbar chooses which page the preview shows and edits apply to.
+  let currentPage = "home";
+  const pageList = () => !source ? [] : [...source.querySelectorAll("main[data-page]")].map(m => {
+    const slug = m.getAttribute("data-page");
+    const name = source.querySelector(`a[href="#/${slug}"]`)?.textContent.trim().replace(/\s+/g, " ");
+    return { slug, name: name && name.length < 40 ? name : slug.replace(/-/g, " ").replace(/^./, c => c.toUpperCase()) };
+  });
+  function drawPages() {
+    const pages = pageList(), pick = $("page-pick");
+    $("pagepick").hidden = pages.length < 2;
+    pick.textContent = "";
+    for (const p of pages) { const o = document.createElement("option"); o.value = p.slug; o.textContent = p.name; pick.append(o); }
+    if (!pages.some(p => p.slug === currentPage)) currentPage = "home";
+    pick.value = currentPage;
+  }
+  function showPage(slug) {
+    const doc = frame.contentDocument;
+    const mains = doc ? [...doc.querySelectorAll("main[data-page]")] : [];
+    if (mains.length < 2) return;
+    if (!mains.some(m => m.getAttribute("data-page") === slug)) slug = "home";
+    currentPage = slug;
+    mains.forEach(m => { m.hidden = m.getAttribute("data-page") !== slug; });
+    doc.querySelectorAll('a[href^="#/"]').forEach(a => {
+      const on = a.getAttribute("href") === "#/" + slug;
+      a.classList.toggle("current", on);
+      if (on) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    });
+    const win = frame.contentWindow;
+    win.scrollTo(0, 0);
+    win.dispatchEvent(new win.Event("scroll")); win.dispatchEvent(new win.Event("resize"));
+    $("page-pick").value = slug;
+  }
+  $("page-pick").onchange = e => showPage(e.target.value);
+
+  function setSite(html, remember = true) {
+    if (remember && site.html && site.html !== html) { history.push(site.html); if (history.length > 40) history.shift(); }
+    source = new DOMParser().parseFromString(html, "text/html");
+    // Older multi-page sites get the latest page-switching script (it adds a phone menu when a site lacks one).
+    const pager = source.querySelector("script[data-pages]");
+    if (pager && pager.textContent !== PAGES_SCRIPT) { pager.textContent = PAGES_SCRIPT; html = "<!doctype html>\n" + source.documentElement.outerHTML; }
+    const fx = source.querySelector("script[data-fx]");
+    if (fx && fx.textContent !== FX_SCRIPT) { fx.textContent = FX_SCRIPT; html = "<!doctype html>\n" + source.documentElement.outerHTML; }
+    $("effects").textContent = fx ? "Effects: on" : "Effects";
+    $("effects").setAttribute("aria-pressed", String(!!fx));
+    let n = 0;
+    source.querySelectorAll("body *").forEach(el => el.setAttribute("data-u", n++));
+    site.html = html;
+    save();
+    $("site-name").textContent = siteName().split(/[|·—–]/)[0].trim();
+    $("undo").disabled = !history.length;
+    drawPages();
+    if (remember && site.slug) $("publish").textContent = "Publish changes";
+    frame.onload = wire;
+    frame.srcdoc = numbered();
+    requestAnimationFrame(fitPreview); setTimeout(fitPreview, 60);
+  }
+  // Records an edit already visible in the preview, without reloading it.
+  function commit() {
+    history.push(site.html);
+    if (history.length > 40) history.shift();
+    site.html = plain();
+    save();
+    $("undo").disabled = false;
+  }
+  const display = html => setSite(html, false);
+
+  // The nearest element that directly holds some text, which is what a click should edit.
+  function textTarget(node) {
+    for (let el = node; el && el.nodeType === 1 && el.tagName !== "BODY"; el = el.parentElement) {
+      if (/^(SCRIPT|STYLE|SVG|INPUT|TEXTAREA|SELECT)$/i.test(el.tagName)) return null;
+      if ([...el.childNodes].some(c => c.nodeType === 3 && c.textContent.trim()) && el.hasAttribute("data-u")) return el;
+    }
+    return null;
+  }
+  const shape = el => [...el.children].map(c => c.tagName).join(",");
+
+  function wire() {
+    const doc = frame.contentDocument;
+    tameLinks();
+    // Stay on the page being worked on after the preview reloads, and follow the site's own menu.
+    if (currentPage !== "home") showPage(currentPage);
+    doc.addEventListener("click", e => {
+      const a = e.target.closest?.('a[href^="#/"]');
+      if (!a || editing) return;
+      const slug = a.getAttribute("href").slice(2);
+      currentPage = doc.querySelector(`main[data-page="${slug.replace(/[^a-z0-9-]/gi, "")}"]`) ? slug : "home";
+      $("page-pick").value = currentPage;
+    });
+    const style = doc.createElement("style");
+    style.textContent = `.__hot{outline:2px dashed #FF4F1A!important;outline-offset:3px!important;cursor:text!important}img.__hot{cursor:pointer!important}[contenteditable]{outline:2px solid #FF4F1A!important;outline-offset:3px!important}`;
+    doc.head.append(style);
+
+    let hot = null;
+    doc.addEventListener("mouseover", e => {
+      if (!editing) return;
+      hot?.classList.remove("__hot");
+      hot = e.target.tagName === "IMG" ? e.target : textTarget(e.target);
+      hot?.classList.add("__hot");
+    });
+    doc.addEventListener("mouseout", () => { hot?.classList.remove("__hot"); hot = null; });
+
+    // Capture phase, so editing wins over the site's own links and buttons.
+    doc.addEventListener("click", e => {
+      if (!editing) return;
+      e.preventDefault();
+      e.stopPropagation();
+      if (e.target.tagName === "IMG" && e.target.hasAttribute("data-u")) { pickPhoto(e.target); return; }
+      const el = textTarget(e.target);
+      if (!el || el.isContentEditable) return;
+      const before = el.innerText;
+      el.classList.remove("__hot");
+      el.setAttribute("contenteditable", "plaintext-only");
+      if (!el.isContentEditable) el.setAttribute("contenteditable", "true");
+      el.focus();
+      el.addEventListener("keydown", k => { if (k.key === "Escape") el.blur(); });
+      el.addEventListener("blur", () => {
+        el.removeAttribute("contenteditable");
+        const after = el.innerText.replace(/\n+$/, "");
+        const src = inSource(el);
+        if (!src || after === before) return;
+        // Keep inner formatting when the structure is unchanged; otherwise store the plain words.
+        if (shape(src) === shape(el)) { src.innerHTML = el.innerHTML; src.querySelectorAll(".__hot").forEach(x => x.classList.remove("__hot")); }
+        else src.textContent = after;
+        commit();
+      }, { once: true });
+    }, true);
+  }
+
+  // Replace a photo with one from the visitor's computer, shrunk so the saved site stays small.
+  let photoTarget = null;
+  function pickPhoto(img) { photoTarget = img; $("photo").value = ""; $("photo").click(); }
+  $("photo").addEventListener("change", () => {
+    const file = $("photo").files[0];
+    if (!file || !photoTarget) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const im = new Image();
+      im.onload = () => {
+        const scale = Math.min(1, 1600 / Math.max(im.width, im.height));
+        const c = document.createElement("canvas");
+        c.width = Math.round(im.width * scale); c.height = Math.round(im.height * scale);
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+        const url = c.toDataURL("image/jpeg", 0.82);
+        const src = inSource(photoTarget);
+        for (const el of [photoTarget, src]) { if (!el) continue; el.removeAttribute("srcset"); el.setAttribute("src", url); }
+        if (src) commit();
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // ---- Chat: ask for a change in words; the server answers with exact edits to apply.
+  const chatLog = $("chat-log"), chatInput = $("chat-input");
+  const SUGGESTIONS = ["Make the headline shorter", "Change the main color to navy", "Add a section about gift cards"];
+  // On phones the conversation is folded away so the site has room; this opens and closes it.
+  const openLog = on => { $("chat").classList.toggle("log-open", on); $("chat-toggle").textContent = on ? "Chat ▾" : "Chat ▴"; $("chat-toggle").setAttribute("aria-expanded", String(on)); if (on) chatLog.scrollTop = chatLog.scrollHeight; requestAnimationFrame(() => typeof fitPreview === "function" && fitPreview()); };
+  $("chat-toggle").onclick = () => openLog(!$("chat").classList.contains("log-open"));
+  function bubble(role, text, extra = "") {
+    if (extra === "bad") openLog(true);   // never hide a problem
+    const el = document.createElement("div");
+    el.className = `bubble ${role === "user" ? "user" : "bot"} ${extra}`;
+    el.textContent = text;
+    chatLog.append(el);
+    chatLog.scrollTop = chatLog.scrollHeight;
+    return el;
+  }
+  function drawChat() {
+    chatLog.textContent = "";
+    bubble("bot", "Your site is ready. Tell me what to change and I'll do it. For quick fixes to wording or photos, press Edit and change them yourself; that's free.");
+    const asked = site.prompt || "";
+    if (/\b(\d+|two|three|four|five|six|multi|multiple|several)[- ]?pages?\b/i.test(asked) && !/<main[^>]+data-page=/i.test(site.html)) bubble("bot", "This is a one-page site, so what you asked for as separate pages is laid out as sections of a single page. For real separate pages, start a new site and choose Multi-page next to the Build button (paid plans).");
+    if (asked && asked.length < 220) bubble("bot", "Your description was short, so the site is light on detail. For a fuller site, start again and use the \"Answer a few questions\" link under the description box: it suggests services to tick and takes a minute.");
+    if (!user) bubble("bot", "This site is only stored in this browser for now. Create a free account to save it, publish it, and get free pixels for chat changes.");
+    const chips = document.createElement("div");
+    chips.className = "chips";
+    for (const text of SUGGESTIONS) {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = text;
+      b.onclick = () => { chatInput.value = text; chatInput.focus(); };
+      chips.append(b);
+    }
+    chatLog.append(chips);
+    for (const m of site.chat || []) bubble(m.role, m.text);
+  }
+
+  // A chat change can be limited to one screen size; the editor then makes it inside a media query.
+  const SCOPES = { computer: "computer screens (1025px and wider)", tablet: "tablet screens (641px to 1024px wide)", phone: "phone screens (640px and narrower)" };
+  const scopeNote = () => SCOPES[$("scope").value] ? `Apply this change only on ${SCOPES[$("scope").value]}. Leave the other screen sizes exactly as they are.\n\n` : "";
+  // Choosing a size to change also shows that size in the preview.
+  $("scope").onchange = e => { const b = sizeBtns.find(x => x.dataset.size === (e.target.value === "computer" ? "desktop" : e.target.value)); if (b) b.click(); };
+  async function ask(request) {
+    if (busy || !site.html) return;
+    busy = true;
+    setEditing(false);
+    $("chat-send").disabled = true;
+    site.chat = site.chat || [];
+    const history = site.chat.slice(-6);
+    bubble("user", request);
+    openLog(true);
+    const waiting = bubble("bot", "Working on it", "wait");
+    // Uploaded photos are long strings of data; swap them for short tokens while the page is with the AI.
+    const photos = [];
+    const lean = site.html.replace(/data:image\/[a-z+.-]+;base64,[A-Za-z0-9+\/=]+/g, m => { photos.push(m); return `data:photo-${photos.length}`; });
+    try {
+      const res = await fetch(`${FUNCTIONS_URL}/edit-site`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${await bearer()}`, apikey: ANON_KEY },
+        body: JSON.stringify({ html: lean, request: scopeNote() + request, history, page: pageList().find(p => p.slug === currentPage)?.name || "" })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (data.pixels != null) showPixels(data.pixels);
+      if (!res.ok) {
+        if (data.code === "signin") setTimeout(() => openAuth("signup"), 600);
+        if (data.code === "pixels") { showPixels(data.have); openPlans(data.error); }
+        throw new Error(data.error || "Something went wrong making that change. Try again.");
+      }
+      let html = lean, applied = 0;
+      for (const e of data.edits || []) {
+        const at = html.indexOf(e.find);
+        if (at < 0) continue;
+        html = html.slice(0, at) + e.replace + html.slice(at + e.find.length);
+        applied++;
+      }
+      html = html.replace(/data:photo-(\d+)/g, (m, n) => photos[n - 1] || m);
+      const wanted = (data.edits || []).length;
+      let reply = data.reply || (applied ? "Done." : "I didn't change anything.");
+      if (wanted && !applied) reply = "I couldn't apply that change to the page. Try asking in a slightly different way.";
+      else if (applied < wanted) reply += " (Part of that change didn't apply. Check the result and ask again if something is missing.)";
+      if (applied && /<\/html>\s*$/i.test(html)) setSite(html);
+      waiting.remove();
+      bubble("bot", reply);
+      if (data.used > 0) bubble("bot", `That change used ${data.used} pixel${data.used === 1 ? "" : "s"}.${data.used > 1 ? " Bigger changes use more." : ""}`, "used");
+      site.chat.push({ role: "user", text: request }, { role: "assistant", text: reply });
+      save();
+    } catch (err) {
+      waiting.remove();
+      bubble("bot", err.message || "Couldn't reach the server. Check your connection and try again.", "bad");
+    } finally {
+      $("chat-send").disabled = false;
+      busy = false;
+      queueCloudSave();
+    }
+  }
+  $("chat-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const text = chatInput.value.trim();
+    if (text.length < 2 || busy) return;
+    chatInput.value = "";
+    ask(text);
+  });
+  chatInput.addEventListener("keydown", e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); $("chat-form").requestSubmit(); } });
+
+  // Add or replace the logo: the uploaded image takes the place of the business name at the top of the site.
+  $("logo").onclick = () => { if (busy || !site.html) return; $("logo-file").value = ""; $("logo-file").click(); };
+  $("logo-file").addEventListener("change", () => {
+    const file = $("logo-file").files[0];
+    if (!file || !source) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const im = new Image();
+      im.onerror = () => bubble("bot", "That file couldn't be read as an image. Try a PNG, JPG or SVG.", "bad");
+      im.onload = () => {
+        // Shrink to a sensible logo size. PNG keeps a transparent background.
+        const scale = Math.min(1, 520 / im.width, 220 / im.height);
+        const c = document.createElement("canvas");
+        c.width = Math.max(1, Math.round(im.width * scale)); c.height = Math.max(1, Math.round(im.height * scale));
+        c.getContext("2d").drawImage(im, 0, 0, c.width, c.height);
+        const url = c.toDataURL("image/png");
+        const spot = source.querySelector('header img[alt*="logo" i], header [class*="brand" i], header [class*="logo" i], [class*="brand" i], [class*="logo" i], header a[href="#top"], header a, nav a');
+        if (!spot) { bubble("bot", "I couldn't find where the business name sits at the top of this site, so the logo wasn't added. Ask in this chat to add a spot for a logo in the header, then try again.", "bad"); return; }
+        const name = siteName().split(/[|·—–]/)[0].trim().replace(/"/g, "");
+        if (spot.tagName === "IMG") { spot.setAttribute("src", url); spot.removeAttribute("srcset"); }
+        else spot.innerHTML = `<img src="${url}" alt="${name} logo" style="height:44px;width:auto;max-width:220px;display:block;object-fit:contain">`;
+        setEditing(false);
+        setSite(plain());
+        bubble("bot", "Your logo is now at the top of the site, in place of the name. Press Undo if it doesn't look right, or ask me here to make it bigger, smaller, or to show the name beside it.");
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Tab icon (favicon): the small picture in the browser tab. Saved inside the site, so it travels with
+  // the published link.
+  $("tabicon").onclick = () => { if (busy || !site.html) return; $("tabicon-file").value = ""; $("tabicon-file").click(); };
+  $("tabicon-file").addEventListener("change", () => {
+    const file = $("tabicon-file").files[0];
+    if (!file || !source) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const im = new Image();
+      im.onerror = () => bubble("bot", "That file couldn't be read as an image. Try a PNG, JPG or SVG.", "bad");
+      im.onload = () => {
+        // Fit the picture into a small square, keeping its shape and any transparent background.
+        const size = 96, w = im.width || size, h = im.height || size, scale = Math.min(size / w, size / h);
+        const c = document.createElement("canvas");
+        c.width = c.height = size;
+        c.getContext("2d").drawImage(im, (size - w * scale) / 2, (size - h * scale) / 2, w * scale, h * scale);
+        source.querySelectorAll('link[rel~="icon"], link[rel="apple-touch-icon"]').forEach(l => l.remove());
+        const link = source.createElement("link");
+        link.setAttribute("rel", "icon"); link.setAttribute("type", "image/png"); link.setAttribute("href", c.toDataURL("image/png"));
+        source.head.append(link);
+        setEditing(false);
+        setSite(plain());
+        bubble("bot", "Tab icon added. You'll see it in the browser tab of the published site (press Publish again if the site is already live). Square pictures work best.");
+      };
+      im.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  // Switch the immersive effects on or off for this site. Free, and Undo reverses it.
+  $("effects").onclick = () => {
+    if (busy || !site.html || !source) return;
+    const had = source.querySelector("script[data-fx]");
+    setEditing(false);
+    if (had) had.remove();
+    else { const sc = source.createElement("script"); sc.setAttribute("data-fx", ""); sc.textContent = FX_SCRIPT; source.body.append(sc); }
+    setSite(plain());
+    bubble("bot", had ? "Immersive effects are off." : "Immersive effects are on: drifting particles, a soft glow that follows the cursor, and photos and headings that move with a little depth as you scroll. Computers get the full effect, tablets a lighter one, and phones just a few slow particles. Press Effects again to switch it off. Publish again to update a live site.");
+  };
+
+  function setEditing(on) {
+    editing = on;
+    $("edit").setAttribute("aria-pressed", on);
+    $("edit").textContent = on ? "Done editing" : "Edit";
+    $("edit-hint").hidden = !on;
+    frame.contentDocument?.activeElement?.blur?.();
+  }
+
+  // Immersive effects: an optional layer any site can switch on. Drifting particles with depth, a soft glow
+  // that follows the cursor, and photos and headings that move slightly slower than the page. Computers get
+  // the full effect, tablets a lighter one, phones only a few slow particles. It is plain code, not AI, so it is free.
+  const FX_SCRIPT = `(function(){if(matchMedia('(prefers-reduced-motion: reduce)').matches)return;var W=innerWidth,H=innerHeight,big=W>1024&&matchMedia('(hover:hover) and (pointer:fine)').matches,n=W>1024?70:W>640?30:14;var col=getComputedStyle(document.body).color.match(/[0-9.]+/g)||[255,255,255];var rgb=col[0]+','+col[1]+','+col[2];var c=document.createElement('canvas');c.id='__fx';c.setAttribute('aria-hidden','true');c.style.cssText='position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:2147482000;opacity:'+(big?.55:.35);document.body.appendChild(c);var x=c.getContext('2d'),d=Math.min(window.devicePixelRatio||1,2);function size(){W=innerWidth;H=innerHeight;c.width=W*d;c.height=H*d;x.setTransform(d,0,0,d,0,0);}size();addEventListener('resize',size);var p=[];for(var i=0;i<n;i++)p.push({x:Math.random()*W,y:Math.random()*H,z:.3+Math.random()*.7,r:.6+Math.random()*1.8,vx:(Math.random()-.5)*.25,vy:-.08-Math.random()*.22,a:.25+Math.random()*.5});var sy=window.scrollY,mx=-999,my=-999,gx=0,gy=0,g=null;if(big){g=document.createElement('div');g.id='__fxg';g.setAttribute('aria-hidden','true');g.style.cssText='position:fixed;left:0;top:0;width:520px;height:520px;margin:-260px 0 0 -260px;border-radius:50%;pointer-events:none;z-index:2147481999;background:radial-gradient(circle,rgba('+rgb+',.10),rgba('+rgb+',0) 65%);opacity:0;transition:opacity .6s';document.body.appendChild(g);addEventListener('pointermove',function(e){mx=e.clientX;my=e.clientY;g.style.opacity=1;});}var els=[];function collect(){var old=els;els=[];if(!big)return;document.querySelectorAll('img,h1,h2').forEach(function(e){if(e.closest('header,nav,footer,#__pm'))return;var r=e.getBoundingClientRect();if(e.tagName==='IMG'&&(r.width<220||r.height<160))return;var was=0;for(var k=0;k<old.length;k++)if(old[k][0]===e)was=old[k][2];els.push([e,e.tagName==='IMG'?.07:.03,was]);});}collect();addEventListener('load',collect);setInterval(collect,4000);function frame(){var dy=window.scrollY-sy;sy=window.scrollY;x.clearRect(0,0,W,H);for(var i=0;i<p.length;i++){var q=p[i];q.x+=q.vx*q.z;q.y+=q.vy*q.z-dy*q.z*.35;if(q.y<-10)q.y=H+10;if(q.y>H+10)q.y=-10;if(q.x<-10)q.x=W+10;if(q.x>W+10)q.x=-10;x.beginPath();x.arc(q.x,q.y,q.r*q.z,0,6.283);x.fillStyle='rgba('+rgb+','+(q.a*q.z).toFixed(3)+')';x.fill();}if(g){gx+=(mx-gx)*.12;gy+=(my-gy)*.12;g.style.transform='translate('+gx.toFixed(1)+'px,'+gy.toFixed(1)+'px)';}for(var j=0;j<els.length;j++){var it=els[j],r=it[0].getBoundingClientRect();if(!r.width||r.bottom<-200||r.top>H+200)continue;var t=(r.top-it[2]+r.height/2-H/2)*-it[1];t=Math.max(-40,Math.min(40,t));it[2]=t;it[0].style.translate='0 '+t.toFixed(1)+'px';}requestAnimationFrame(frame);}requestAnimationFrame(frame);})();`;
+  // Multi-page sites live in one file: a shared header and footer, and one <main data-page> per page.
+  // This small script, added to the site, shows one page at a time when a menu link is clicked.
+  const PAGES_SCRIPT = `(function(){var s=document.createElement('style');s.textContent='main[data-page][hidden]{display:none!important}#__pm{position:fixed;left:14px;bottom:14px;z-index:2147483000;font:600 15px/1 system-ui,sans-serif}#__pm button{font:inherit;color:#fff;background:#141414;border:0;border-radius:999px;padding:13px 18px;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer}#__pm div{position:absolute;left:0;bottom:54px;min-width:190px;background:#141414;border-radius:14px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.4)}#__pm a{display:block;color:#fff;text-decoration:none;padding:12px 14px;border-radius:9px}#__pm a.current{background:rgba(255,255,255,.14)}';document.head.appendChild(s);var cur='home';function show(n,top){var all=document.querySelectorAll('main[data-page]'),ok=false;all.forEach(function(p){if(p.getAttribute('data-page')===n)ok=true;});if(!ok)n='home';cur=n;all.forEach(function(p){p.hidden=p.getAttribute('data-page')!==n;});document.querySelectorAll('a[href^="#/"]').forEach(function(a){var on=a.getAttribute('href')==='#/'+n;a.classList.toggle('current',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});if(top)window.scrollTo(0,0);window.dispatchEvent(new Event('scroll'));window.dispatchEvent(new Event('resize'));}function seen(e){return !!(e&&e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden');}function menu(){var box=document.getElementById('__pm');var names={},order=[];document.querySelectorAll('main[data-page]').forEach(function(p){order.push(p.getAttribute('data-page'));});var reach={};document.querySelectorAll('a[href^="#/"]').forEach(function(a){if(a.closest('#__pm'))return;var g=a.getAttribute('href').slice(2),t=a.textContent.replace(/\\s+/g,' ').trim();if(t&&t.length<40&&!names[g])names[g]=t;if(seen(a))reach[g]=1;});var own=false;document.querySelectorAll('header button,nav button,header [aria-expanded]').forEach(function(b){if(seen(b))own=true;});var need=order.length>1&&!own&&order.some(function(g){return !reach[g];});if(!need){if(box)box.style.display='none';return;}if(!box){box=document.createElement('div');box.id='__pm';box.innerHTML='<div hidden></div><button type="button" aria-expanded="false">Menu</button>';document.body.appendChild(box);box.querySelector('button').onclick=function(){var d=box.querySelector('div');d.hidden=!d.hidden;this.setAttribute('aria-expanded',String(!d.hidden));};}box.style.display='';var d=box.querySelector('div');d.innerHTML='';order.forEach(function(g){var a=document.createElement('a');a.href='#/'+g;a.textContent=names[g]||(g.charAt(0).toUpperCase()+g.slice(1).replace(/-/g,' '));if(g===cur)a.className='current';d.appendChild(a);});}document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a)return;e.preventDefault();show(a.getAttribute('href').slice(2),true);var box=document.getElementById('__pm');if(box){box.querySelector('div').hidden=true;box.querySelector('button').setAttribute('aria-expanded','false');}});var t;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(menu,150);});show('home',false);menu();window.addEventListener('load',menu);})();`;
+  // After the home page of a multi-page site is designed, write each other page in turn and add it to the file.
+  async function buildPages(prompt, token, wanted, status) {
+    const seen = new Set(["home", ""]);
+    const pages = [];
+    source.querySelectorAll('a[href^="#/"]').forEach(a => {
+      const slug = a.getAttribute("href").slice(2).toLowerCase().replace(/[^a-z0-9-]/g, "");
+      const name = a.textContent.trim().replace(/\s+/g, " ");
+      if (!seen.has(slug) && name && name.length < 40) { seen.add(slug); pages.push({ slug, name }); }
+    });
+    if (!source.querySelector('main[data-page]') || !pages.length) {
+      bubble("bot", "This design came out as a single page, so no extra pages were added. Try the build again.", "bad");
+      return;
+    }
+    pages.length = Math.min(pages.length, 4, Math.max(1, wanted - 1));
+    // Add the page-switching script now, so the menu already works while the other pages are written.
+    source.querySelectorAll("script[data-pages]").forEach(el => el.remove());
+    const router = source.createElement("script");
+    router.setAttribute("data-pages", ""); router.textContent = PAGES_SCRIPT;
+    source.body.append(router);
+    setSite(plain(), false);
+    const photos = [];
+    const base = site.html.replace(/data:image\/[a-z+.-]+;base64,[A-Za-z0-9+\/=]+/g, m => { photos.push(m); return `data:photo-${photos.length}`; });
+    const failed = [];
+    // What each written page covers, so the next page doesn't repeat it.
+    const outline = () => [...source.querySelectorAll("main[data-page]")].map(m =>
+      `- ${m.getAttribute("data-page")}: ${[...m.querySelectorAll("h1, h2, h3")].map(h => h.textContent.trim().replace(/\s+/g, " ")).filter(Boolean).slice(0, 12).join(" / ")}`).join("\n");
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i];
+      status(`Writing page ${i + 2} of ${pages.length + 1}: ${page.name}`);
+      try {
+        const res = await fetch(`${FUNCTIONS_URL}/add-page`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, apikey: ANON_KEY },
+          body: JSON.stringify({ html: base, prompt, slug: page.slug, name: page.name, pages: pages.map(p => p.slug), written: outline() })
+        });
+        if (!res.ok) {
+          const data = await res.json().catch(() => ({}));
+          if (data.code === "pixels") { showPixels(data.have); failed.push(...pages.slice(i).map(p => p.name)); bubble("bot", data.error, "bad"); break; }
+          throw new Error(data.error || "failed");
+        }
+        if (res.headers.get("x-pixels") != null) showPixels(Number(res.headers.get("x-pixels")));
+        const text = (await res.text()).replace(/data:photo-(\d+)/g, (m, n) => photos[n - 1] || m);
+        const got = new DOMParser().parseFromString(`<body>${text.replace(/^[\s\S]*?(?=<style|<main)/i, "").replace(/```\s*$/, "")}</body>`, "text/html");
+        const main = got.querySelector("main[data-page]");
+        if (!main || !/<\/main>/i.test(text)) throw new Error("incomplete");
+        main.setAttribute("data-page", page.slug); main.setAttribute("hidden", "");
+        main.querySelectorAll("script").forEach(el => el.remove());
+        source.querySelectorAll(`main[data-page="${page.slug}"], style[data-page="${page.slug}"]`).forEach(el => el.remove());
+        got.querySelectorAll("style").forEach(st => { st.setAttribute("data-page", page.slug); source.head.append(source.importNode(st, true)); });
+        const last = [...source.querySelectorAll("main[data-page]")].pop();
+        last.after(source.importNode(main, true));
+        currentPage = page.slug;   // show the page that was just written
+        setSite(plain(), false);
+      } catch { failed.push(page.name); }
+    }
+    if (currentPage !== "home") { currentPage = "home"; setSite(plain(), false); }
+    loadPixels();
+    drawChat();
+    const made = pages.filter(p => !failed.includes(p.name)).map(p => p.name);
+    if (made.length) bubble("bot", `Your site has ${made.length + 1} pages: Home, ${made.join(", ")}. Pick a page at the top to see and edit it, or use the site's own menu.`);
+    if (failed.length) bubble("bot", `These pages couldn't be written: ${failed.join(", ")}. Their menu links lead to the home page for now.`, "bad");
+  }
+
+  // Asks the server to design the site and draws it in the preview as the code arrives.
+  async function design(prompt, avoid, kind = buildKind) {
+    if (busy) return;
+    busy = true;
+    setEditing(false);
+    go.disabled = true;
+    say("Starting");
+    msg.classList.add("dots");
+    const started = Date.now();
+    let timer;
+    try {
+      const token = await bearer();
+      // For a multi-page site, the number of pages chosen is sent along with the description.
+      const pagesWanted = kind === "multi" ? pageCount() : 1;
+      const sent = kind === "multi" ? `Make this site exactly ${pagesWanted} pages in total, including the home page.\n\n${prompt}` : prompt;
+      // New designs steer away from the styles this person got most recently, so their sites don't look alike.
+      let recent = [];
+      try { recent = JSON.parse(localStorage.getItem("unbland.styles") || "[]").filter(x => typeof x === "string").slice(-4); } catch {}
+      const avoidAll = kind === "quick" ? (avoid || []) : [...new Set([...(avoid || []), ...recent])];
+      const request = fresh => fetch(`${FUNCTIONS_URL}/design-site`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, apikey: ANON_KEY },
+        body: JSON.stringify({ prompt: sent, avoid: avoidAll, fresh, mode: kind === "new" || kind === "multi" ? kind : "quick" })
+      });
+      let res = await request(false);
+      if (res.status === 409 && kind !== "new") say("That library design didn't fit. Designing a new one");
+      // A design from the library sometimes doesn't fit; the server then asks for a brand new one instead.
+      if (res.status === 409) res = await request(true);
+      if (!res.ok || !res.body) {
+        const data = await res.json().catch(() => ({}));
+        if (data.code === "signin") setTimeout(() => openAuth("signup"), 600);
+        if (data.code === "pixels") { showPixels(data.have); openPlans(data.error); }
+        if (data.code === "upgrade") { if (user) openPlans(data.error); else setTimeout(() => openAuth("signup"), 600); }
+        throw new Error(data.error || "Something went wrong starting the design. Try again.");
+      }
+      if (res.headers.get("x-pixels") != null) showPixels(Number(res.headers.get("x-pixels")));
+      const direction = res.headers.get("x-direction") || "";
+      if (direction) try { localStorage.setItem("unbland.styles", JSON.stringify([...recent.filter(x => x !== direction), direction].slice(-4))); } catch {}
+      say("");
+      show(true);
+      result.classList.add("building");
+      chatLog.textContent = "";
+      bubble("bot", "Designing your site. You'll see it appear on the right as it's written", "wait");
+      let phase = "";
+      const label = () => `${phase || `Designing${direction ? " · " + pretty(direction) : ""}`} · ${Math.floor((Date.now() - started) / 1000)}s`;
+      $("status-text").textContent = label();
+      timer = setInterval(() => { $("status-text").textContent = label(); }, 1000);
+
+      // Write the page into the preview piece by piece so it builds in front of the visitor.
+      frame.onload = null;
+      frame.removeAttribute("srcdoc");
+      const doc = frame.contentDocument;
+      doc.open();
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let html = "", begun = false, pending = "";
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        let chunk = decoder.decode(value, { stream: true });
+        if (!begun) {
+          // Skip anything before the document starts, such as a stray code fence.
+          pending += chunk;
+          const at = pending.search(/<!doctype|<html/i);
+          if (at < 0) continue;
+          chunk = pending.slice(at);
+          begun = true;
+        }
+        html += chunk;
+        doc.write(chunk);
+        $("meter").style.width = Math.min(96, (html.length / TYPICAL_SIZE) * 100) + "%";
+      }
+      doc.close();
+      html = html.replace(/```\s*$/, "").trim();
+      if (!/<\/html>\s*$/i.test(html)) throw new Error("The design was cut off before it finished. Try again.");
+
+      history.length = 0;
+      currentPage = "home";
+      $("publish").textContent = "Publish";
+      site = { html: "", prompt, used: [...(avoid || []), direction].filter(Boolean) };
+      setSite(html, false);   // reload cleanly so entrance animations play from the top
+      drawChat();
+      if (kind === "multi") await buildPages(prompt, token, pagesWanted, text => { phase = text; $("status-text").textContent = label(); });
+    } catch (err) {
+      if (!result.hidden && !site.html) show(false);
+      if (site.html && !result.hidden) { display(site.html); drawChat(); bubble("bot", err.message, "bad"); }
+      else say(err.message || "Couldn't reach the server. Check your connection and try again.", true);
+    } finally {
+      clearInterval(timer);
+      result.classList.remove("building");
+      $("meter").style.width = "0";
+      go.disabled = false;
+      busy = false;
+      queueCloudSave();
+    }
+  }
+
+  function build() {
+    const prompt = promptBox.value.trim();
+    if (prompt.length < 20) { say("Describe the business in a sentence or two first.", true); promptBox.focus(); return; }
+    site = { html: "", prompt, used: [] };
+    design(prompt, []);
+  }
+  go.onclick = build;
+  promptBox.addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
+
+  for (const [label, text] of Object.entries(EXAMPLES)) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = label;
+    b.onclick = () => { promptBox.value = text; promptBox.focus(); say(""); };
+    $("examples").append(b);
+  }
+
+  // Start screen extras: a glow that follows the cursor, and a placeholder that types example prompts.
+  const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  startEl.addEventListener("pointermove", e => { startEl.style.setProperty("--mx", e.clientX + "px"); startEl.style.setProperty("--my", e.clientY + "px"); });
+  if (!calm) {
+    const lines = ["Fade Room is a three-chair barbershop in Austin. Skin fades $35, beard trims $15…", "Greenline Gardens does lawn care and patio builds around Raleigh. Free quotes…", "Salt & Ember is a forty-seat wood-fire kitchen in Charleston. Open Tuesday to Sunday…"];
+    let li = 0, ci = 0, dir = 1;
+    const tick = () => {
+      if (startEl.hidden || promptBox.value) return setTimeout(tick, 600);
+      ci += dir;
+      promptBox.placeholder = lines[li].slice(0, ci) + (dir > 0 && ci < lines[li].length ? "▍" : "");
+      if (ci >= lines[li].length) { dir = -1; return setTimeout(tick, 2200); }
+      if (ci <= 0) { dir = 1; li = (li + 1) % lines.length; return setTimeout(tick, 400); }
+      setTimeout(tick, dir > 0 ? 34 : 12);
+    };
+    setTimeout(tick, 1400);
+  }
+
+  // Bar controls
+  const sizeBtns = [...document.querySelectorAll("[data-size]")];
+  // The preview always shows the site at a true screen width for the size chosen (computer 1280, tablet 820,
+  // phone 390). When the window is too narrow for that, the preview is shrunk to fit rather than reflowed,
+  // so what you see is what that device shows.
+  let previewSize = innerWidth < 640 ? "phone" : "desktop";   // on a phone, show the phone layout
+  function fitPreview() {
+    const wrap = $("wrap"), cs = getComputedStyle(wrap);
+    const availW = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);
+    const availH = wrap.clientHeight - parseFloat(cs.paddingTop) - parseFloat(cs.paddingBottom);
+    if (availW <= 0 || availH <= 0) return;
+    const want = previewSize === "phone" ? 390 : previewSize === "tablet" ? 820 : Math.max(1280, Math.min(availW, 1600));
+    const k = Math.min(1, availW / want);
+    frame.style.width = want + "px";
+    frame.style.height = k < 1 ? availH / k + "px" : "";
+    frame.style.transform = k < 1 ? `scale(${k})` : "";
+    wrap.classList.toggle("scaled", k < 1);
+  }
+  new ResizeObserver(fitPreview).observe($("wrap"));
+  sizeBtns.forEach(b => b.onclick = () => { previewSize = b.dataset.size; sizeBtns.forEach(x => x.setAttribute("aria-pressed", x === b)); fitPreview(); });
+  $("again").onclick = () => newSite();
+  $("restyle").onclick = () => { if (site.prompt) design(site.prompt, site.used, "quick"); };
+  $("renew").onclick = () => { if (site.prompt) design(site.prompt, site.used, "new"); };
+  $("edit").onclick = () => setEditing(!editing);
+  $("undo").onclick = () => { if (!history.length || busy) return; const prev = history.pop(); setSite(prev, false); };
+
+  const blobUrl = () => URL.createObjectURL(new Blob([site.html], { type: "text/html" }));
+  $("open").onclick = () => window.open(blobUrl(), "_blank");
+
+  // ---- Accounts: sign in to keep sites, and a page listing them. The builder works without an account.
+  const SUPABASE_URL = "https://clssxldrgtpiajwqgghl.supabase.co";
+  const PUBLISHABLE_KEY = "sb_publishable_tSFjjjClxBrIPpc3j0gFyA_JuQhSiJS";   // public by design; row-level rules protect the data
+  let sb = null, user = null, cloudTimer = null, authMode = "signin", ready = Promise.resolve();
+  const acts = name => document.querySelectorAll(`[data-act="${name}"]`);
+  const siteName = () => (site.html.match(/<title>([^<]*)<\/title>/i)?.[1] || "Untitled site").replace(/&amp;/g, "&").trim().slice(0, 120);
+
+  // Pixels: the balance that pays for AI work. Shown wherever the person is signed in.
+  let costs = { build: 5, chat: 1, fresh: 8, page: 2, multi: 10 }, pixelPlan = "", allowance = 0, planId = "";
+  // Quick build or brand new design: the choice next to the Build button, remembered for next time.
+  let buildKind = "quick";
+  try { const k = localStorage.getItem("unbland.kind"); if (k === "new" || k === "multi") buildKind = k; } catch {}
+  const kindButtons = document.querySelectorAll(".kind button");
+  const showKind = () => { kindButtons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.kind === buildKind))); $("pages-pick").hidden = buildKind !== "multi"; };
+  // A multi-page site: the base price covers three pages, and each page after that adds a little.
+  const pageCount = () => Math.min(5, Math.max(2, Number($("page-count").value) || 3));
+  const multiCost = () => costs.multi + Math.max(0, pageCount() - 3) * costs.page;
+  $("page-count").onchange = () => showCosts();
+  const showCosts = () => {
+    // Say who can use each kind of build, and what it costs once signed in.
+    const paying = pixelPlan === "paid" || pixelPlan === "owner";
+    document.querySelectorAll("[data-cost]").forEach(el => {
+      const which = el.dataset.cost;
+      el.textContent = which === "build" ? (user ? ` · ${costs.build} pixels` : " · Free to try")
+        : !paying ? " · Paid plans"
+        : which === "multi" ? ` · ${multiCost()} pixels` : ` · ${costs.fresh} pixels`;
+    });
+    $("restyle").textContent = `Try another style · ${costs.build}`;
+    $("renew").textContent = `Brand new design · ${costs.fresh}`;
+  };
+  kindButtons.forEach(b => b.onclick = () => { buildKind = b.dataset.kind; showKind(); try { localStorage.setItem("unbland.kind", buildKind); } catch {} });
+  showKind(); showCosts();
+  const bearer = async () => { try { const { data } = sb ? await sb.auth.getSession() : { data: null }; return data?.session?.access_token || ANON_KEY; } catch { return ANON_KEY; } };
+  function showPixels(n) {
+    const known = typeof n === "number" && !Number.isNaN(n);
+    document.querySelectorAll("[data-pixels]").forEach(el => {
+      el.hidden = !user || !known;
+      if (known) { el.textContent = allowance ? `${n} / ${allowance} pixels` : `${n} pixel${n === 1 ? "" : "s"}`; el.classList.toggle("low", n < costs.build); }
+    });
+    if (known) $("set-pixels").textContent = String(n);
+  }
+  async function loadPixels() {
+    if (!sb || !user) { showPixels(null); return; }
+    const { data, error } = await sb.rpc("my_pixels");
+    const row = Array.isArray(data) ? data[0] : data;
+    if (error || !row) { showPixels(null); return; }
+    costs = { build: row.cost_build, chat: row.cost_chat, fresh: row.cost_fresh ?? 8, page: row.cost_page ?? 2, multi: row.cost_multi ?? 10 };
+    pixelPlan = row.plan; allowance = row.allowance || 0; planId = row.plan_id || "";
+    showPixels(row.pixels);
+    showCosts();
+    const planLabel = row.plan_name ? `${row.plan_name} plan` : row.plan === "owner" ? "owner account" : "Free plan";
+    $("set-plan").textContent = row.plan_name ? `of ${allowance} a month · ${planLabel}` : allowance ? `of ${allowance} · ${planLabel}` : `· ${planLabel}`;
+    $("set-costs").textContent = `A quick build or another style uses ${costs.build} pixels. A brand new design uses ${costs.fresh}. A multi-page site uses ${costs.multi} for up to 3 pages, plus ${costs.page} for each page after that. A chat change uses ${costs.chat} for a small change and up to 6 for a very large one, depending on how much work it takes. Editing by hand, adding a logo and publishing are free.`;
+  }
+
+  function accountUI() {
+    acts("signin").forEach(b => b.hidden = !!user);
+    acts("mine").forEach(b => b.hidden = !user);
+    acts("signout").forEach(b => b.hidden = !user);
+    acts("settings").forEach(b => b.hidden = !user);
+    $("who").textContent = user?.email || "";
+    if (!user) $("saved").textContent = "";
+  }
+
+  function queueCloudSave() {
+    if (!sb || !user || !site.html || busy) return;
+    clearTimeout(cloudTimer);
+    $("saved").textContent = "Saving…";
+    cloudTimer = setTimeout(cloudSave, 1200);
+  }
+  async function cloudSave() {
+    if (!sb || !user || !site.html) return;
+    const row = { name: siteName(), prompt: site.prompt || null, direction: site.used?.[site.used.length - 1] || null, html: site.html, chat: site.chat || [] };
+    const q = site.id ? sb.from("sites").update(row).eq("id", site.id).select("id") : sb.from("sites").insert(row).select("id");
+    const { data, error } = await q;
+    if (error || !data?.length) {
+      // A site opened from another account, or deleted elsewhere, is saved as a new one next time.
+      if (site.id && !error) { site.id = null; return queueCloudSave(); }
+      $("saved").textContent = row.html.length > 3900000 ? "Too large to save. Use smaller photos." : "Couldn't save. Will retry on your next change.";
+      return;
+    }
+    site.id = data[0].id;
+    try { localStorage.setItem(SAVE_KEY, JSON.stringify(site)); } catch { /* ignore */ }
+    $("saved").textContent = "Saved";
+  }
+
+  // Sign-in window
+  const auth = $("auth");
+  async function openAuth(mode = "signin") {
+    await ready;   // the accounts library may still be loading on a slow connection
+    if (!sb) { alert("Accounts aren't available right now. Your site is still here in this browser; try again in a moment."); return; }
+    authMode = mode;
+    const up = mode === "signup";
+    $("auth-title").textContent = up ? "Create your account" : "Sign in";
+    $("auth-go").textContent = up ? "Create account" : "Sign in";
+    $("auth-q").textContent = up ? "Already have an account?" : "New here?";
+    $("auth-toggle").textContent = up ? "Sign in" : "Create an account";
+    $("auth-pass").autocomplete = up ? "new-password" : "current-password";
+    $("auth-msg").textContent = ""; $("auth-msg").className = "auth-msg";
+    if (!auth.open) auth.showModal();
+  }
+  $("auth-toggle").onclick = () => openAuth(authMode === "signup" ? "signin" : "signup");
+  $("auth-close").onclick = () => auth.close();
+  $("auth-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const email = $("auth-email").value.trim(), password = $("auth-pass").value;
+    const m = $("auth-msg");
+    m.className = "auth-msg";
+    if (password.length < 8) { m.textContent = "Use a password of at least 8 characters."; return; }
+    $("auth-go").disabled = true;
+    m.textContent = "";
+    try {
+      if (authMode === "signup") {
+        const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } });
+        if (error) throw error;
+        if (!data.session) { m.className = "auth-msg ok"; m.textContent = "Check your email and click the link to finish, then sign in here."; return; }
+      } else {
+        const { error } = await sb.auth.signInWithPassword({ email, password });
+        if (error) throw error;
+      }
+      $("auth-pass").value = "";
+      auth.close();
+    } catch (err) {
+      const text = String(err?.message || "");
+      m.textContent = /invalid login/i.test(text) ? "That email and password don't match an account."
+        : /already registered/i.test(text) ? "There's already an account with that email. Sign in instead."
+        : /not confirmed/i.test(text) ? "Confirm your email first: click the link we sent you."
+        : /rate limit/i.test(text) ? "Too many attempts. Wait a few minutes and try again."
+        : text || "Something went wrong. Try again.";
+    } finally {
+      $("auth-go").disabled = false;
+    }
+  });
+
+  // Google sign-in. The button only appears once Google is switched on in the project's settings.
+  $("auth-google").onclick = async () => {
+    const { error } = await sb.auth.signInWithOAuth({ provider: "google", options: { redirectTo: location.origin + location.pathname } });
+    if (error) { $("auth-msg").className = "auth-msg"; $("auth-msg").textContent = "Couldn't start Google sign-in. Try again, or use email."; }
+  };
+  fetch(`${SUPABASE_URL}/auth/v1/settings`, { headers: { apikey: PUBLISHABLE_KEY } })
+    .then(r => r.json())
+    .then(d => { const on = !!d?.external?.google; $("auth-google").hidden = !on; $("auth-or").hidden = !on; })
+    .catch(() => { /* leave the button hidden */ });
+
+  // ---- Publishing: put the current site at a public link, update it, or take it offline.
+  const pub = $("pub");
+  const liveUrl = slug => `${location.origin}/s/?${slug}`;
+  const slugify = text => (text.split(/[|·—–:]/)[0].toLowerCase().normalize("NFKD").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) || "site");
+  // The publish panel: shows whether the site is live, its address, and one button to publish changes.
+  let pubSame = false, pubDraft = "";
+  const SLUG_OK = /^[a-z0-9]+(-[a-z0-9]+)*$/;
+  const pubSay = (text = "", ok = false) => { $("pub-msg").className = ok ? "auth-msg ok" : "auth-msg"; $("pub-msg").textContent = text; };
+  function drawPub() {
+    const isLive = !!site.slug, slug = site.slug || pubDraft;
+    pub.dataset.state = !isLive ? "off" : pubSame ? "live" : "changed";
+    $("pub-title").textContent = !isLive ? "Not published" : pubSame ? "Published" : "Changes not live yet";
+    $("pub-sub").textContent = !isLive ? "Publish to get a link you can send to your client." : pubSame ? "The live site is up to date." : "You've changed the site since you last published.";
+    $("pub-base").textContent = liveUrl("").replace(/^https?:\/\//, "");
+    $("pub-slug").textContent = slug;
+    $("pub-open").hidden = $("pub-off").hidden = !isLive;
+    $("pub-open").href = liveUrl(slug);
+    $("pub-go").textContent = !isLive ? "Publish" : pubSame ? "Up to date" : "Publish changes";
+    $("pub-go").disabled = isLive && pubSame;
+    const icon = source?.querySelector('link[rel~="icon"]')?.getAttribute("href");
+    const box = $("pub-icon");
+    box.textContent = "";
+    if (icon && /^(data:image\/|https:\/\/)/i.test(icon)) { const im = new Image(); im.src = icon; im.alt = ""; box.append(im); }
+    else box.textContent = (siteName().trim()[0] || "•").toUpperCase();
+    const free = pixelPlan !== "paid" && pixelPlan !== "owner";
+    $("pub-badge").innerHTML = free
+      ? '<svg viewBox="0 0 48 48" width="15" height="15" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/></svg>Shows a small "Made with Unbland" badge <button type="button" class="linkish" id="pub-upgrade">Remove it</button>'
+      : '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>No Unbland badge on this site';
+    if (free) $("pub-upgrade").onclick = () => { pub.close(); openPlans(); };
+    $("publish").textContent = isLive ? (pubSame ? "Published" : "Publish changes") : "Publish";
+  }
+  async function openPub() {
+    await ready;
+    if (!user) { openAuth("signin"); return; }
+    if (busy || !site.html) return;
+    setEditing(false);
+    $("pub-rename").hidden = true;
+    pubSay("Checking…", true);
+    if (!pub.open) pub.showModal();
+    try {
+      clearTimeout(cloudTimer);
+      await cloudSave();   // a site must be saved before it can be published
+      if (!site.id) throw new Error("Couldn't save the site, so it can't be published yet. Try again in a moment.");
+      const { data, error } = await sb.from("published").select("slug, html").eq("site_id", site.id).maybeSingle();
+      if (error) throw new Error("Couldn't reach the server. Try again.");
+      site.slug = data?.slug || null;
+      pubSame = !!data && data.html === site.html;
+      if (!site.slug && !pubDraft.startsWith(slugify(siteName()))) pubDraft = `${slugify(siteName())}-${Math.random().toString(36).slice(2, 6)}`;
+      pubSay();
+    } catch (err) { pubSay(err.message); }
+    drawPub();
+  }
+  $("pub-go").onclick = async () => {
+    const btn = $("pub-go");
+    if (!site.id || btn.disabled) return;
+    btn.disabled = true;
+    pubSay();
+    const name = siteName();
+    let failed = "";
+    if (site.slug) {
+      const { error } = await sb.from("published").update({ html: site.html, name }).eq("slug", site.slug);
+      if (error) failed = "Couldn't update the live site. Try again.";
+    } else {
+      const { error } = await sb.from("published").insert({ slug: pubDraft, site_id: site.id, name, html: site.html });
+      const cap = /publish_limit:(\d+)/.exec(error?.message || "");
+      if (cap) { pub.close(); btn.disabled = false; openPlans(`Your plan has ${cap[1]} live site${cap[1] === "1" ? "" : "s"} at a time. Take another live site offline first, or choose a bigger plan.`); return; }
+      if (error?.code === "23505") failed = "That address is already taken. Change it with the pencil and try again.";
+      else if (error) failed = "Couldn't publish the site. Try again.";
+      else site.slug = pubDraft;
+    }
+    if (failed) { btn.disabled = false; pubSay(failed); return; }
+    pubSame = true;
+    drawPub();
+    pubSay("Published. The live site matches what you see here.", true);
+  };
+  $("pub-edit").onclick = () => {
+    const form = $("pub-rename");
+    form.hidden = !form.hidden;
+    if (!form.hidden) { $("pub-name").value = site.slug || pubDraft; $("pub-name").focus(); $("pub-name").select(); }
+  };
+  $("pub-rename").addEventListener("submit", async e => {
+    e.preventDefault();
+    const next = $("pub-name").value.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+    if (next.length < 3 || !SLUG_OK.test(next)) { pubSay("Use at least 3 letters or numbers. Dashes are fine."); return; }
+    if (next === (site.slug || pubDraft)) { $("pub-rename").hidden = true; return; }
+    if (site.slug) {
+      const { error } = await sb.from("published").update({ slug: next }).eq("slug", site.slug);
+      if (error) { pubSay(error.code === "23505" ? "That address is already taken. Try another." : "Couldn't change the address. Try again."); return; }
+      site.slug = next;
+      pubSay("Address changed. The old link no longer works.", true);
+    } else { pubDraft = next; pubSay(); }
+    $("pub-rename").hidden = true;
+    drawPub();
+  });
+  pub.addEventListener("click", e => { if (e.target === pub) pub.close(); });   // a click outside the panel closes it
+  $("publish").onclick = openPub;
+  $("pub-close").onclick = () => pub.close();
+  $("pub-copy").onclick = async () => {
+    const url = liveUrl(site.slug || pubDraft);
+    try { await navigator.clipboard.writeText(url); pubSay(site.slug ? "Link copied." : "Link copied. It will work once you publish.", true); }
+    catch { pubSay(url, true); }
+  };
+  $("pub-off").onclick = async () => {
+    if (!site.slug || !confirm("Take this site offline? The link will stop working.")) return;
+    const { error } = await sb.from("published").delete().eq("slug", site.slug);
+    if (error) { pubSay("Couldn't take it offline. Try again."); return; }
+    pubDraft = site.slug; site.slug = null;
+    drawPub();
+    pubSay("The site is offline.", true);
+  };
+  async function refreshPublishState() {
+    $("publish").textContent = "Publish";
+    site.slug = null;
+    if (!sb || !user || !site.id) return;
+    const { data } = await sb.from("published").select("slug").eq("site_id", site.id).maybeSingle();
+    if (data?.slug) { site.slug = data.slug; $("publish").textContent = "Published"; }
+  }
+
+  // ---- Settings: account, owner tools, help, and deleting the account.
+  const settings = $("settings");
+  async function openSettings() {
+    if (!user) return;
+    $("set-email").textContent = user.email || "";
+    loadPixels();
+    $("set-pass").value = "";
+    $("set-pass-msg").textContent = ""; $("set-del-msg").textContent = "";
+    $("set-owner").hidden = true;
+    if (!settings.open) settings.showModal();
+    const { data } = await sb.from("admins").select("user_id").eq("user_id", user.id).maybeSingle();
+    $("set-owner").hidden = !data;
+    $("set-danger").hidden = !!data;   // the owner's account can't be deleted from here
+  }
+  $("set-close").onclick = () => settings.close();
+
+  // The description writer: a few questions whose answers are turned into the description for the builder.
+  // It only arranges what the person typed; it never adds facts.
+  const writer = $("writer");
+  $("writer-open").onclick = () => { $("writer-msg").textContent = ""; writer.showModal(); $("w-name").focus(); };
+  $("writer-close").onclick = () => writer.close();
+  // Suggestions: what this kind of business usually offers, shown as buttons to tick. Only ticked ones are used.
+  const ticked = id => [...$(id).querySelectorAll('button[aria-pressed="true"]')].map(b => b.textContent);
+  $("sugg-go").onclick = async () => {
+    const what = $("w-what").value.trim(), btn = $("sugg-go"), note = $("sugg-note");
+    if (what.length < 3) { note.textContent = "Fill in what the business does first."; $("w-what").focus(); return; }
+    btn.disabled = true; note.textContent = "Thinking…";
+    try {
+      const res = await fetch(`${FUNCTIONS_URL}/suggest`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${ANON_KEY}`, apikey: ANON_KEY }, body: JSON.stringify({ what }) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Couldn't get suggestions just now. You can still type the details in.");
+      if (!data.services?.length && !data.facts?.length) throw new Error("No suggestions for that. Try describing what the business does in a few words.");
+      for (const [id, items] of [["sugg-services", data.services], ["sugg-facts", data.facts]]) {
+        const box = $(id);
+        box.textContent = "";
+        for (const text of items || []) {
+          const b = document.createElement("button");
+          b.type = "button"; b.textContent = text; b.setAttribute("aria-pressed", "false");
+          b.onclick = () => b.setAttribute("aria-pressed", String(b.getAttribute("aria-pressed") !== "true"));
+          box.append(b);
+        }
+      }
+      $("sugg-box").hidden = false;
+      note.textContent = "Tick only what's true of this business.";
+    } catch (err) { note.textContent = err.message; }
+    btn.disabled = false;
+  };
+  $("writer-form").addEventListener("submit", e => {
+    e.preventDefault();
+    const v = id => $(id).value.trim().replace(/\s+\n/g, "\n");
+    const end = t => /[.!?]$/.test(t) ? t : t + ".";
+    const name = v("w-name"), what = v("w-what");
+    if (!name || !what) { $("writer-msg").textContent = "Add the business name and what it does."; return; }
+    const parts = [end(`${name} is a business that does: ${what}${v("w-where") ? `, serving ${v("w-where")}` : ""}`)];
+    const services = [...ticked("sugg-services"), ...v("w-services").split(/\n+/).map(t => t.trim()).filter(Boolean)];
+    if (services.length) parts.push(`Services and prices:\n${services.map(t => `- ${t}`).join("\n")}`);
+    if (ticked("sugg-facts").length) parts.push(end(`Also true of this business: ${ticked("sugg-facts").join(", ")}`));
+    if (v("w-special")) parts.push(end(`What makes it different: ${v("w-special")}`));
+    if (v("w-hours")) parts.push(end(`Opening hours: ${v("w-hours")}`));
+    const contact = [v("w-phone") && `phone ${v("w-phone")}`, v("w-email") && `email ${v("w-email")}`, v("w-address") && `address ${v("w-address")}`].filter(Boolean);
+    if (contact.length) parts.push(end(`Contact: ${contact.join(", ")}`));
+    if (v("w-look")) parts.push(end(`Look and colors: ${v("w-look")}`));
+    promptBox.value = parts.join("\n\n").slice(0, 3000);
+    promptBox.dispatchEvent(new Event("input", { bubbles: true }));
+    writer.close();
+    say("Your description is in the box. Change anything you like, then press Build the site.");
+    promptBox.focus();
+  });
+
+  // Plans and top-ups. The prices come from the database; paying happens on Stripe's own page.
+  const plans = $("plans");
+  const money = cents => `$${cents % 100 ? (cents / 100).toFixed(2) : cents / 100}`;
+  async function billing(body, button) {
+    const note = $("plans-msg");
+    note.className = "auth-msg"; note.textContent = "";
+    if (button) button.disabled = true;
+    try {
+      const res = await fetch(`${FUNCTIONS_URL}/billing`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${await bearer()}`, apikey: ANON_KEY }, body: JSON.stringify(body) });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok || !data.url) throw new Error(data.error || "Couldn't open the payment page. Try again.");
+      location.href = data.url;
+    } catch (err) {
+      note.textContent = err.message;
+      if (button) button.disabled = false;
+    }
+  }
+  async function openPlans(message = "") {
+    if (!user) { openAuth("signup"); return; }
+    if (settings.open) settings.close();
+    const note = $("plans-msg");
+    note.className = "auth-msg"; note.textContent = message;
+    if (!plans.open) plans.showModal();
+    const { data, error } = await sb.from("price_list").select("id, kind, name, price_cents, pixels, blurb, perks").eq("active", true).order("sort");
+    if (error || !data) { note.textContent = "Couldn't load the prices. Try again shortly."; return; }
+    await loadPixels();
+    const list = items => `<ul>${items.map(t => `<li>${String(t).replace(/[&<>]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]))}</li>`).join("")}</ul>`;
+    for (const kind of ["plan", "topup"]) {
+      const box = $(kind === "plan" ? "plans-plans" : "plans-topups");
+      box.textContent = "";
+      if (kind === "plan") {
+        const free = document.createElement("div");
+        free.className = "plan";
+        free.innerHTML = `<b>Free${planId || pixelPlan === "owner" ? "" : '<i class="yours">Your plan</i>'}</b><span class="price">$0</span>${list(["5 pixels to start", "Quick builds from our design library", "Edit by hand as much as you like", "1 live site, with a small Unbland badge"])}`;
+        box.append(free);
+      }
+      for (const item of data.filter(d => d.kind === kind)) {
+        const el = document.createElement("div");
+        el.className = `plan${item.id === "pro" ? " best" : ""}`;
+        el.innerHTML = `<b></b><span class="price"></span><span class="gets"></span><p></p><button class="go" type="button"></button>`;
+        el.querySelector("b").textContent = kind === "plan" ? item.name : "Top-up";
+        const mine = kind === "plan" && item.id === planId;
+        if (mine) el.querySelector("b").insertAdjacentHTML("beforeend", '<i class="yours">Your plan</i>');
+        if (kind === "plan" && item.perks?.length) { el.querySelector(".gets").remove(); el.querySelector("p").outerHTML = list(item.perks); }
+        el.querySelector(".price").innerHTML = `${money(item.price_cents)}${kind === "plan" ? "<small> / month</small>" : ""}`;
+        if (el.querySelector(".gets")) el.querySelector(".gets").textContent = `${item.pixels} pixels${kind === "plan" ? " every month" : ""}`;
+        if (el.querySelector("p")) el.querySelector("p").textContent = item.blurb || "";
+        const b = el.querySelector("button");
+        b.textContent = kind === "plan" ? `Choose ${item.name}` : "Buy";
+        if (mine) { b.remove(); box.append(el); continue; }
+        b.onclick = () => billing({ action: "checkout", item: item.id }, b);
+        box.append(el);
+      }
+    }
+  }
+  $("plans-close").onclick = () => plans.close();
+  $("plans-manage").onclick = e => billing({ action: "portal" }, e.currentTarget);
+  $("set-more").onclick = () => openPlans();
+  document.querySelectorAll("[data-pixels]").forEach(el => el.onclick = () => openPlans());
+
+  // Coming back from Stripe's payment page. The pixels arrive a few seconds after paying.
+  {
+    const paid = new URLSearchParams(location.search).get("paid");
+    if (paid) {
+      window.history.replaceState(null, "", location.pathname);
+      if (paid !== "no") (async () => {
+        await null;   // let the rest of this script run first, so sign-in has started
+        await ready;
+        for (let i = 0; i < 20 && !user; i++) await new Promise(r => setTimeout(r, 300));
+        if (!user) return;
+        await openPlans();
+        const note = $("plans-msg");
+        note.className = "auth-msg ok"; note.textContent = "Payment received. Adding your pixels…";
+        const before = Number($("set-pixels").textContent);
+        for (let i = 0; i < 8; i++) {
+          await loadPixels();
+          const now = Number($("set-pixels").textContent);
+          if (i > 0 && now > before) { note.textContent = `Thanks! Your pixels are in: you now have ${now}.`; return; }
+          await new Promise(r => setTimeout(r, 2500));
+        }
+        note.textContent = "Payment received. Your pixels will show up shortly; refresh the page in a minute.";
+      })();
+    }
+  }
+  $("set-pass-form").addEventListener("submit", async e => {
+    e.preventDefault();
+    const m = $("set-pass-msg"), password = $("set-pass").value;
+    m.className = "auth-msg";
+    if (password.length < 8) { m.textContent = "Use a password of at least 8 characters."; return; }
+    const { error } = await sb.auth.updateUser({ password });
+    if (error) { m.textContent = /same/i.test(error.message) ? "That's already your password." : "Couldn't change the password. Try again."; return; }
+    $("set-pass").value = "";
+    m.className = "auth-msg ok";
+    m.textContent = "Password changed.";
+  });
+  $("set-delete").onclick = async () => {
+    const m = $("set-del-msg");
+    if (prompt('This permanently deletes your account and every site in it. Type DELETE to confirm.') !== "DELETE") { m.className = "auth-msg"; m.textContent = "Nothing was deleted."; return; }
+    $("set-delete").disabled = true;
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      const res = await fetch(`${FUNCTIONS_URL}/delete-account`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token || ""}`, apikey: ANON_KEY },
+        body: JSON.stringify({ confirm: "DELETE" })
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || "Couldn't delete the account. Try again.");
+      await sb.auth.signOut();
+      settings.close();
+      newSite();
+    } catch (err) {
+      m.className = "auth-msg";
+      m.textContent = err.message;
+    } finally {
+      $("set-delete").disabled = false;
+    }
+  };
+
+  // My sites page
+  const fmt = d => new Date(d).toLocaleDateString(undefined, { day: "numeric", month: "short", year: "numeric" });
+  // Deleting a site asks first, in its own window, and the Delete button only wakes up after a few seconds,
+  // so a site can't be lost to a quick double click.
+  function confirmDelete(name, live) {
+    const box = $("del"), yes = $("del-yes");
+    $("del-text").textContent = `"${name}" will be deleted for good. This can't be undone.`;
+    $("del-live").textContent = live ? "This site is published. Its live link will stop working." : "";
+    return new Promise(done => {
+      let left = 3;
+      yes.disabled = true; yes.textContent = `Delete (${left})`;
+      const tick = setInterval(() => { left--; if (left > 0) yes.textContent = `Delete (${left})`; else { clearInterval(tick); yes.disabled = false; yes.textContent = "Delete site"; } }, 1000);
+      const finish = answer => { clearInterval(tick); yes.onclick = $("del-no").onclick = box.onclose = null; if (box.open) box.close(); done(answer); };
+      yes.onclick = () => finish(true);
+      $("del-no").onclick = () => finish(false);
+      box.onclose = () => finish(false);
+      box.showModal();
+      $("del-no").focus();
+    });
+  }
+  async function openMine() {
+    if (!user || busy) return;
+    setEditing(false);
+    startEl.hidden = true; result.hidden = true; $("mine").hidden = false;
+    const grid = $("grid"), note = $("mine-note");
+    grid.textContent = "";
+    note.textContent = "Loading your sites…";
+    const { data, error } = await sb.from("sites").select("id, name, direction, updated_at, html").eq("user_id", user.id).order("updated_at", { ascending: false }).limit(60);
+    if (error) { note.textContent = "Couldn't load your sites. Check your connection and try again."; return; }
+    note.textContent = data.length ? `${data.length} site${data.length === 1 ? "" : "s"}. Changes save automatically while you're signed in.` : "Nothing here yet. Build a site and it will be saved automatically.";
+    for (const row of data) {
+      const card = document.createElement("article");
+      card.className = "card";
+      card.innerHTML = `<div class="thumb" title="Open"><iframe loading="lazy" tabindex="-1" sandbox="" title=""></iframe></div><div class="card-body"><b></b><small></small></div><div class="card-foot"><button class="btn primary" type="button">Open</button><button class="btn quiet" type="button">Delete</button></div>`;
+      const frameEl = card.querySelector("iframe");
+      frameEl.srcdoc = row.html;   // sandboxed: scripts off, so it is a still picture of the page
+      card.querySelector("b").textContent = row.name;
+      card.querySelector("small").textContent = `${row.direction ? pretty(row.direction) + " · " : ""}Edited ${fmt(row.updated_at)}`;
+      const open = async () => {
+        const { data: full, error: e2 } = await sb.from("sites").select("id, prompt, direction, html, chat").eq("id", row.id).single();
+        if (e2 || !full) { note.textContent = "Couldn't open that site. Try again."; return; }
+        history.length = 0;
+        currentPage = "home";
+        site = { id: full.id, html: "", prompt: full.prompt || "", used: full.direction ? [full.direction] : [], chat: Array.isArray(full.chat) ? full.chat : [] };
+        show(true);
+        setSite(full.html, false);
+        drawChat();
+        $("saved").textContent = "Saved";
+        refreshPublishState();
+      };
+      card.querySelector(".thumb").onclick = open;
+      const [openBtn, delBtn] = card.querySelectorAll("button");
+      openBtn.onclick = open;
+      delBtn.onclick = async () => {
+        const { data: liveRow } = await sb.from("published").select("slug").eq("site_id", row.id).maybeSingle();
+        if (!await confirmDelete(row.name, !!liveRow)) return;
+        const { error: e3 } = await sb.from("sites").delete().eq("id", row.id);
+        if (e3) { note.textContent = "Couldn't delete that site. Try again."; return; }
+        if (site.id === row.id) site.id = null;
+        card.remove();
+      };
+      grid.append(card);
+      const scale = () => { frameEl.style.transform = `scale(${frameEl.parentElement.clientWidth / 1280})`; };
+      scale(); new ResizeObserver(scale).observe(frameEl.parentElement);
+    }
+  }
+  const newSite = () => { if (busy) return; try { localStorage.removeItem(SAVE_KEY); } catch { /* ignore */ } site = { html: "", prompt: "", used: [] }; history.length = 0; setEditing(false); promptBox.value = ""; $("publish").textContent = "Publish"; show(false); promptBox.focus(); };
+  $("mine-new").onclick = newSite;
+  acts("signin").forEach(b => b.onclick = () => openAuth("signin"));
+  acts("mine").forEach(b => b.onclick = openMine);
+  acts("settings").forEach(b => b.onclick = openSettings);
+  acts("signout").forEach(b => b.onclick = async () => { await sb?.auth.signOut(); if (settings.open) settings.close(); if (!$("mine").hidden) show(!!site.html); });
+
+  // Load the accounts library last and separately, so the builder still works if it can't be reached.
+  ready = (async () => {
+    try {
+      const { createClient } = await import("https://esm.sh/@supabase/supabase-js@2");
+      sb = createClient(SUPABASE_URL, PUBLISHABLE_KEY);
+      sb.auth.onAuthStateChange((_event, session) => {
+        const was = user?.id;
+        user = session?.user || null;
+        accountUI();
+        if (user && user.id !== was && site.html) queueCloudSave();   // keep the site they just built
+        if (user && user.id !== was) refreshPublishState();
+        if (user?.id !== was) loadPixels();
+        if (!user) site.id = null;
+      });
+    } catch { /* accounts unavailable; everything else carries on */ }
+    accountUI();
+  })();
+  // A failed sign-in comes back as an error in the address. Say so instead of silently showing "Sign in" again.
+  ready.then(async () => {
+    const back = new URLSearchParams(location.hash.slice(1) || location.search);
+    if (!back.get("error") && !back.get("error_description")) return;
+    console.warn("Sign-in error:", back.get("error_description") || back.get("error"));
+    window.history.replaceState(null, "", location.pathname);
+    await openAuth("signin");
+    $("auth-msg").className = "auth-msg";
+    $("auth-msg").textContent = "Sign-in didn't complete. Please try again, or use email and password.";
+  });
+
+  // Bring back the last site after a refresh or a return from signing in, so it is never lost
+  // and a reload never costs another build. Kept in this browser until "New site" is pressed.
+  try {
+    const saved = JSON.parse(localStorage.getItem(SAVE_KEY) || "null");
+    if (saved?.html) { site = { ...saved, html: "" }; promptBox.value = saved.prompt || ""; show(true); setSite(saved.html, false); drawChat(); }
+  } catch { /* nothing saved */ }
+</script>
+</body>
+</html>
