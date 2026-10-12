@@ -320,6 +320,7 @@
   .auth-x { color: var(--muted); }
 
   .tools { display: flex; flex-wrap: wrap; gap: 6px; padding: 4px 12px 10px; }
+  #chat-toggle { display: none; }
   .result .tools .btn { font-size: 12.5px; padding: 6px 11px; border-radius: 999px; }
   .result .btn.icon { width: 36px; padding: 8px 0; text-align: center; font-size: 15px; }
   .building .tools { opacity: .45; pointer-events: none; }
@@ -393,13 +394,28 @@
     .bar .logo { font-size: 0; gap: 0; }                     /* just the badge, to save room */
     .bar .btn { padding: 8px 11px; font-size: 13px; }
     .pagepick select { max-width: 104px; padding: 7px 2px; }
-    .chat { max-height: 54%; }
-    .chat-log { min-height: 84px; }
+    /* The site gets most of the screen; the conversation opens when asked for or when a reply arrives. */
+    .chat { max-height: 62%; }
+    .chat-log { display: none; min-height: 120px; }
+    .chat.log-open .chat-log { display: block; }
+    #chat-toggle { display: inline-flex; }
+    .scope { display: none; }
+    .chat.log-open .scope { display: flex; }
+    .chat-form { margin: 0 10px 10px; }
+    #chat-input { min-height: 0; }
+    /* My sites */
+    .mine-head { flex-wrap: wrap; padding: 12px 14px; gap: 8px; }
+    .mine-head .logo { font-size: 0; gap: 0; }
+    .mine-head .who { display: none; }
+    .mine-head .btn, .mine-head .pixels { padding: 7px 11px; font-size: 13px; }
+    .mine-main { padding: 26px 14px 60px; }
+    .mine-main h1 { font-size: 40px; }
+    .grid { grid-template-columns: 1fr; gap: 16px; }
+    .card-foot { flex-wrap: wrap; }
     .tools { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
     .tools::-webkit-scrollbar { display: none; }
     .tools .btn { flex: none; }
     #chat-price { display: none; }
-    .scope { margin-bottom: 6px; }
     #chat-input { font-size: 16px; }                         /* stops phones zooming in when typing */
     .auth input, .auth select, .auth textarea, .box textarea { font-size: 16px; }
     .plans-body, .pub-body { padding: 22px 18px 18px; }
@@ -471,6 +487,7 @@
     <aside class="chat" id="chat" aria-label="Chat to change the site">
       <div class="chat-log" id="chat-log" role="log" aria-live="polite"></div>
       <div class="tools" role="group" aria-label="Site tools">
+        <button class="btn" type="button" id="chat-toggle" aria-expanded="false">Chat ▴</button>
         <button class="btn" type="button" id="edit" aria-pressed="false">Edit</button>
         <button class="btn" type="button" id="logo">Add logo</button>
         <button class="btn" type="button" id="effects" aria-pressed="false" title="Adds or removes immersive effects: drifting particles, a glow that follows the cursor, and photos that move with depth as you scroll. Free.">Effects</button>
@@ -855,7 +872,11 @@
   // ---- Chat: ask for a change in words; the server answers with exact edits to apply.
   const chatLog = $("chat-log"), chatInput = $("chat-input");
   const SUGGESTIONS = ["Make the headline shorter", "Change the main color to navy", "Add a section about gift cards"];
+  // On phones the conversation is folded away so the site has room; this opens and closes it.
+  const openLog = on => { $("chat").classList.toggle("log-open", on); $("chat-toggle").textContent = on ? "Chat ▾" : "Chat ▴"; $("chat-toggle").setAttribute("aria-expanded", String(on)); if (on) chatLog.scrollTop = chatLog.scrollHeight; requestAnimationFrame(() => typeof fitPreview === "function" && fitPreview()); };
+  $("chat-toggle").onclick = () => openLog(!$("chat").classList.contains("log-open"));
   function bubble(role, text, extra = "") {
+    if (extra === "bad") openLog(true);   // never hide a problem
     const el = document.createElement("div");
     el.className = `bubble ${role === "user" ? "user" : "bot"} ${extra}`;
     el.textContent = text;
@@ -895,6 +916,7 @@
     site.chat = site.chat || [];
     const history = site.chat.slice(-6);
     bubble("user", request);
+    openLog(true);
     const waiting = bubble("bot", "Working on it", "wait");
     // Uploaded photos are long strings of data; swap them for short tokens while the page is with the AI.
     const photos = [];
