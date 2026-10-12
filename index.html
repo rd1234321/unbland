@@ -370,6 +370,39 @@
     .chat { width: 100%; border-right: 0; border-top: 1px solid var(--rule); }
     .site-name { display: none; }
   }
+  /* Phones */
+  .chip, .top-right .btn, .top-right button { white-space: nowrap; }
+  @media (max-width: 640px) {
+    .start header { padding: 14px 16px; gap: 10px; }
+    .start .logo { font-size: 20px; }
+    .top-right { gap: 8px; }
+    .top-right .chip:not(a) { display: none; }              /* keep "See how it works", drop the extra badge */
+    .top-right .chip { font-size: 10.5px; padding: 6px 10px; letter-spacing: .06em; }
+    .ask { padding-left: 16px; padding-right: 16px; }
+    .box textarea { min-height: 120px; padding: 18px 18px 6px; font-size: 16px; }
+    .box-foot { padding: 10px 12px 12px; gap: 10px; }
+    .kind { display: grid; grid-template-columns: 1fr; width: 100%; }
+    .kind button { text-align: left; padding: 10px 12px; font-size: 14px; }
+    .kind .pages { padding: 6px 12px 8px; }
+    .go { justify-content: center; }
+    .helper { font-size: 13px; }
+    /* Editor */
+    .bar { padding: 8px 10px; gap: 6px; }
+    .bar .logo { font-size: 0; gap: 0; }                     /* just the badge, to save room */
+    .bar .btn { padding: 8px 11px; font-size: 13px; }
+    .pagepick select { max-width: 104px; padding: 7px 2px; }
+    .chat { max-height: 54%; }
+    .chat-log { min-height: 84px; }
+    .tools { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+    .tools::-webkit-scrollbar { display: none; }
+    .tools .btn { flex: none; }
+    #chat-price { display: none; }
+    .scope { margin-bottom: 6px; }
+    #chat-input { font-size: 16px; }                         /* stops phones zooming in when typing */
+    .auth input, .auth select, .auth textarea, .box textarea { font-size: 16px; }
+    .plans-body, .pub-body { padding: 22px 18px 18px; }
+    .pubpanel { margin: 56px 8px auto 8px; width: auto; }
+  }
 </style>
 </head>
 <body>
@@ -1197,7 +1230,7 @@
   // The preview always shows the site at a true screen width for the size chosen (computer 1280, tablet 820,
   // phone 390). When the window is too narrow for that, the preview is shrunk to fit rather than reflowed,
   // so what you see is what that device shows.
-  let previewSize = "desktop";
+  let previewSize = innerWidth < 640 ? "phone" : "desktop";   // on a phone, show the phone layout
   function fitPreview() {
     const wrap = $("wrap"), cs = getComputedStyle(wrap);
     const availW = wrap.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight);

@@ -103,6 +103,14 @@
     section.center { justify-content: center; }
   }
   @media (prefers-reduced-motion: reduce) { .copy { transition: none; } }
+  /* phone-fit: nothing may be wider than the screen */
+  html, body { overflow-x: clip; max-width: 100%; }
+  @media (max-width: 760px) {
+    .copy::before, section .copy::before { inset: -40px -18px; }
+    header { padding-left: 14px; padding-right: 14px; gap: 10px; }
+    header .btn, header .call { padding: 10px 14px; font-size: 14px; }
+    .demo { left: 8px; right: 8px; text-align: center; border-radius: 12px; }
+  }
 </style>
 </head>
 <body>
