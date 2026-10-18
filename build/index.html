@@ -357,7 +357,10 @@
   .set-links { display: flex; gap: 18px; font-size: 14.5px; }
   .set-links a { color: var(--ink); }
   .settings .auth-msg { min-height: 0; }
-  .gsi { display: flex; justify-content: center; min-height: 44px; color-scheme: normal; }
+  /* Google's button lives in a light-themed frame; matching it keeps the frame transparent on our dark panel. */
+  .gsi { display: flex; justify-content: center; min-height: 44px; }
+  .gsi, .gsi iframe { color-scheme: light; }
+  .gsi iframe { background: transparent !important; }
   .pub-more { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; margin-top: 12px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 12px; background: transparent; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
   .pub-more:hover { border-color: rgba(255, 255, 255, .3); }
   .pub-more b { display: block; font-size: 14px; }
@@ -1537,7 +1540,7 @@
       callback: async ({ credential }) => {
         await ready;
         const { error } = await sb.auth.signInWithIdToken({ provider: "google", token: credential, nonce: raw });
-        if (error) { $("auth-msg").className = "auth-msg"; $("auth-msg").textContent = "Couldn't sign in with Google. Try the button again, or use email."; $("auth-google").hidden = false; $("auth-gsi").hidden = true; console.error("google id token sign-in", error.message); return; }
+        if (error) { $("auth-msg").className = "auth-msg"; $("auth-msg").textContent = "Couldn't sign in with Google. Try again, or use email."; console.error("google id token sign-in", error.message); return; }
         auth.close();
       },
     });
@@ -1551,7 +1554,8 @@
     .then(d => {
       const on = !!d?.external?.google;
       $("auth-google").hidden = !on; $("auth-or").hidden = !on;
-      if (on) googleButton().catch(() => { /* keep the redirect button */ });
+      // If Google's script can't load (blocked by an extension, for example), email sign-in is still there.
+      if (on) googleButton().catch(() => { $("auth-google").hidden = true; $("auth-or").hidden = true; });
     })
     .catch(() => { /* leave the button hidden */ });
 
