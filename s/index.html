@@ -29,12 +29,17 @@
 
   const slug = decodeURIComponent(location.search.slice(1).split("&")[0] || "").toLowerCase();
   if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(slug)) missing();
-  else fetch(`${SUPABASE_URL}/rest/v1/published?slug=eq.${slug}&select=name,html,badge`, { headers: { apikey: PUBLISHABLE_KEY } })
+  else fetch(`${SUPABASE_URL}/rest/v1/rpc/site_for_host`, { method: "POST", headers: { apikey: PUBLISHABLE_KEY, "Content-Type": "application/json" }, body: JSON.stringify({ p_slug: slug }) })
     .then(r => r.ok ? r.json() : Promise.reject())
     .then(rows => {
       if (!rows.length) return missing();
-      const { name, html, badge } = rows[0];
-      document.title = name;
+      const { name, html, badge, seo_title, seo_description, noindex, custom_domain } = rows[0];
+      // A site with its own domain lives there; send visitors to it.
+      if (custom_domain) { location.replace(`https://${custom_domain}/${location.hash}`); return; }
+      document.title = seo_title || name;
+      const meta = (n, c) => { if (!c) return; const m = document.createElement("meta"); m.name = n; m.content = c; document.head.append(m); };
+      meta("description", seo_description || new DOMParser().parseFromString(html, "text/html").querySelector('meta[name="description"]')?.content);
+      if (noindex) meta("robots", "noindex");
       // Use the site's own tab icon, if it has one.
       const icon = new DOMParser().parseFromString(html, "text/html").querySelector('link[rel~="icon"]')?.getAttribute("href");
       if (icon && /^(data:image\/|https:\/\/)/i.test(icon)) { const l = document.querySelector('link[rel="icon"]'); l.removeAttribute("type"); l.href = icon; }
@@ -42,7 +47,9 @@
       const frame = document.createElement("iframe");
       frame.title = name;
       frame.setAttribute("sandbox", "allow-scripts allow-forms allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation");
-      frame.srcdoc = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, INNER + "</body>") : html + INNER;
+      // The forms script makes contact and quote forms send to the owner.
+      const RUNTIME = `<scr` + `ipt>window.__unbland={site:${JSON.stringify(slug)}};</scr` + `ipt><scr` + `ipt src="${location.origin}/runtime/site.js" defer></scr` + `ipt>`;
+      frame.srcdoc = /<\/body>/i.test(html) ? html.replace(/<\/body>/i, () => INNER + RUNTIME + "</body>") : html + INNER + RUNTIME;
       note.remove();
       document.body.append(frame);
       // Sites on the free plan carry a small badge. Paid plans remove it.

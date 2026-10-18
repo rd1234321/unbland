@@ -357,6 +357,42 @@
   .set-links { display: flex; gap: 18px; font-size: 14.5px; }
   .set-links a { color: var(--ink); }
   .settings .auth-msg { min-height: 0; }
+  .pub-more { display: flex; justify-content: space-between; align-items: center; gap: 12px; width: 100%; margin-top: 12px; padding: 12px 14px; border: 1px solid var(--rule); border-radius: 12px; background: transparent; color: var(--ink); font: inherit; text-align: left; cursor: pointer; }
+  .pub-more:hover { border-color: rgba(255, 255, 255, .3); }
+  .pub-more b { display: block; font-size: 14px; }
+  .pub-more span span, .pub-more > span:first-child { font-size: 13px; color: var(--muted); }
+  .pub-more > span:last-child { font-size: 22px; color: var(--muted); }
+  .siteset { width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); }
+  .siteset .set-body { padding: 26px 24px 22px; }
+  .ss-tabs { display: flex; gap: 4px; margin: 16px 0 6px; border-bottom: 1px solid var(--rule); overflow-x: auto; }
+  .ss-tabs button { border: 0; background: none; color: var(--muted); font: 500 14px "Inter", sans-serif; padding: 9px 12px; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; }
+  .ss-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+  .ss-count { display: inline-block; min-width: 18px; padding: 1px 6px; border-radius: 99px; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; margin-left: 4px; }
+  .siteset form.ss-pane { display: grid; gap: 8px; padding: 12px 0 0; margin: 0; }
+  .siteset form.ss-pane[hidden] { display: none; }
+  .ss-pane label { font-size: 13px; font-weight: 600; margin-top: 6px; }
+  .ss-pane h3 { margin-top: 14px; }
+  .ss-pane input, .ss-pane textarea { width: 100%; background: #0B0C0E; border: 1px solid var(--rule); color: var(--ink); border-radius: 9px; padding: 10px 12px; font: 14px "Inter", sans-serif; }
+  .ss-pane textarea { resize: vertical; }
+  .ss-pane .go { justify-self: start; margin-top: 10px; }
+  .ss-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 12px; }
+  .ss-grid .wide { grid-column: 1 / -1; }
+  .ss-grid label { display: block; margin-bottom: 4px; }
+  .ss-check { display: flex !important; gap: 8px; align-items: center; font-weight: 500 !important; }
+  .ss-check input { width: auto; }
+  .ss-paid { font: 600 10px "Inter", sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin-left: 6px; }
+  .ss-inbox { display: grid; gap: 8px; }
+  .ss-msg { border: 1px solid var(--rule); border-radius: 10px; padding: 10px 12px; font-size: 13.5px; display: grid; gap: 4px; }
+  .ss-msg.unread { border-color: rgba(255, 79, 26, .6); }
+  .ss-msg header { display: flex; justify-content: space-between; gap: 8px; color: var(--muted); font-size: 12px; }
+  .ss-msg dl { display: grid; grid-template-columns: max-content 1fr; gap: 2px 10px; margin: 0; }
+  .ss-msg dt { color: var(--muted); }
+  .ss-msg dd { margin: 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+  .ss-dom { border: 1px solid var(--rule); border-radius: 10px; padding: 12px; font-size: 13.5px; display: grid; gap: 8px; margin-bottom: 6px; }
+  .ss-dom code { background: #0B0C0E; border: 1px solid var(--rule); border-radius: 6px; padding: 2px 6px; font-size: 12.5px; }
+  .ss-dom table { border-collapse: collapse; font-size: 12.5px; }
+  .ss-dom td, .ss-dom th { border: 1px solid var(--rule); padding: 5px 8px; text-align: left; }
+  @media (max-width: 640px) { .ss-grid { grid-template-columns: 1fr; } }
   @media (max-width: 860px) {
     .chat { width: 100%; border-right: 0; border-top: 1px solid var(--rule); }
     .site-name { display: none; }
@@ -482,6 +518,7 @@
         <button class="btn" type="button" id="logo">Add logo</button>
         <button class="btn" type="button" id="effects" aria-pressed="false" title="Adds or removes immersive effects: drifting particles, a glow that follows the cursor, and photos that move with depth as you scroll. Free.">Effects</button>
         <button class="btn" type="button" id="tabicon" title="The small picture shown in the browser tab and in bookmarks.">Tab icon</button>
+        <button class="btn" type="button" id="siteset-open" title="Search engines, forms, connections and your own domain.">Site settings</button>
         <button class="btn" type="button" id="restyle" title="Rebuilds the same business in a different style from our library.">Try another style</button>
         <button class="btn" type="button" id="renew" title="Designs the same business again from nothing. Paid plans.">Brand new design</button>
       </div>
@@ -539,8 +576,84 @@
       <p class="pub-line"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>Anyone with the link can see it</p>
       <p class="pub-line" id="pub-badge"></p>
     </div>
+    <button type="button" class="pub-more" id="pub-settings"><span><b>Site settings</b>Search engines, forms, connections, your own domain</span><span aria-hidden="true">›</span></button>
     <p class="auth-msg" id="pub-msg" role="status" aria-live="polite"></p>
     <div class="pub-foot"><button type="button" class="linkish" id="pub-off">Take offline</button><button class="go" type="button" id="pub-go">Publish</button></div>
+  </div>
+</dialog>
+
+<!-- Site settings: what a freelancer needs to hand a site to a client -->
+<dialog class="auth settings siteset" id="siteset" aria-labelledby="ss-title">
+  <div class="set-body">
+    <button class="auth-x" type="button" id="ss-close" aria-label="Close">×</button>
+    <h2 id="ss-title">Site settings</h2>
+    <p class="set-note" id="ss-site"></p>
+    <div class="ss-tabs" role="tablist">
+      <button type="button" role="tab" data-tab="seo" aria-selected="true">Search</button>
+      <button type="button" role="tab" data-tab="forms" aria-selected="false">Forms <span class="ss-count" id="ss-unread" hidden></span></button>
+      <button type="button" role="tab" data-tab="connect" aria-selected="false">Connections</button>
+      <button type="button" role="tab" data-tab="domain" aria-selected="false">Domain</button>
+    </div>
+
+    <form class="ss-pane" data-pane="seo" id="ss-seo">
+      <p class="set-note">How the site shows up on Google and when someone shares the link.</p>
+      <label for="ss-title-in">Page title</label>
+      <input id="ss-title-in" name="seo_title" maxlength="120" placeholder="">
+      <label for="ss-desc">Description</label>
+      <textarea id="ss-desc" name="seo_description" maxlength="320" rows="3" placeholder=""></textarea>
+      <label for="ss-image">Share picture (link to an image)</label>
+      <input id="ss-image" name="share_image" type="url" maxlength="1000" placeholder="https://… (leave empty to use the site's main photo)">
+      <h3>Business details for Google</h3>
+      <p class="set-note">Shown to search engines so the business can appear with its phone, address and hours. Only fill in what's true.</p>
+      <div class="ss-grid">
+        <div><label for="ss-b-name">Business name</label><input id="ss-b-name" data-biz="name" maxlength="120"></div>
+        <div><label for="ss-b-type">Kind of business</label><input id="ss-b-type" data-biz="type" maxlength="80" placeholder="Florist, Plumber, Dentist…"></div>
+        <div><label for="ss-b-phone">Phone</label><input id="ss-b-phone" data-biz="phone" maxlength="40"></div>
+        <div><label for="ss-b-email">Email</label><input id="ss-b-email" data-biz="email" maxlength="120"></div>
+        <div class="wide"><label for="ss-b-street">Street address</label><input id="ss-b-street" data-biz="street" maxlength="160"></div>
+        <div><label for="ss-b-city">City</label><input id="ss-b-city" data-biz="city" maxlength="80"></div>
+        <div><label for="ss-b-region">State</label><input id="ss-b-region" data-biz="region" maxlength="40"></div>
+        <div><label for="ss-b-zip">ZIP code</label><input id="ss-b-zip" data-biz="zip" maxlength="20"></div>
+        <div><label for="ss-b-area">Areas served</label><input id="ss-b-area" data-biz="area" maxlength="160" placeholder="Raleigh, Durham, Cary"></div>
+        <div class="wide"><label for="ss-b-hours">Opening hours</label><input id="ss-b-hours" data-biz="hours" maxlength="200" placeholder="Mon–Fri 9am–5pm, Sat 10am–2pm"></div>
+      </div>
+      <label class="ss-check"><input type="checkbox" name="noindex"> Hide this site from search engines</label>
+      <button class="go" type="submit">Save</button>
+      <p class="auth-msg" data-msg role="status" aria-live="polite"></p>
+    </form>
+
+    <form class="ss-pane" data-pane="forms" id="ss-forms" hidden>
+      <p class="set-note">Forms on the site (contact, quotes, bookings) send here. Every message is also kept in the inbox below.</p>
+      <label for="ss-email">Email messages to</label>
+      <div class="set-inline"><input id="ss-email" name="form_email" type="email" maxlength="200" placeholder="owner@business.com"><button class="btn" type="submit">Save</button></div>
+      <p class="auth-msg" data-msg role="status" aria-live="polite"></p>
+      <h3>Inbox</h3>
+      <div class="ss-inbox" id="ss-inbox"><p class="set-note">No messages yet.</p></div>
+    </form>
+
+    <form class="ss-pane" data-pane="connect" id="ss-connect" hidden>
+      <p class="set-note">Send form messages to other apps, and add tracking. These work on the live site.</p>
+      <label for="ss-hook">Send form messages to an app (webhook) <span class="ss-paid" data-paid>Paid plans</span></label>
+      <input id="ss-hook" name="webhook_url" type="url" maxlength="1000" placeholder="https://hooks.zapier.com/…">
+      <p class="set-note">Works with Zapier, Make, n8n and anything that accepts a webhook. Use it to add messages to Google Sheets, a CRM, Slack or text alerts.</p>
+      <label for="ss-ga">Google Analytics measurement ID</label>
+      <input id="ss-ga" name="ga_id" maxlength="20" placeholder="G-XXXXXXXXXX">
+      <label for="ss-pixel">Meta (Facebook) Pixel ID</label>
+      <input id="ss-pixel" name="pixel_id" maxlength="20" inputmode="numeric" placeholder="123456789012345">
+      <label for="ss-gsc">Google Search Console verification code</label>
+      <input id="ss-gsc" name="gsc_code" maxlength="100" placeholder="The code from the HTML tag option">
+      <p class="set-note" id="ss-track-note">Tracking and Search Console start working once the site is on its own domain.</p>
+      <button class="go" type="submit">Save</button>
+      <p class="auth-msg" data-msg role="status" aria-live="polite"></p>
+    </form>
+
+    <form class="ss-pane" data-pane="domain" id="ss-domain" hidden>
+      <p class="set-note">Put the site on the business's own address, like www.business.com. <span class="ss-paid" data-paid>Paid plans</span></p>
+      <div id="ss-dom-list"></div>
+      <label for="ss-host">Domain</label>
+      <div class="set-inline"><input id="ss-host" maxlength="253" placeholder="www.business.com" autocomplete="off" spellcheck="false"><button class="btn" type="submit">Connect</button></div>
+      <p class="auth-msg" data-msg role="status" aria-live="polite"></p>
+    </form>
   </div>
 </dialog>
 
@@ -760,7 +873,9 @@
     drawPages();
     if (remember && site.slug) $("publish").textContent = "Publish changes";
     frame.onload = wire;
-    frame.srcdoc = numbered();
+    // In the preview, forms say they'll work once published instead of opening an email app.
+    const formsNote = `<script>window.__unbland={preview:true};</scr` + `ipt><script src="${location.origin}/runtime/site.js" defer></scr` + `ipt>`;
+    frame.srcdoc = numbered().replace(/<\/body>(?![\s\S]*<\/body>)/i, () => formsNote + "</body>");
     requestAnimationFrame(fitPreview); setTimeout(fitPreview, 60);
   }
   // Records an edit already visible in the preview, without reloading it.
@@ -1529,6 +1644,162 @@
     const { data } = await sb.from("published").select("slug").eq("site_id", site.id).maybeSingle();
     if (data?.slug) { site.slug = data.slug; $("publish").textContent = "Published"; }
   }
+
+  // ---- Site settings: search engines, forms and inbox, connections, and the business's own domain.
+  const siteset = $("siteset");
+  let ssRow = {};
+  const ssPaid = () => pixelPlan === "paid" || pixelPlan === "owner";
+  const ssSay = (pane, text = "", ok = false) => { const m = siteset.querySelector(`[data-pane="${pane}"] [data-msg]`); m.className = ok ? "auth-msg ok" : "auth-msg"; m.textContent = text; };
+  const ssEsc = t => String(t).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  function ssTab(name) {
+    siteset.querySelectorAll(".ss-tabs [role=tab]").forEach(b => b.setAttribute("aria-selected", String(b.dataset.tab === name)));
+    siteset.querySelectorAll(".ss-pane").forEach(p => { p.hidden = p.dataset.pane !== name; });
+    if (name === "forms") ssInbox();
+    if (name === "domain") ssDomains();
+  }
+  siteset.querySelectorAll(".ss-tabs [role=tab]").forEach(b => { b.onclick = () => ssTab(b.dataset.tab); });
+  async function openSiteSettings(tab = "seo") {
+    await ready;
+    if (!user) { openAuth("signin"); return; }
+    if (!site.html) return;
+    if (pub.open) pub.close();
+    clearTimeout(cloudTimer);
+    await cloudSave();
+    if (!site.id) { alert("Couldn't save the site yet. Try again in a moment."); return; }
+    const { data } = await sb.from("site_settings").select("*").eq("site_id", site.id).maybeSingle();
+    ssRow = data || {};
+    const doc = source || new DOMParser().parseFromString(site.html, "text/html");
+    $("ss-site").textContent = siteName();
+    $("ss-title-in").value = ssRow.seo_title || ""; $("ss-title-in").placeholder = doc.querySelector("title")?.textContent.trim() || siteName();
+    $("ss-desc").value = ssRow.seo_description || ""; $("ss-desc").placeholder = doc.querySelector('meta[name="description"]')?.content || "One or two sentences about the business.";
+    $("ss-image").value = ssRow.share_image || "";
+    siteset.querySelector('[name="noindex"]').checked = !!ssRow.noindex;
+    const biz = ssRow.business || {};
+    siteset.querySelectorAll("[data-biz]").forEach(i => { i.value = biz[i.dataset.biz] || ""; });
+    if (!biz.name) $("ss-b-name").placeholder = siteName().split(/[|·—–]/)[0].trim();
+    $("ss-email").value = ssRow.form_email ?? "";
+    if (!ssRow.form_email) $("ss-email").placeholder = user.email || "owner@business.com";
+    $("ss-hook").value = ssRow.webhook_url || "";
+    $("ss-ga").value = ssRow.ga_id || ""; $("ss-pixel").value = ssRow.pixel_id || ""; $("ss-gsc").value = ssRow.gsc_code || "";
+    siteset.querySelectorAll("[data-paid]").forEach(t => { t.hidden = ssPaid(); });
+    $("ss-hook").disabled = !ssPaid();
+    ["seo", "forms", "connect", "domain"].forEach(p => ssSay(p));
+    ssTab(tab);
+    ssUnread();
+    if (!siteset.open) siteset.showModal();
+  }
+  async function ssSave(pane, patch) {
+    ssSay(pane, "Saving…", true);
+    const row = { site_id: site.id, user_id: user.id, ...patch, updated_at: new Date().toISOString() };
+    const { error } = await sb.from("site_settings").upsert(row, { onConflict: "site_id" });
+    if (error) {
+      const what = /ga_id/.test(error.message) ? "The Google Analytics ID should look like G-XXXXXXXXXX."
+        : /pixel_id/.test(error.message) ? "The Pixel ID is a number, 6 to 20 digits."
+        : /gsc_code/.test(error.message) ? "Paste only the code from the Search Console tag (the content=\"…\" part)."
+        : /form_email/.test(error.message) ? "That email address doesn't look right."
+        : /webhook_url|share_image/.test(error.message) ? "Links must start with https://"
+        : "Couldn't save. Try again.";
+      ssSay(pane, what); return false;
+    }
+    Object.assign(ssRow, patch);
+    ssSay(pane, site.slug ? "Saved. The live site uses it right away." : "Saved. It applies when you publish.", true);
+    return true;
+  }
+  const val = id => $(id).value.trim() || null;
+  $("ss-seo").addEventListener("submit", e => {
+    e.preventDefault();
+    const business = {};
+    siteset.querySelectorAll("[data-biz]").forEach(i => { if (i.value.trim()) business[i.dataset.biz] = i.value.trim(); });
+    ssSave("seo", { seo_title: val("ss-title-in"), seo_description: val("ss-desc"), share_image: val("ss-image"), noindex: siteset.querySelector('[name="noindex"]').checked, business });
+  });
+  $("ss-forms").addEventListener("submit", e => { e.preventDefault(); ssSave("forms", { form_email: val("ss-email") }); });
+  $("ss-connect").addEventListener("submit", e => {
+    e.preventDefault();
+    const gsc = ($("ss-gsc").value.match(/content=["']([^"']+)/) || [, $("ss-gsc").value])[1].trim() || null;
+    const patch = { ga_id: ($("ss-ga").value.trim().toUpperCase() || null), pixel_id: val("ss-pixel"), gsc_code: gsc };
+    if (ssPaid()) patch.webhook_url = val("ss-hook");
+    ssSave("connect", patch);
+  });
+
+  // Inbox: messages sent through the site's forms.
+  async function ssUnread() {
+    if (!site.id) return;
+    const { count } = await sb.from("form_submissions").select("id", { count: "exact", head: true }).eq("site_id", site.id).eq("read", false);
+    $("ss-unread").hidden = !count; $("ss-unread").textContent = count || "";
+  }
+  async function ssInbox() {
+    const box = $("ss-inbox");
+    const { data, error } = await sb.from("form_submissions").select("id, page, fields, read, emailed, forwarded, created_at").eq("site_id", site.id).order("created_at", { ascending: false }).limit(50);
+    if (error) { box.innerHTML = '<p class="set-note">Couldn\'t load messages. Try again.</p>'; return; }
+    if (!data.length) { box.innerHTML = `<p class="set-note">No messages yet. ${site.slug ? "When someone fills in a form on the live site, it shows up here." : "Publish the site and messages from its forms will show up here."}</p>`; return; }
+    box.innerHTML = data.map(m => `<article class="ss-msg${m.read ? "" : " unread"}" data-id="${m.id}"><header><span>${new Date(m.created_at).toLocaleString()}${m.page ? " · " + ssEsc(m.page) : ""}</span><span>${m.emailed ? "Emailed" : ""}${m.forwarded ? " · Sent to app" : ""} <button type="button" class="linkish" data-del>Delete</button></span></header><dl>${Object.entries(m.fields).map(([k, v]) => `<dt>${ssEsc(k)}</dt><dd>${ssEsc(v)}</dd>`).join("")}</dl></article>`).join("");
+    box.querySelectorAll("[data-del]").forEach(b => { b.onclick = async () => {
+      const card = b.closest(".ss-msg");
+      if (!confirm("Delete this message? This can't be undone.")) return;
+      const { error } = await sb.from("form_submissions").delete().eq("id", card.dataset.id);
+      if (!error) card.remove();
+    }; });
+    const unread = data.filter(m => !m.read).map(m => m.id);
+    if (unread.length) { await sb.from("form_submissions").update({ read: true }).in("id", unread); $("ss-unread").hidden = true; }
+  }
+
+  // Domains: connect the business's own address. The domains function talks to the hosting service.
+  async function ssDomainCall(body) {
+    const res = await fetch(`${FUNCTIONS_URL}/domains`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${await bearer()}`, apikey: ANON_KEY }, body: JSON.stringify({ site_id: site.id, ...body }) });
+    const data = await res.json().catch(() => ({}));
+    if (!res.ok) throw new Error(data.error || "Couldn't reach the server. Try again.");
+    return data;
+  }
+  function ssDomCard(d) {
+    const apex = d.hostname.split(".").length === 2;
+    const sub = apex ? "@" : d.hostname.split(".").slice(0, -2).join(".");
+    const live = d.status === "active";
+    const rec = d.target ? `<table><tr><th>Type</th><th>Name</th><th>Value</th></tr><tr><td>CNAME</td><td>${ssEsc(sub)}</td><td><code>${ssEsc(d.target)}</code></td></tr>${(d.txt || []).map(t => `<tr><td>TXT</td><td><code>${ssEsc(t.name)}</code></td><td><code>${ssEsc(t.value)}</code></td></tr>`).join("")}</table>` : "";
+    return `<div class="ss-dom" data-host="${ssEsc(d.hostname)}"><b>${ssEsc(d.hostname)}</b><span>${live ? "Connected. The site is live at this address." : "Waiting for the domain settings. Add this at the place the domain was bought (GoDaddy, Namecheap, Squarespace…):"}</span>${live ? "" : rec}${!live && apex ? '<span class="set-note">Bare domains (without www) can\'t always use a CNAME. Connecting www.' + ssEsc(d.hostname) + ' and forwarding the bare domain to it works everywhere.</span>' : ""}<span>${live ? "" : '<button type="button" class="btn" data-check>Check now</button> '}<button type="button" class="linkish" data-remove>Disconnect</button></span></div>`;
+  }
+  async function ssDomains() {
+    const list = $("ss-dom-list");
+    const { data } = await sb.from("domains").select("hostname, status").eq("site_id", site.id);
+    list.innerHTML = "";
+    for (const d of data || []) {
+      list.insertAdjacentHTML("beforeend", ssDomCard(d));
+      if (d.status !== "active") ssDomainCall({ action: "check", hostname: d.hostname }).then(info => {
+        const el = list.querySelector(`[data-host="${CSS.escape(d.hostname)}"]`);
+        if (el) el.outerHTML = ssDomCard({ ...d, ...info }); ssDomBind();
+      }).catch(() => {});
+    }
+    ssDomBind();
+  }
+  function ssDomBind() {
+    $("ss-dom-list").querySelectorAll(".ss-dom").forEach(el => {
+      const host = el.dataset.host;
+      const c = el.querySelector("[data-check]");
+      if (c) c.onclick = async () => { c.disabled = true; try { const info = await ssDomainCall({ action: "check", hostname: host }); el.outerHTML = ssDomCard({ hostname: host, ...info }); ssDomBind(); ssSay("domain", info.status === "active" ? "Connected." : "Not ready yet. Domain changes can take up to a few hours.", info.status === "active"); } catch (err) { ssSay("domain", err.message); c.disabled = false; } };
+      el.querySelector("[data-remove]").onclick = async () => {
+        if (!confirm(`Disconnect ${host}? The site will stop working at that address.`)) return;
+        try { await ssDomainCall({ action: "remove", hostname: host }); el.remove(); ssSay("domain", "Disconnected.", true); } catch (err) { ssSay("domain", err.message); }
+      };
+    });
+  }
+  $("ss-domain").addEventListener("submit", async e => {
+    e.preventDefault();
+    if (!ssPaid()) { siteset.close(); openPlans("Connecting your own domain is part of the paid plans."); return; }
+    if (!site.slug) { ssSay("domain", "Publish the site first, then connect its domain."); return; }
+    const host = $("ss-host").value.trim().toLowerCase().replace(/^https?:\/\//, "").replace(/\/.*$/, "");
+    if (!/^([a-z0-9]([a-z0-9-]*[a-z0-9])?\.)+[a-z]{2,}$/.test(host)) { ssSay("domain", "Type the domain like www.business.com"); return; }
+    ssSay("domain", "Connecting…", true);
+    try {
+      const info = await ssDomainCall({ action: "add", hostname: host });
+      $("ss-host").value = "";
+      $("ss-dom-list").insertAdjacentHTML("beforeend", ssDomCard({ hostname: host, ...info }));
+      ssDomBind();
+      ssSay("domain", "Added. Now add the record below where the domain was bought.", true);
+    } catch (err) { ssSay("domain", err.message); }
+  });
+  $("siteset-open").onclick = () => openSiteSettings();
+  $("pub-settings").onclick = () => openSiteSettings();
+  $("ss-close").onclick = () => siteset.close();
+  siteset.addEventListener("click", e => { if (e.target === siteset) siteset.close(); });
 
   // ---- Settings: account, owner tools, help, and deleting the account.
   const settings = $("settings");
