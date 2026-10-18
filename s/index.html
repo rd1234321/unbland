@@ -34,8 +34,9 @@
     .then(rows => {
       if (!rows.length) return missing();
       const { name, html, badge, seo_title, seo_description, noindex, custom_domain } = rows[0];
-      // A site with its own domain lives there; send visitors to it.
-      if (custom_domain) { location.replace(`https://${custom_domain}/${location.hash}`); return; }
+      // Sites now live at their own address (or the business's domain); old /s/ links forward there.
+      location.replace(custom_domain ? `https://${custom_domain}/${location.hash}` : `https://${slug}.unbland.site/${location.hash}`);
+      return;
       document.title = seo_title || name;
       const meta = (n, c) => { if (!c) return; const m = document.createElement("meta"); m.name = n; m.content = c; document.head.append(m); };
       meta("description", seo_description || new DOMParser().parseFromString(html, "text/html").querySelector('meta[name="description"]')?.content);
