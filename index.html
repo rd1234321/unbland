@@ -9,6 +9,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="/icon.svg">
 <title>Unbland — Websites that don't look like everyone else's</title>
+<meta name="description" content="Unbland is an AI website builder for freelancers and small businesses. Describe a business in a sentence and get a finished, animated website with a look of its own.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:wght@800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -58,6 +59,10 @@
     .shade { background: linear-gradient(transparent 35%, rgba(11, 12, 14, .88) 80%); }
   }
   @media (prefers-reduced-motion: reduce) { .hint::after { animation: none; } section .copy { transition: none; } }
+  .foot { position: relative; z-index: 3; display: flex; flex-wrap: wrap; gap: 10px 22px; align-items: center; justify-content: space-between; padding: 26px clamp(18px, 6vw, 90px) 34px; border-top: 1px solid rgba(255, 255, 255, .12); background: rgba(11, 12, 14, .92); font-size: 14px; color: var(--muted); }
+  .foot nav { display: flex; flex-wrap: wrap; gap: 18px; }
+  .foot a { color: var(--ink); text-decoration: none; }
+  .foot a:hover { text-decoration: underline; }
   /* phone-fit: nothing may be wider than the screen */
   html, body { overflow-x: clip; max-width: 100%; }
   @media (max-width: 760px) {
@@ -114,6 +119,10 @@
     </div>
   </section>
 </main>
+<footer class="foot">
+  <span>© 2026 Unbland · AI website builder for freelancers and small businesses</span>
+  <nav aria-label="Legal"><a href="/build">Build a site</a><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Service</a><a href="mailto:hello@unblandapp.com">Contact</a></nav>
+</footer>
 <div class="hint" id="hint">Scroll</div>
 
 <script type="importmap">
