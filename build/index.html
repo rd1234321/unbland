@@ -384,6 +384,10 @@
   .ss-grid label { display: block; margin-bottom: 4px; }
   .ss-check { display: flex !important; gap: 8px; align-items: center; font-weight: 500 !important; }
   .ss-check input { width: auto; }
+  .ss-fill { justify-self: start; display: inline-flex; align-items: center; gap: 8px; margin-top: 4px; border: 1px solid var(--accent) !important; }
+  .ss-fill .ss-cost { font-size: 12px; color: var(--muted); margin-left: 2px; }
+  .ss-fill[disabled] { opacity: .6; cursor: wait; }
+  .ss-pane .filled { outline: 2px solid rgba(255, 79, 26, .55); outline-offset: 1px; transition: outline-color 1.5s; }
   .ss-paid { font: 600 10px "Inter", sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); margin-left: 6px; }
   .ss-inbox { display: grid; gap: 8px; }
   .ss-msg { border: 1px solid var(--rule); border-radius: 10px; padding: 10px 12px; font-size: 13.5px; display: grid; gap: 4px; }
@@ -601,6 +605,8 @@
 
     <form class="ss-pane" data-pane="seo" id="ss-seo">
       <p class="set-note">How the site shows up on Google and when someone shares the link.</p>
+      <button type="button" class="btn ss-fill" id="ss-fill"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l1.8 4.7L18.5 9.5l-4.7 1.8L12 16l-1.8-4.7L5.5 9.5l4.7-1.8z"/><path d="M19 15l.8 2.2L22 18l-2.2.8L19 21l-.8-2.2L16 18l2.2-.8z"/></svg>Fill in from the site <span class="ss-cost">1 pixel</span></button>
+      <p class="set-note" id="ss-fill-note">Reads the site and fills in everything below. Check it, then press Save.</p>
       <label for="ss-title-in">Page title</label>
       <input id="ss-title-in" name="seo_title" maxlength="120" placeholder="">
       <label for="ss-desc">Description</label>
@@ -1745,6 +1751,29 @@
     siteset.querySelectorAll("[data-biz]").forEach(i => { if (i.value.trim()) business[i.dataset.biz] = i.value.trim(); });
     ssSave("seo", { seo_title: val("ss-title-in"), seo_description: val("ss-desc"), share_image: val("ss-image"), noindex: siteset.querySelector('[name="noindex"]').checked, business });
   });
+  // "Fill in from the site": the AI reads the saved site and fills the Search tab. Nothing is saved until Save.
+  $("ss-fill").onclick = async () => {
+    const btn = $("ss-fill");
+    btn.disabled = true;
+    ssSay("seo", "Reading the site…", true);
+    try {
+      clearTimeout(cloudTimer);
+      await cloudSave();   // read the latest version
+      const res = await fetch(`${FUNCTIONS_URL}/seo-fill`, { method: "POST", headers: { "Content-Type": "application/json", Authorization: `Bearer ${await bearer()}`, apikey: ANON_KEY }, body: JSON.stringify({ site_id: site.id }) });
+      const data = await res.json().catch(() => ({}));
+      if (data.code === "pixels") { siteset.close(); openPlans(data.error); return; }
+      if (!res.ok) throw new Error(data.error || "Couldn't fill it in. Try again.");
+      const put = (id, v) => { const el = $(id); if (!v) return; el.value = v; el.classList.add("filled"); setTimeout(() => el.classList.remove("filled"), 2500); };
+      put("ss-title-in", data.seo_title);
+      put("ss-desc", data.seo_description);
+      siteset.querySelectorAll("[data-biz]").forEach(i => put(i.id, data.business?.[i.dataset.biz]));
+      const missing = ["phone", "street", "hours"].filter(k => !data.business?.[k]);
+      const names = { phone: "phone number", street: "street address", hours: "opening hours" };
+      ssSay("seo", `Filled in. Check it, then press Save.${missing.length ? ` Not on the site, so left empty: ${missing.map(k => names[k]).join(", ")}.` : ""}`, true);
+      loadPixels();
+    } catch (err) { ssSay("seo", err.message); }
+    btn.disabled = false;
+  };
   $("ss-forms").addEventListener("submit", e => { e.preventDefault(); ssSave("forms", { form_email: val("ss-email") }); });
   $("ss-connect").addEventListener("submit", e => {
     e.preventDefault();
