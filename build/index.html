@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" type="image/svg+xml" href="/icon.svg">
 <title>Unbland — Describe the business, get the site</title>
+<script src="/runtime/pixel.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Bricolage+Grotesque:wght@800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1344,6 +1345,7 @@
       $("publish").textContent = "Publish";
       site = { html: "", prompt, used: [...(avoid || []), direction].filter(Boolean) };
       setSite(html, false);   // reload cleanly so entrance animations play from the top
+      window.ubTrack?.("Lead", { content_name: kind });   // for ads: someone built a site
       drawChat();
       if (kind === "multi") await buildPages(prompt, token, pagesWanted, text => { phase = text; $("status-text").textContent = label(); });
     } catch (err) {
@@ -1537,6 +1539,7 @@
     try {
       if (authMode === "signup") {
         const { data, error } = await sb.auth.signUp({ email, password, options: { emailRedirectTo: location.origin + location.pathname } });
+        if (!error) window.ubTrack?.("CompleteRegistration");
         if (error) throw error;
         if (!data.session) { m.className = "auth-msg ok"; m.textContent = "Check your email and click the link to finish, then sign in here."; return; }
       } else {
@@ -1969,7 +1972,8 @@
     if (item) try {
       const { data } = await sb.rpc("my_pixels");
       const row = Array.isArray(data) ? data[0] : data;
-      localStorage.setItem("unbland.checkout", JSON.stringify({ name: item.name, kind: item.kind, pixels: item.pixels, before: row?.pixels ?? null, plan: row?.plan_id ?? null, at: Date.now() }));
+      localStorage.setItem("unbland.checkout", JSON.stringify({ name: item.name, kind: item.kind, pixels: item.pixels, cents: item.price_cents, before: row?.pixels ?? null, plan: row?.plan_id ?? null, at: Date.now() }));
+      window.ubTrack?.("InitiateCheckout", { value: (item.price_cents || 0) / 100, currency: "USD", content_name: item.name });
     } catch { /* the thank-you still works without it */ }
     note.className = "auth-msg"; note.textContent = "";
     if (button) button.disabled = true;
@@ -2058,6 +2062,7 @@
           if (row && (landed || (!bought && i >= 2))) {
             await loadPixels();
             const added = bought && bought.before != null ? row.pixels - bought.before : null;
+            if (bought?.cents) window.ubTrack?.(bought.kind === "plan" ? "Subscribe" : "Purchase", { value: bought.cents / 100, currency: "USD", content_name: bought.name });
             if (bought?.kind === "plan" || paid === "plan") {
               show("done", `You're on the ${row.plan_name || bought?.name || "new"} plan`,
                 `${added > 0 ? `${added} pixels were added. ` : ""}You now have ${row.pixels} pixels, and you get more every month.`,
