@@ -89,12 +89,16 @@
     if (cfg.preview || (!cfg.site && !cfg.host) || /bot|crawl|spider|slurp|headless|lighthouse/i.test(navigator.userAgent)) return;
     var q = new URLSearchParams(location.search), med = (q.get("utm_medium") || "").toLowerCase(), ref = "";
     try { ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, "") : ""; } catch (e) {}
-    if (ref === location.hostname.replace(/^www\./, "")) ref = "";
-    var src = "direct";
+    var inside = ref === location.hostname.replace(/^www\./, "");
+    if (inside) ref = "";
+    var src = "direct", kept = null;
+    try { kept = sessionStorage.getItem("ub_src"); } catch (e) {}
     if (q.get("gclid") || q.get("fbclid") && /paid|cpc|ads?/.test(med) || /^(cpc|ppc|paid|paidsocial|paid_social|ads?|display)$/.test(med)) src = "ads";
     else if (/(^|\.)(google|bing|duckduckgo|yahoo|ecosia|brave|yandex|baidu|chatgpt|openai|perplexity|claude|gemini|copilot)\./.test(ref + ".")) src = "search";
     else if (/(^|\.)(facebook|fb|instagram|tiktok|t\.co|twitter|x|linkedin|lnkd|pinterest|reddit|youtube|threads|snapchat|nextdoor)\./.test(ref + ".") || /social/.test(med)) src = "social";
     else if (ref) src = "referral";
+    if (inside && kept) src = kept;   // a click to another page of the same site keeps the original source
+    try { sessionStorage.setItem("ub_src", src); } catch (e) {}
     var fresh = false, today = new Date().toDateString();
     try { if (localStorage.getItem("ub_seen") !== today) { localStorage.setItem("ub_seen", today); fresh = true; } } catch (e) { fresh = true; }
     fetch("https://clssxldrgtpiajwqgghl.supabase.co/rest/v1/rpc/track_visit", {
