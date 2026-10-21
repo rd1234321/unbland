@@ -83,6 +83,28 @@
       });
   }
 
+  // Visit counting for the owner's Analytics: one count per page view, sorted by where the visitor came from.
+  // No cookies and nothing personal is sent: only the traffic source and whether this browser was new today.
+  function track() {
+    if (cfg.preview || (!cfg.site && !cfg.host) || /bot|crawl|spider|slurp|headless|lighthouse/i.test(navigator.userAgent)) return;
+    var q = new URLSearchParams(location.search), med = (q.get("utm_medium") || "").toLowerCase(), ref = "";
+    try { ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, "") : ""; } catch (e) {}
+    if (ref === location.hostname.replace(/^www\./, "")) ref = "";
+    var src = "direct";
+    if (q.get("gclid") || q.get("fbclid") && /paid|cpc|ads?/.test(med) || /^(cpc|ppc|paid|paidsocial|paid_social|ads?|display)$/.test(med)) src = "ads";
+    else if (/(^|\.)(google|bing|duckduckgo|yahoo|ecosia|brave|yandex|baidu|chatgpt|openai|perplexity|claude|gemini|copilot)\./.test(ref + ".")) src = "search";
+    else if (/(^|\.)(facebook|fb|instagram|tiktok|t\.co|twitter|x|linkedin|lnkd|pinterest|reddit|youtube|threads|snapchat|nextdoor)\./.test(ref + ".") || /social/.test(med)) src = "social";
+    else if (ref) src = "referral";
+    var fresh = false, today = new Date().toDateString();
+    try { if (localStorage.getItem("ub_seen") !== today) { localStorage.setItem("ub_seen", today); fresh = true; } } catch (e) { fresh = true; }
+    fetch("https://clssxldrgtpiajwqgghl.supabase.co/rest/v1/rpc/track_visit", {
+      method: "POST", keepalive: true,
+      headers: { "Content-Type": "application/json", apikey: "sb_publishable_tSFjjjClxBrIPpc3j0gFyA_JuQhSiJS" },
+      body: JSON.stringify({ p_slug: cfg.host ? null : cfg.site, p_host: cfg.host || null, p_source: src, p_new: fresh }),
+    }).catch(function () {});
+  }
+  track();
+
   function scan() { Array.prototype.forEach.call(document.querySelectorAll("form"), setup); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", scan); else scan();
   new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true });
