@@ -387,6 +387,7 @@
   .pub-more > span:last-child { font-size: 22px; color: var(--muted); }
   .siteset { width: min(560px, calc(100vw - 24px)); max-height: calc(100dvh - 32px); }
   .siteset .set-body { padding: 26px 24px 22px; }
+  .ss-warn { margin: 4px 0 8px; padding: 12px 14px; border-radius: 10px; background: color-mix(in srgb, var(--accent) 10%, transparent); border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent); font-size: 13.5px; line-height: 1.5; }
   .ss-tabs { display: flex; gap: 4px; margin: 16px 0 6px; border-bottom: 1px solid var(--rule); overflow-x: auto; }
   .ss-tabs button { border: 0; background: none; color: var(--muted); font: 500 14px "Inter", sans-serif; padding: 9px 12px; border-bottom: 2px solid transparent; cursor: pointer; white-space: nowrap; }
   .ss-tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
@@ -620,6 +621,7 @@
       <button type="button" role="tab" data-tab="forms" aria-selected="false">Forms <span class="ss-count" id="ss-unread" hidden></span></button>
       <button type="button" role="tab" data-tab="connect" aria-selected="false">Connections</button>
       <button type="button" role="tab" data-tab="domain" aria-selected="false">Domain</button>
+      <button type="button" role="tab" data-tab="legal" aria-selected="false">Legal</button>
     </div>
 
     <form class="ss-pane" data-pane="seo" id="ss-seo">
@@ -681,6 +683,22 @@
       <div id="ss-dom-list"></div>
       <label for="ss-host">Domain</label>
       <div class="set-inline"><input id="ss-host" maxlength="253" placeholder="www.business.com" autocomplete="off" spellcheck="false"><button class="btn" type="submit">Connect</button></div>
+      <p class="auth-msg" data-msg role="status" aria-live="polite"></p>
+    </form>
+
+    <form class="ss-pane" data-pane="legal" id="ss-legal" hidden>
+      <p class="set-note">The live site gets a Privacy Policy and Terms of Service page, linked at the bottom. Unbland writes a starting draft from the site: the business name and contact details, its forms, and any tracking you connected.</p>
+      <p class="ss-warn"><b>These are starting templates, not legal advice.</b> You and the business are responsible for what they say. Check them, change anything that isn't true, and have them reviewed if the business needs to be sure. Unbland isn't responsible for their contents.</p>
+      <label class="ss-check"><input type="checkbox" name="legal_links" checked> Add Privacy Policy and Terms links to the site</label>
+      <label for="ss-privacy">Privacy Policy <span class="set-note" style="display:inline">(leave empty to use the automatic draft)</span></label>
+      <textarea id="ss-privacy" name="privacy_text" rows="7" maxlength="30000" placeholder="Empty: the site shows Unbland's automatic draft."></textarea>
+      <button type="button" class="btn quiet" data-draft="privacy">Load the draft to edit</button>
+      <label for="ss-terms">Terms of Service <span class="set-note" style="display:inline">(leave empty to use the automatic draft)</span></label>
+      <textarea id="ss-terms" name="terms_text" rows="7" maxlength="30000" placeholder="Empty: the site shows Unbland's automatic draft."></textarea>
+      <button type="button" class="btn quiet" data-draft="terms">Load the draft to edit</button>
+      <p class="set-note">Formatting: start a line with ## for a heading, and with - for a list item. Leave a blank line between paragraphs.</p>
+      <p class="set-note" id="ss-legal-links"></p>
+      <button class="go" type="submit">Save</button>
       <p class="auth-msg" data-msg role="status" aria-live="polite"></p>
     </form>
   </div>
@@ -1754,7 +1772,11 @@
     $("ss-ga").value = ssRow.ga_id || ""; $("ss-pixel").value = ssRow.pixel_id || ""; $("ss-gsc").value = ssRow.gsc_code || "";
     siteset.querySelectorAll("[data-paid]").forEach(t => { t.hidden = ssPaid(); });
     $("ss-hook").disabled = !ssPaid();
-    ["seo", "forms", "connect", "domain"].forEach(p => ssSay(p));
+    siteset.querySelector('[name="legal_links"]').checked = ssRow.legal_links !== false;
+    $("ss-privacy").value = ssRow.privacy_text || ""; $("ss-terms").value = ssRow.terms_text || "";
+    const live = site.slug ? liveUrl(site.slug).replace(/\/$/, "") : "";
+    $("ss-legal-links").innerHTML = live ? `On the live site: <a href="${live}/privacy" target="_blank" rel="noopener">Privacy Policy</a> · <a href="${live}/terms" target="_blank" rel="noopener">Terms of Service</a>` : "The pages appear when you publish the site.";
+    ["seo", "forms", "connect", "domain", "legal"].forEach(p => ssSay(p));
     ssTab(tab);
     ssUnread();
     if (!siteset.open) siteset.showModal();
@@ -1807,6 +1829,23 @@
     btn.disabled = false;
   };
   $("ss-forms").addEventListener("submit", e => { e.preventDefault(); ssSave("forms", { form_email: val("ss-email") }); });
+  // Legal: the hosting builds a draft from the live site; owners can load it here and edit it.
+  $("ss-legal").addEventListener("submit", e => {
+    e.preventDefault();
+    ssSave("legal", { legal_links: siteset.querySelector('[name="legal_links"]').checked, privacy_text: val("ss-privacy"), terms_text: val("ss-terms") });
+  });
+  siteset.querySelectorAll("[data-draft]").forEach(b => { b.onclick = async () => {
+    const kind = b.dataset.draft, box = $(kind === "privacy" ? "ss-privacy" : "ss-terms");
+    if (!site.slug) { ssSay("legal", "Publish the site first. The draft is written from the live site."); return; }
+    if (box.value.trim() && !confirm("Replace what's in the box with the automatic draft?")) return;
+    ssSay("legal", "Loading the draft…", true);
+    try {
+      const res = await fetch(`${liveUrl(site.slug).replace(/\/$/, "")}/${kind}?format=text&t=${Date.now()}`);
+      if (!res.ok) throw new Error();
+      box.value = await res.text();
+      ssSay("legal", "Draft loaded. Change anything that isn't true for this business, then press Save.", true);
+    } catch { ssSay("legal", "Couldn't load the draft. If the links are switched off, save with them on first."); }
+  }; });
   $("ss-connect").addEventListener("submit", e => {
     e.preventDefault();
     const gsc = ($("ss-gsc").value.match(/content=["']([^"']+)/) || [, $("ss-gsc").value])[1].trim() || null;
