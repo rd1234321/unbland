@@ -13,12 +13,22 @@
 // plus the signup steps above. No cookies and nothing personal is sent. Browsers that opened /admin are ours and aren't counted.
 (function () {
   var API = "https://clssxldrgtpiajwqgghl.supabase.co/rest/v1/rpc/track_app";
+  window.ubStep = function () {};
   var team = false;
   try { team = localStorage.getItem("ub_team") === "1"; } catch (e) {}
   if (team || /bot|crawl|spider|slurp|headless|lighthouse|facebookexternalhit/i.test(navigator.userAgent)) return;
   function post(body) {
     fetch(API, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json", apikey: "sb_publishable_tSFjjjClxBrIPpc3j0gFyA_JuQhSiJS" }, body: JSON.stringify(body) }).catch(function () {});
   }
+  // Builder steps (typed, tapped an example, clicked Build…): counted once per visit, so the numbers are people, not clicks.
+  window.ubStep = function (event) {
+    var seen = {};
+    try { seen = JSON.parse(sessionStorage.getItem("ub_steps") || "{}"); } catch (e) {}
+    if (seen[event]) return;
+    seen[event] = 1;
+    try { sessionStorage.setItem("ub_steps", JSON.stringify(seen)); } catch (e) {}
+    post({ p_page: null, p_source: null, p_new: false, p_event: event });
+  };
   var counted = { Lead: 1, CompleteRegistration: 1, InitiateCheckout: 1, Subscribe: 1, Purchase: 1 };
   var pixel = window.ubTrack;
   window.ubTrack = function (event, params) { pixel(event, params); if (counted[event]) post({ p_page: null, p_source: null, p_new: false, p_event: event }); };

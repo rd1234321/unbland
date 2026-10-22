@@ -1020,6 +1020,7 @@
       if (!el || el.isContentEditable) return;
       const before = el.innerText;
       el.classList.remove("__hot");
+      window.ubStep?.("Edited");
       el.setAttribute("contenteditable", "plaintext-only");
       if (!el.isContentEditable) el.setAttribute("contenteditable", "true");
       el.focus();
@@ -1340,6 +1341,8 @@
       if (res.status === 409) res = await request(true);
       if (!res.ok || !res.body) {
         const data = await res.json().catch(() => ({}));
+        if (data.code === "signin" || data.code === "upgrade" && !user) window.ubStep?.("AskedSignup");
+        else window.ubStep?.("BuildFail");
         if (data.code === "signin") setTimeout(() => openAuth("signup"), 600);
         if (data.code === "pixels") { showPixels(data.have); openPlans(data.error); }
         if (data.code === "upgrade") { if (user) openPlans(data.error); else setTimeout(() => openAuth("signup"), 600); }
@@ -1384,6 +1387,7 @@
       }
       doc.close();
       html = html.replace(/```\s*$/, "").trim();
+      if (!/<\/html>\s*$/i.test(html)) window.ubStep?.("BuildFail");
       if (!/<\/html>\s*$/i.test(html)) throw new Error("The design was cut off before it finished. Try again.");
 
       history.length = 0;
@@ -1412,16 +1416,20 @@
     const prompt = promptBox.value.trim();
     if (prompt.length < 20) { say("Describe the business in a sentence or two first.", true); promptBox.focus(); return; }
     site = { html: "", prompt, used: [] };
+    window.ubStep?.("BuildClick");
     design(prompt, []);
   }
   go.onclick = build;
+  // Steps for the owner analytics: how far visitors get in the builder before they leave.
+  promptBox.addEventListener("input", () => window.ubStep?.("Typed"));
+  addEventListener("pagehide", () => { if (busy) window.ubStep?.("LeftDuring"); });
   promptBox.addEventListener("keydown", e => { if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) build(); });
 
   for (const [label, text] of Object.entries(EXAMPLES)) {
     const b = document.createElement("button");
     b.type = "button";
     b.textContent = label;
-    b.onclick = () => { promptBox.value = text; promptBox.focus(); say(""); };
+    b.onclick = () => { promptBox.value = text; promptBox.focus(); say(""); window.ubStep?.("ExampleTap"); };
     $("examples").append(b);
   }
 
@@ -1718,6 +1726,7 @@
     pubSame = true;
     drawPub();
     pubSay("Published. The live site matches what you see here.", true);
+    window.ubStep?.("Published");
   };
   $("pub-edit").onclick = () => {
     const form = $("pub-rename");

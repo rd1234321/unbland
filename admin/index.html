@@ -86,8 +86,9 @@
   .an-tip div:nth-child(2) { color: var(--ink); font-weight: 600; padding-left: 0; }
   .an-tip div:nth-child(2)::before { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--accent); margin: 4px 10px 0 0; }
   .an-tip div:nth-child(2) span:first-child { flex: 1; }
-  .an-steps { display: grid; grid-template-columns: repeat(5, 1fr); border: 1px solid var(--ink); border-radius: 8px; overflow: hidden; margin-top: 16px; }
-  .an-steps div { padding: 14px 16px; border-right: 1px solid var(--rule); background: var(--bg); }
+  .an-steps { display: grid; grid-template-columns: repeat(6, 1fr); border: 1px solid var(--ink); border-radius: 8px; overflow: hidden; margin-top: 16px; }
+  .an-steps div { padding: 14px 16px; border-right: 1px solid var(--rule); border-bottom: 1px solid var(--rule); background: var(--bg); }
+  .an-steps div:nth-child(6n) { border-right: 0; }
   .an-steps div:last-child { border-right: 0; }
   .an-steps small { color: var(--muted); font-size: 13px; }
   .an-steps b { display: block; font: 400 32px/1 "Instrument Serif", Georgia, serif; margin-top: 6px; }
@@ -393,7 +394,8 @@
     svg.onmouseleave = () => { tip.hidden = true; cur.setAttribute("visibility", "hidden"); };
     // Steps toward paying, for the same days.
     const ev = name => e.filter(r => r.event === name && r.day >= first).reduce((n, r) => n + r.count, 0);
-    const steps = [["Built a site", ev("Lead")], ["Signed up", ev("CompleteRegistration")], ["Went to checkout", ev("InitiateCheckout")], ["Paid", ev("Subscribe") + ev("Purchase")], ["Visit → signup", (people => people ? Math.round(ev("CompleteRegistration") / people * 100) + "%" : "—")(pick("all", first, last, "visitors"))]];
+    const builderPeople = v.filter(r => r.page === "build" && r.day >= first).reduce((n, r) => n + r.visitors, 0);
+    const steps = [["Opened builder", builderPeople], ["Typed or tapped example", Math.max(ev("Typed"), ev("ExampleTap"))], ["Clicked Build", ev("BuildClick")], ["Got a site", ev("Lead")], ["Left mid-build", ev("LeftDuring")], ["Build failed", ev("BuildFail")], ["Asked to sign up", ev("AskedSignup")], ["Signed up", ev("CompleteRegistration")], ["Edited", ev("Edited")], ["Published", ev("Published")], ["Checkout", ev("InitiateCheckout")], ["Paid", ev("Subscribe") + ev("Purchase")]];
     $("an-steps").innerHTML = steps.map(([k, n]) => `<div><small>${k}</small><b>${n}</b></div>`).join("");
   }
   $("an-range").addEventListener("change", loadVisitors);
