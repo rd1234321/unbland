@@ -1478,12 +1478,8 @@
   // First visit: show a sample multi-page site appear right away, then tour its pages, then hand over to the real builder.
   (function demo() {
     const SAMPLES = [
-      { url: "/demo/la-gu-era-tacos-2r4r.html", pages: [["home", "Home"], ["menu", "Menu"], ["catering", "Catering"], ["find-us", "Find Us"]],
-        text: "La Güera Tacos is a taco truck behind Saint Vincent's Brewing in Tucson. Al pastor, carne asada and birria on handmade tortillas. Catering for parties and weddings." },
-      { url: "/demo/wag-lather-pr5i.html", pages: [["home", "Home"], ["services", "Services & Prices"], ["how-it-works", "How It Works"], ["book", "Book"]],
-        text: "Wag & Lather is a mobile dog grooming van in Austin. Bath and brush from $65, full groom from $95. Calm one-on-one grooming, right in your driveway." },
-      { url: "/demo/cedar-ridge-physical-therapy-6zvq.html", pages: [["home", "Home"], ["services", "Services"], ["team", "Team"], ["contact", "Contact"]],
-        text: "Cedar Ridge Physical Therapy is a clinic in Bend, Oregon, run by two doctors of physical therapy. Sports injuries, back pain and post-surgery rehab." },
+      { url: "/demo/ember-oak.html", pages: [["home", "Home"], ["menu", "Menu"], ["private-dining", "Private Dining"], ["reservations", "Reservations"]],
+        text: "Ember & Oak is a 48-seat wood-fired restaurant in Asheville, run by siblings Daniel and Marisol Reyes. Everything cooks over a 12-foot oak hearth. Dinner Wednesday to Sunday." },
     ];
     let seen = false, signedIn = false;
     try { seen = !!localStorage.getItem("unbland.demo"); signedIn = Object.keys(localStorage).some(k => /^sb-.*-auth-token$/.test(k)); } catch {}
