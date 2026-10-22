@@ -161,39 +161,7 @@
   }
 
   async function review(siteId, action) {
-    // Website visitors: counted by runtime/pixel.js on the home page and the builder.
-  let vDays = 7;
-  async function loadVisitors() {
-    const day = n => new Date(Date.now() - n * 864e5).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
-    const from = day(vDays - 1);
-    const [{ data: v }, { data: e }] = await Promise.all([
-      sb.from("app_visit_days").select("day, page, source, visits, visitors").gte("day", from),
-      sb.from("app_event_days").select("day, event, count").gte("day", from),
-    ]);
-    const sum = (rows, f) => (rows || []).reduce((n, r) => n + f(r), 0);
-    const ev = name => sum((e || []).filter(r => r.event === name), r => r.count);
-    const tiles = [
-      ["Visitors", sum(v, r => r.visitors), "different people (estimated)"],
-      ["Page views", sum(v, r => r.visits), "home page and builder"],
-      ["Opened the builder", sum((v || []).filter(r => r.page === "build"), r => r.visitors), "visitors"],
-      ["Built a site", ev("Lead"), "builds started"],
-      ["Signed up", ev("CompleteRegistration"), "new accounts"],
-      ["Went to checkout", ev("InitiateCheckout"), "opened payment"],
-      ["Paid", ev("Subscribe") + ev("Purchase"), "plans and pixel packs"],
-    ];
-    $("v-stats").innerHTML = "";
-    for (const [k, n, sub] of tiles) { const d = document.createElement("div"); d.className = "stat"; d.innerHTML = `<small></small><b></b><small></small>`; d.children[0].textContent = k; d.children[1].textContent = n; d.children[2].textContent = sub; $("v-stats").append(d); }
-    const per = []; for (let i = vDays - 1; i >= 0; i--) { const d = day(i); per.push([d, sum((v || []).filter(r => r.day === d), r => r.visitors)]); }
-    const max = Math.max(1, ...per.map(p => p[1]));
-    $("v-bars").innerHTML = ""; $("v-bars").hidden = vDays === 1;
-    for (const [d, n] of per) { const i = document.createElement("i"); i.style.height = (n / max * 100) + "%"; i.title = `${fmt(d + "T12:00")}: ${n} visitors`; $("v-bars").append(i); }
-    const names = { search: "Search and AI", social: "Social", ads: "Ads", referral: "Other websites", direct: "Direct or unknown" };
-    const t = $("v-src"); t.innerHTML = "<tr><th>Where they came from</th><th>Visitors</th><th>Page views</th></tr>";
-    for (const k of Object.keys(names)) { const rows = (v || []).filter(r => r.source === k); const tr = document.createElement("tr"); for (const x of [names[k], sum(rows, r => r.visitors), sum(rows, r => r.visits)]) { const td = document.createElement("td"); td.textContent = x; tr.append(td); } t.append(tr); }
-  }
-  $("v-range").addEventListener("click", ev => { const b = ev.target.closest("[data-d]"); if (!b) return; vDays = +b.dataset.d; for (const x of $("v-range").children) x.setAttribute("aria-pressed", x === b); loadVisitors(); });
-
-  const { data: { session } } = await sb.auth.getSession();
+    const { data: { session } } = await sb.auth.getSession();
     const res = await fetch(`${SUPABASE_URL}/functions/v1/review-design`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token || ""}`, apikey: PUBLISHABLE_KEY },
@@ -343,6 +311,38 @@
       t.append(tr);
     }
   }
+
+  // Website visitors: counted by runtime/pixel.js on the home page and the builder.
+  let vDays = 7;
+  async function loadVisitors() {
+    const day = n => new Date(Date.now() - n * 864e5).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+    const from = day(vDays - 1);
+    const [{ data: v }, { data: e }] = await Promise.all([
+      sb.from("app_visit_days").select("day, page, source, visits, visitors").gte("day", from),
+      sb.from("app_event_days").select("day, event, count").gte("day", from),
+    ]);
+    const sum = (rows, f) => (rows || []).reduce((n, r) => n + f(r), 0);
+    const ev = name => sum((e || []).filter(r => r.event === name), r => r.count);
+    const tiles = [
+      ["Visitors", sum(v, r => r.visitors), "different people (estimated)"],
+      ["Page views", sum(v, r => r.visits), "home page and builder"],
+      ["Opened the builder", sum((v || []).filter(r => r.page === "build"), r => r.visitors), "visitors"],
+      ["Built a site", ev("Lead"), "builds started"],
+      ["Signed up", ev("CompleteRegistration"), "new accounts"],
+      ["Went to checkout", ev("InitiateCheckout"), "opened payment"],
+      ["Paid", ev("Subscribe") + ev("Purchase"), "plans and pixel packs"],
+    ];
+    $("v-stats").innerHTML = "";
+    for (const [k, n, sub] of tiles) { const d = document.createElement("div"); d.className = "stat"; d.innerHTML = `<small></small><b></b><small></small>`; d.children[0].textContent = k; d.children[1].textContent = n; d.children[2].textContent = sub; $("v-stats").append(d); }
+    const per = []; for (let i = vDays - 1; i >= 0; i--) { const d = day(i); per.push([d, sum((v || []).filter(r => r.day === d), r => r.visitors)]); }
+    const max = Math.max(1, ...per.map(p => p[1]));
+    $("v-bars").innerHTML = ""; $("v-bars").hidden = vDays === 1;
+    for (const [d, n] of per) { const i = document.createElement("i"); i.style.height = (n / max * 100) + "%"; i.title = `${fmt(d + "T12:00")}: ${n} visitors`; $("v-bars").append(i); }
+    const names = { search: "Search and AI", social: "Social", ads: "Ads", referral: "Other websites", direct: "Direct or unknown" };
+    const t = $("v-src"); t.innerHTML = "<tr><th>Where they came from</th><th>Visitors</th><th>Page views</th></tr>";
+    for (const k of Object.keys(names)) { const rows = (v || []).filter(r => r.source === k); const tr = document.createElement("tr"); for (const x of [names[k], sum(rows, r => r.visitors), sum(rows, r => r.visits)]) { const td = document.createElement("td"); td.textContent = x; tr.append(td); } t.append(tr); }
+  }
+  $("v-range").addEventListener("click", ev => { const b = ev.target.closest("[data-d]"); if (!b) return; vDays = +b.dataset.d; for (const x of $("v-range").children) x.setAttribute("aria-pressed", x === b); loadVisitors(); });
 
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
