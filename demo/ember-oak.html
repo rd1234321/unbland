@@ -154,6 +154,8 @@ footer ul{list-style:none}
 footer li{padding:4px 0}
 footer .base{display:flex;justify-content:space-between;margin-top:56px;padding-top:20px;border-top:1px solid var(--rule);font-size:12px;color:rgba(28,26,23,.6);gap:16px;flex-wrap:wrap}
 .fcall{display:none}
+.band{border-top:0;line-height:0;background:var(--dark)}
+.band img{width:100%;height:clamp(320px,48vw,680px);object-fit:cover}
 .js .rv{opacity:0;transform:translateY(32px);transition:opacity 1s ease-out,transform 1s cubic-bezier(.2,.7,.2,1)}
 .js .rv.in{opacity:1;transform:none}
 .js .rv.d2{transition-delay:.15s}.js .rv.d3{transition-delay:.3s}
@@ -183,6 +185,7 @@ footer .grid>div{grid-column:1/13!important;margin-bottom:28px}
 .hero-ctas{width:100%}
 .hero-ctas .btn{flex:1}
 .hearth .frame .ph{aspect-ratio:4/3}
+.band img{height:300px}
 .duo{grid-template-columns:1fr}
 .farms li{grid-template-columns:36px 1fr}
 .farms span{grid-column:2}
@@ -537,6 +540,10 @@ body{padding-bottom:84px}
 <div class="cta rv d3"><a class="btn" href="#/reservations">Book a table</a><a class="btn ghost" href="mailto:hello@emberandoak.example">Email us</a></div>
 </div>
 </section>
+
+<section class="band" id="hearth-band">
+<img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/2537308.jpg" alt="Oak fire burning inside a brick hearth" width="1600" height="1067" loading="lazy">
+</section>
 </main><main data-page="menu" hidden="">
 <section class="m-top">
 <div class="wrap grid">
@@ -796,14 +803,18 @@ body{padding-bottom:84px}
 </div>
 </section>
 
-<section class="rs-faq">
+<section class="rs-faq" id="good-to-know">
 <div class="wrap grid">
 <h2 class="rv">Good to know.</h2>
 <div class="rs-qa rv d2">
-<div><h3>Can I order the chef's tasting?</h3><p>Yes. It is five courses at $85, with a wine pairing at $45. Mention it in your notes so the kitchen is ready.</p></div>
-<div><h3>What about dietary needs?</h3><p>Tell us when you book. The menu changes weekly, so we can talk through what the farms have brought in.</p></div>
-<div><h3>Can I just drink at the bar?</h3><p>Yes. The bar is open until 11pm, an hour past the dining room.</p></div>
-<div><h3>How do I reach you?</h3><p>Call <a class="ul" href="tel:+18285550162">(828) 555-0162</a> or write to <a class="ul" href="mailto:hello@emberandoak.example">hello@emberandoak.example</a>.</p></div>
+<div><h3>Can I walk in at the bar?</h3><p>Yes. Walk-ins are welcome at the cocktail bar, which has eight seats and stays open until 11pm, so arrive early on busy nights.</p></div>
+<div><h3>What about dietary needs and allergies?</h3><p>Tell us when you book so the kitchen is ready. The menu changes weekly, so for questions about a specific allergy please call <a class="ul" href="tel:+18285550162">(828) 555-0162</a>.</p></div>
+<div><h3>Can I bring children?</h3><p>Please call <a class="ul" href="tel:+18285550162">(828) 555-0162</a> and we will talk it through with you.</p></div>
+<div><h3>What about large groups?</h3><p>The private room seats up to 20 guests, with set menus from $75 a person. See <a class="ul" href="#/private-dining">private dining</a> to send an inquiry.</p></div>
+<div><h3>What if I need to cancel?</h3><p>Please call <a class="ul" href="tel:+18285550162">(828) 555-0162</a> to change or cancel your reservation.</p></div>
+<div><h3>Is there a dress code?</h3><p>For questions about what to wear, please call <a class="ul" href="tel:+18285550162">(828) 555-0162</a>.</p></div>
+<div><h3>Where can I park on Lexington Avenue?</h3><p>For parking advice near the restaurant, please call <a class="ul" href="tel:+18285550162">(828) 555-0162</a>.</p></div>
+<div><h3>Do you offer gift cards?</h3><p>Please call <a class="ul" href="tel:+18285550162">(828) 555-0162</a> to ask about gift cards.</p></div>
 </div>
 </div>
 </section>
