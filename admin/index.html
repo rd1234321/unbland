@@ -395,7 +395,7 @@
     // Steps toward paying, for the same days.
     const ev = name => e.filter(r => r.event === name && r.day >= first).reduce((n, r) => n + r.count, 0);
     const builderPeople = v.filter(r => r.page === "build" && r.day >= first).reduce((n, r) => n + r.visitors, 0);
-    const steps = [["Opened builder", builderPeople], ["Typed or tapped example", Math.max(ev("Typed"), ev("ExampleTap"))], ["Clicked Build", ev("BuildClick")], ["Got a site", ev("Lead")], ["Left mid-build", ev("LeftDuring")], ["Build failed", ev("BuildFail")], ["Asked to sign up", ev("AskedSignup")], ["Signed up", ev("CompleteRegistration")], ["Edited", ev("Edited")], ["Published", ev("Published")], ["Checkout", ev("InitiateCheckout")], ["Paid", ev("Subscribe") + ev("Purchase")]];
+    const steps = [["Opened builder", builderPeople], ["Watched demo", ev("DemoShown")], ["Tapped Try yours", ev("DemoTry")], ["Typed or tapped example", Math.max(ev("Typed"), ev("ExampleTap"))], ["Clicked Build", ev("BuildClick")], ["Got a site", ev("Lead")], ["Left mid-build", ev("LeftDuring")], ["Build failed", ev("BuildFail")], ["Asked to sign up", ev("AskedSignup")], ["Signed up", ev("CompleteRegistration")], ["Edited", ev("Edited")], ["Published", ev("Published")], ["Checkout", ev("InitiateCheckout")], ["Paid", ev("Subscribe") + ev("Purchase")]];
     $("an-steps").innerHTML = steps.map(([k, n]) => `<div><small>${k}</small><b>${n}</b></div>`).join("");
   }
   $("an-range").addEventListener("change", loadVisitors);

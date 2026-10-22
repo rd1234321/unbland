@@ -497,11 +497,37 @@
     .plans-body, .pub-body { padding: 22px 18px 18px; }
     .pubpanel { margin: 56px 8px auto 8px; width: auto; }
   }
+  /* First visit: a sample site builds on its own, so people see what Unbland makes before typing anything. */
+  .demo { position: fixed; inset: 0; z-index: 60; background: rgba(8, 9, 11, .94); color: #F3F1EC; display: flex; flex-direction: column; align-items: center; padding: 18px 16px 20px; gap: 12px; }
+  .demo[hidden] { display: none; }
+  .demo-top { width: 100%; max-width: 980px; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  .demo-top b { font: 400 clamp(24px, 4vw, 34px)/1.05 "Instrument Serif", Georgia, serif; }
+  .demo-top b em { color: var(--accent); }
+  .demo-skip { background: none; border: 0; color: #B4B0A8; font: 500 14px "Inter", sans-serif; cursor: pointer; white-space: nowrap; }
+  .demo-said { width: 100%; max-width: 980px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.14); border-radius: 12px; padding: 12px 14px; font-size: 15px; line-height: 1.45; min-height: 66px; }
+  .demo-said::after { content: "▍"; color: var(--accent); animation: blink 1s steps(1) infinite; }
+  .demo-said.done::after { content: ""; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .demo-view { position: relative; width: 100%; max-width: 980px; flex: 1; min-height: 0; border-radius: 12px; overflow: hidden; background: #fff; border: 1px solid rgba(255,255,255,.2); }
+  .demo-view iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .demo-cover { position: absolute; left: 0; right: 0; bottom: 0; height: 100%; background: #0d0e11; transition: height 5s cubic-bezier(.4, .1, .3, 1); }
+  .demo-cover::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--accent); box-shadow: 0 0 18px var(--accent); }
+  .demo-cover span { position: absolute; left: 50%; top: 40%; transform: translateX(-50%); color: #B4B0A8; font-size: 14px; white-space: nowrap; }
+  .demo-go { width: 100%; max-width: 980px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .demo-go .go { flex: 1 1 260px; justify-content: center; }
+  .demo-go button.alt { flex: 1 1 200px; border: 1px solid rgba(255,255,255,.25); background: none; color: #F3F1EC; border-radius: 10px; padding: 14px; font: 600 15px "Inter", sans-serif; cursor: pointer; }
+  @media (prefers-reduced-motion: reduce) { .demo-cover { transition: none; } }
 </style>
 </head>
 <body>
 
 <!-- Start screen: one place to type -->
+<div class="demo" id="demo" hidden role="dialog" aria-label="Example: a site built by Unbland">
+  <div class="demo-top"><b>One message in. <em>A finished site out.</em></b><button type="button" class="demo-skip" id="demo-skip">Skip</button></div>
+  <div class="demo-said" id="demo-said" aria-live="polite"></div>
+  <div class="demo-view"><iframe id="demo-frame" title="Example site" loading="eager"></iframe><div class="demo-cover" id="demo-cover"><span>Unbland is designing the site…</span></div></div>
+  <div class="demo-go"><button type="button" class="go" id="demo-try">Now try yours, free <i aria-hidden="true">→</i></button><button type="button" class="alt" id="demo-same">Use this example</button></div>
+</div>
 <div class="start" id="start">
   <div class="wall" aria-hidden="true">
     <div class="col"><div class="track"><img src="/wall/0.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/1.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/2.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/0.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/1.jpg" alt="" width="720" height="844" loading="eager"><img src="/wall/2.jpg" alt="" width="720" height="844" loading="eager"></div></div>
@@ -1445,6 +1471,36 @@
     $("examples").append(b);
   }
 
+
+  // First visit: show a sample site being built, then hand over to the real builder.
+  (function demo() {
+    const SAMPLES = [
+      { url: "https://kettle-crumb-xqbh.unbland.site/", text: "Kettle & Crumb is a small neighborhood bakery in Portland. Sourdough, morning buns and seasonal pies, baked fresh every day. Open Wednesday to Sunday, 7am to 2pm." },
+      { url: "https://black-lantern-tattoo-600q.unbland.site/", text: "Black Lantern Tattoo is a private, appointment-only studio. Fine line and blackwork by two artists. Book a consultation online." },
+      { url: "https://riverbend-plumbing-4fit.unbland.site/", text: "Riverbend Plumbing fixes leaks, water heaters and drains for homes in town. Family owned, licensed and insured, same-day service. Call for a free quote." },
+    ];
+    let seen = false, signedIn = false;
+    try { seen = !!localStorage.getItem("unbland.demo"); signedIn = Object.keys(localStorage).some(k => /^sb-.*-auth-token$/.test(k)); } catch {}
+    if (seen || signedIn) return;
+    setTimeout(() => {
+      if ($("start").hidden || $("start").offsetParent === null || promptBox.value) return;
+      try { localStorage.setItem("unbland.demo", "1"); } catch {}
+      const pick = SAMPLES[Math.floor(Math.random() * SAMPLES.length)];
+      const box = $("demo"), said = $("demo-said"), cover = $("demo-cover");
+      box.hidden = false;
+      window.ubStep?.("DemoShown");
+      $("demo-frame").src = pick.url;
+      let i = 0;
+      const type = setInterval(() => {
+        i += 2; said.textContent = pick.text.slice(0, i);
+        if (i >= pick.text.length) { clearInterval(type); said.classList.add("done"); requestAnimationFrame(() => { cover.style.height = "0"; }); }
+      }, 22);
+      const close = () => { clearInterval(type); box.hidden = true; $("demo-frame").removeAttribute("src"); };
+      $("demo-skip").onclick = close;
+      $("demo-try").onclick = () => { close(); window.ubStep?.("DemoTry"); promptBox.focus(); };
+      $("demo-same").onclick = () => { close(); window.ubStep?.("ExampleTap"); promptBox.value = pick.text; promptBox.focus(); };
+    }, 400);
+  })();
   // Start screen extras: a glow that follows the cursor, and a placeholder that types example prompts.
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
   startEl.addEventListener("pointermove", e => { startEl.style.setProperty("--mx", e.clientX + "px"); startEl.style.setProperty("--my", e.clientY + "px"); });
