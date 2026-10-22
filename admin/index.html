@@ -61,6 +61,14 @@
   .msg { font-size: 13px; padding: 0 16px 14px; color: var(--muted); }
   .msg.err { color: var(--error); }
   .msg.ok { color: var(--ok); }
+  .stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin: 18px 0; }
+  .stat { border: 1px solid var(--ink); border-radius: 8px; background: #fff; padding: 14px 16px; }
+  .stat b { display: block; font: 400 38px/1 "Instrument Serif", Georgia, serif; }
+  .stat small { color: var(--muted); font-size: 12.5px; }
+  .bars { display: flex; align-items: flex-end; gap: 3px; height: 120px; border-bottom: 1px solid var(--rule); margin-top: 8px; }
+  .bars i { flex: 1; background: var(--accent); border-radius: 2px 2px 0 0; min-height: 1px; }
+  .range { display: flex; gap: 6px; margin-top: 12px; }
+  .range .btn[aria-pressed="true"] { background: var(--ink); color: #fff; }
 </style>
 </head>
 <body>
@@ -76,6 +84,12 @@
   <p class="note" id="note" role="status" aria-live="polite">Loading…</p>
 
   <div id="content" hidden>
+    <h2>Website visitors</h2>
+    <p class="lede">People who opened unblandapp.com, and how many took each step toward paying. Your own browsers (any that opened this page) aren't counted. Counting started October 21, 2026.</p>
+    <div class="range" id="v-range"><button class="btn" type="button" data-d="1">Today</button><button class="btn" type="button" data-d="7" aria-pressed="true">7 days</button><button class="btn" type="button" data-d="30">30 days</button></div>
+    <div class="stats" id="v-stats"></div>
+    <div class="bars" id="v-bars" aria-label="Visitors per day"></div>
+    <table class="runs" id="v-src" style="margin-top:18px"></table>
     <h2>Marketing agent</h2>
     <p class="lede">Drafts posts, messages and page copy for you to use yourself. It never posts or sends anything. Every draft waits below until you approve or reject it.</p>
     <div class="agent">
@@ -147,7 +161,39 @@
   }
 
   async function review(siteId, action) {
-    const { data: { session } } = await sb.auth.getSession();
+    // Website visitors: counted by runtime/pixel.js on the home page and the builder.
+  let vDays = 7;
+  async function loadVisitors() {
+    const day = n => new Date(Date.now() - n * 864e5).toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+    const from = day(vDays - 1);
+    const [{ data: v }, { data: e }] = await Promise.all([
+      sb.from("app_visit_days").select("day, page, source, visits, visitors").gte("day", from),
+      sb.from("app_event_days").select("day, event, count").gte("day", from),
+    ]);
+    const sum = (rows, f) => (rows || []).reduce((n, r) => n + f(r), 0);
+    const ev = name => sum((e || []).filter(r => r.event === name), r => r.count);
+    const tiles = [
+      ["Visitors", sum(v, r => r.visitors), "different people (estimated)"],
+      ["Page views", sum(v, r => r.visits), "home page and builder"],
+      ["Opened the builder", sum((v || []).filter(r => r.page === "build"), r => r.visitors), "visitors"],
+      ["Built a site", ev("Lead"), "builds started"],
+      ["Signed up", ev("CompleteRegistration"), "new accounts"],
+      ["Went to checkout", ev("InitiateCheckout"), "opened payment"],
+      ["Paid", ev("Subscribe") + ev("Purchase"), "plans and pixel packs"],
+    ];
+    $("v-stats").innerHTML = "";
+    for (const [k, n, sub] of tiles) { const d = document.createElement("div"); d.className = "stat"; d.innerHTML = `<small></small><b></b><small></small>`; d.children[0].textContent = k; d.children[1].textContent = n; d.children[2].textContent = sub; $("v-stats").append(d); }
+    const per = []; for (let i = vDays - 1; i >= 0; i--) { const d = day(i); per.push([d, sum((v || []).filter(r => r.day === d), r => r.visitors)]); }
+    const max = Math.max(1, ...per.map(p => p[1]));
+    $("v-bars").innerHTML = ""; $("v-bars").hidden = vDays === 1;
+    for (const [d, n] of per) { const i = document.createElement("i"); i.style.height = (n / max * 100) + "%"; i.title = `${fmt(d + "T12:00")}: ${n} visitors`; $("v-bars").append(i); }
+    const names = { search: "Search and AI", social: "Social", ads: "Ads", referral: "Other websites", direct: "Direct or unknown" };
+    const t = $("v-src"); t.innerHTML = "<tr><th>Where they came from</th><th>Visitors</th><th>Page views</th></tr>";
+    for (const k of Object.keys(names)) { const rows = (v || []).filter(r => r.source === k); const tr = document.createElement("tr"); for (const x of [names[k], sum(rows, r => r.visitors), sum(rows, r => r.visits)]) { const td = document.createElement("td"); td.textContent = x; tr.append(td); } t.append(tr); }
+  }
+  $("v-range").addEventListener("click", ev => { const b = ev.target.closest("[data-d]"); if (!b) return; vDays = +b.dataset.d; for (const x of $("v-range").children) x.setAttribute("aria-pressed", x === b); loadVisitors(); });
+
+  const { data: { session } } = await sb.auth.getSession();
     const res = await fetch(`${SUPABASE_URL}/functions/v1/review-design`, {
       method: "POST",
       headers: { "Content-Type": "application/json", Authorization: `Bearer ${session?.access_token || ""}`, apikey: PUBLISHABLE_KEY },
@@ -305,7 +351,7 @@
     $("who").textContent = session.user.email || "";
     const { data: admin } = await sb.from("admins").select("user_id").eq("user_id", session.user.id).maybeSingle();
     if (!admin) $("note").textContent = "This page is only for the site owner.";
-    else { $("note").textContent = ""; $("content").hidden = false; loadAgent(); loadQueue(); loadRuns(); loadNew(); loadLibrary(); }
+    else { $("note").textContent = ""; $("content").hidden = false; try { localStorage.setItem("ub_team", "1"); } catch (e) {} loadVisitors(); loadAgent(); loadQueue(); loadRuns(); loadNew(); loadLibrary(); }
   }
 </script>
 </body>

@@ -8,3 +8,35 @@
   window.fbq("init", PIXEL_ID);
   window.fbq("track", "PageView");
 })();
+
+// Our own visitor counts for the owner page (/admin): one count per page view, sorted by where the visitor came from,
+// plus the signup steps above. No cookies and nothing personal is sent. Browsers that opened /admin are ours and aren't counted.
+(function () {
+  var API = "https://clssxldrgtpiajwqgghl.supabase.co/rest/v1/rpc/track_app";
+  var team = false;
+  try { team = localStorage.getItem("ub_team") === "1"; } catch (e) {}
+  if (team || /bot|crawl|spider|slurp|headless|lighthouse|facebookexternalhit/i.test(navigator.userAgent)) return;
+  function post(body) {
+    fetch(API, { method: "POST", keepalive: true, headers: { "Content-Type": "application/json", apikey: "sb_publishable_tSFjjjClxBrIPpc3j0gFyA_JuQhSiJS" }, body: JSON.stringify(body) }).catch(function () {});
+  }
+  var counted = { Lead: 1, CompleteRegistration: 1, InitiateCheckout: 1, Subscribe: 1, Purchase: 1 };
+  var pixel = window.ubTrack;
+  window.ubTrack = function (event, params) { pixel(event, params); if (counted[event]) post({ p_page: null, p_source: null, p_new: false, p_event: event }); };
+
+  var q = new URLSearchParams(location.search), med = (q.get("utm_medium") || "").toLowerCase(), ref = "";
+  try { ref = document.referrer ? new URL(document.referrer).hostname.replace(/^www\./, "") : ""; } catch (e) {}
+  var inside = ref === location.hostname.replace(/^www\./, "");
+  if (inside) ref = "";
+  var src = "direct", kept = null;
+  try { kept = sessionStorage.getItem("ub_src"); } catch (e) {}
+  if (q.get("gclid") || q.get("fbclid") && /paid|cpc|ads?/.test(med) || /^(cpc|ppc|paid|paidsocial|paid_social|ads?|display)$/.test(med)) src = "ads";
+  else if (/(^|\.)(google|bing|duckduckgo|yahoo|ecosia|brave|yandex|baidu|chatgpt|openai|perplexity|claude|gemini|copilot)\./.test(ref + ".")) src = "search";
+  else if (/(^|\.)(facebook|fb|instagram|tiktok|t\.co|twitter|x|linkedin|lnkd|pinterest|reddit|youtube|threads|snapchat)\./.test(ref + ".") || /social/.test(med)) src = "social";
+  else if (ref) src = "referral";
+  if (inside && kept) src = kept;
+  try { sessionStorage.setItem("ub_src", src); } catch (e) {}
+  var fresh = false, today = new Date().toDateString();
+  try { if (localStorage.getItem("ub_seen") !== today) { localStorage.setItem("ub_seen", today); fresh = true; } } catch (e) { fresh = true; }
+  var page = location.pathname === "/" || location.pathname === "/index.html" ? "home" : /^\/build/.test(location.pathname) ? "build" : "other";
+  post({ p_page: page, p_source: src, p_new: fresh, p_event: null });
+})();
