@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/svg+xml" href="/icon.svg">
+<script src="/runtime/pixel.js"></script>
+<title>A website made for you | Unbland</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #0B0C0E; --ink: #F3F1EC; --muted: #B4B0A8; --accent: #FF4F1A; }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { height: 100%; }
+  body { background: var(--bg); color: var(--ink); font: 400 15px/1.45 "Inter", system-ui, sans-serif; display: flex; flex-direction: column; -webkit-font-smoothing: antialiased; }
+  .bar { display: flex; align-items: center; gap: 14px; padding: 10px 16px; background: #111214; border-bottom: 1px solid rgba(255,255,255,.12); flex-wrap: wrap; }
+  .logo { display: inline-flex; align-items: center; gap: 8px; font: 800 19px/1 "Bricolage Grotesque", sans-serif; letter-spacing: -.04em; color: inherit; text-decoration: none; }
+  .logo svg { width: 24px; height: 24px; }
+  .msg { flex: 1 1 260px; min-width: 0; }
+  .msg b { display: block; font-size: 15px; }
+  .msg small { color: var(--muted); font-size: 13px; }
+  .go { background: var(--accent); color: #fff; border: 0; border-radius: 10px; padding: 12px 18px; font: 600 15px "Inter", sans-serif; cursor: pointer; white-space: nowrap; box-shadow: 0 8px 26px -8px rgba(255,79,26,.7); }
+  .view { flex: 1; min-height: 0; background: #fff; }
+  .view iframe { width: 100%; height: 100%; border: 0; display: block; }
+  .state { margin: auto; max-width: 440px; text-align: center; padding: 40px 20px; color: var(--muted); }
+  .state h1 { color: var(--ink); font: 800 28px/1.1 "Bricolage Grotesque", sans-serif; letter-spacing: -.03em; margin-bottom: 10px; }
+  .state a { color: var(--ink); }
+  @media (max-width: 560px) { .go { width: 100%; } .msg b { font-size: 14px; } }
+</style>
+</head>
+<body>
+<div class="bar" id="bar" hidden>
+  <a class="logo" href="/" aria-label="Unbland home"><svg viewBox="0 0 48 48" aria-hidden="true"><rect width="48" height="48" rx="12" fill="#FF4F1A"/><path d="M14 14v12a10 10 0 0 0 20 0V14" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round"/><circle cx="37" cy="37" r="3.5" fill="#fff"/></svg>unbland</a>
+  <div class="msg"><b id="title">This website was made for you.</b><small>It's free. Make it yours to change anything and put it online.</small></div>
+  <button class="go" type="button" id="claim">Make it mine</button>
+</div>
+<div class="view" id="view" hidden><iframe id="frame" title="Your website"></iframe></div>
+<div class="state" id="state"><h1>Loading your site…</h1></div>
+<script>
+  // A website someone at Unbland made for a business, shared as a link. Opening it shows the site;
+  // "Make it mine" sends them to the builder, which copies it into their own account after they sign in.
+  (async function () {
+    const $ = id => document.getElementById(id);
+    const token = new URLSearchParams(location.search).get("t") || "";
+    const fail = (title, text) => { $("state").innerHTML = `<h1></h1><p></p><p style="margin-top:16px"><a href="/build/">Build a site with Unbland</a></p>`; $("state").querySelector("h1").textContent = title; $("state").querySelector("p").textContent = text; };
+    if (!/^[A-Za-z0-9_-]{6,40}$/.test(token)) return fail("This link isn't complete", "Check that you copied the whole link.");
+    let row = null;
+    try {
+      const res = await fetch("https://clssxldrgtpiajwqgghl.supabase.co/rest/v1/rpc/open_gift", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", apikey: "sb_publishable_tSFjjjClxBrIPpc3j0gFyA_JuQhSiJS" },
+        body: JSON.stringify({ p_token: token }),
+      });
+      row = (await res.json())[0];
+    } catch (e) {}
+    if (!row) return fail("We couldn't find this site", "The link may be wrong, or the site was removed.");
+    window.ubStep?.("GiftOpen");
+    document.title = `${row.business}: your new website | Unbland`;
+    $("title").textContent = row.claimed ? `This website for ${row.business} has already been claimed.` : `We made this website for ${row.business}.`;
+    // Shown sandboxed: the preview can't send forms or leave the page.
+    $("frame").setAttribute("sandbox", "allow-scripts");
+    $("frame").srcdoc = row.html;
+    $("state").hidden = true; $("bar").hidden = false; $("view").hidden = false;
+    if (row.claimed) { $("claim").textContent = "Build my own"; $("claim").onclick = () => location.href = "/build/"; return; }
+    $("claim").onclick = () => {
+      window.ubStep?.("GiftClaimClick");
+      try { localStorage.setItem("unbland.claim", token); } catch (e) {}
+      location.href = "/build/?claim=" + encodeURIComponent(token);
+    };
+  })();
+</script>
+</body>
+</html>

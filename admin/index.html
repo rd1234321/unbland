@@ -93,6 +93,10 @@
   .an-steps small { color: var(--muted); font-size: 13px; }
   .an-steps b { display: block; font: 400 32px/1 "Instrument Serif", Georgia, serif; margin-top: 6px; }
   @media (max-width: 760px) { .an-tabs, .an-steps { grid-template-columns: repeat(3, 1fr); } .an-tabs button, .an-steps div { border-bottom: 1px solid var(--rule); } }
+  .gift { display: grid; grid-template-columns: 1fr auto; gap: 8px 14px; align-items: center; border: 1px solid var(--ink); border-radius: 8px; background: #fff; padding: 12px 14px; margin-bottom: 10px; }
+  .gift input { font: inherit; border: 1px solid var(--rule); border-radius: 4px; padding: 7px 9px; width: 100%; }
+  .gift small { color: var(--muted); }
+  .gift .link { grid-column: 1 / -1; font-size: 13px; word-break: break-all; }
 </style>
 </head>
 <body>
@@ -119,6 +123,13 @@
         <div class="an-tip" id="an-tip" hidden></div></div>
       <div class="an-steps" id="an-steps"></div>
     </div>
+    <h2>Send a website</h2>
+    <p class="lede">Build a site for a business in the builder, then make a link for it here and send it in a DM. They see their site, press "Make it mine", sign up, and it's copied into their account to edit and publish. Each link can be claimed once.</p>
+    <p class="note" id="gift-note"></p>
+    <div id="gift-new"></div>
+    <h3 style="font:600 15px Inter;margin:20px 0 8px">Links sent</h3>
+    <table class="runs" id="gift-sent"></table>
+
     <h2>Marketing agent</h2>
     <p class="lede">Drafts posts, messages and page copy for you to use yourself. It never posts or sends anything. Every draft waits below until you approve or reject it.</p>
     <div class="agent">
@@ -395,10 +406,50 @@
     // Steps toward paying, for the same days.
     const ev = name => e.filter(r => r.event === name && r.day >= first).reduce((n, r) => n + r.count, 0);
     const builderPeople = v.filter(r => r.page === "build" && r.day >= first).reduce((n, r) => n + r.visitors, 0);
-    const steps = [["Opened builder", builderPeople], ["Watched demo", ev("DemoShown")], ["Tapped Try yours", ev("DemoTry")], ["Typed or tapped example", Math.max(ev("Typed"), ev("ExampleTap"))], ["Clicked Build", ev("BuildClick")], ["Got a site", ev("Lead")], ["Left mid-build", ev("LeftDuring")], ["Build failed", ev("BuildFail")], ["Asked to sign up", ev("AskedSignup")], ["Signed up", ev("CompleteRegistration")], ["Edited", ev("Edited")], ["Published", ev("Published")], ["Checkout", ev("InitiateCheckout")], ["Paid", ev("Subscribe") + ev("Purchase")]];
+    const steps = [["Opened builder", builderPeople], ["Watched demo", ev("DemoShown")], ["Tapped Try yours", ev("DemoTry")], ["Typed or tapped example", Math.max(ev("Typed"), ev("ExampleTap"))], ["Clicked Build", ev("BuildClick")], ["Got a site", ev("Lead")], ["Left mid-build", ev("LeftDuring")], ["Build failed", ev("BuildFail")], ["Asked to sign up", ev("AskedSignup")], ["Opened a sent site", ev("GiftOpen")], ["Claimed a sent site", ev("GiftClaimed")], ["Signed up", ev("CompleteRegistration")], ["Edited", ev("Edited")], ["Published", ev("Published")], ["Checkout", ev("InitiateCheckout")], ["Paid", ev("Subscribe") + ev("Purchase")]];
     $("an-steps").innerHTML = steps.map(([k, n]) => `<div><small>${k}</small><b>${n}</b></div>`).join("");
   }
   $("an-range").addEventListener("change", loadVisitors);
+
+  // Send a website: claim links for sites the owner built for a business.
+  async function loadGifts() {
+    const me = (await sb.auth.getUser()).data.user;
+    const [{ data: mine }, { data: sent }] = await Promise.all([
+      sb.from("sites").select("id, name, updated_at").eq("user_id", me.id).order("updated_at", { ascending: false }).limit(12),
+      sb.from("site_gifts").select("token, business, created_at, opens, first_opened_at, claimed_at").order("created_at", { ascending: false }).limit(60),
+    ]);
+    const link = t => `${location.origin}/claim/?t=${t}`;
+    $("gift-new").innerHTML = "";
+    for (const row of mine || []) {
+      const box = document.createElement("div"); box.className = "gift";
+      box.innerHTML = `<div><small>Business name to show them</small><input type="text" maxlength="120"></div><button class="btn keep" type="button">Make link</button><div class="link"></div>`;
+      const input = box.querySelector("input"); input.value = String(row.name || "").split(/ [|·–-] /)[0].slice(0, 120);
+      box.querySelector("button").onclick = async e => {
+        e.currentTarget.disabled = true;
+        const { data, error } = await sb.from("site_gifts").insert({ site_id: row.id, business: input.value.trim() || "your business" }).select("token").single();
+        e.currentTarget.disabled = false;
+        const out = box.querySelector(".link");
+        if (error) { out.textContent = "Couldn't make the link: " + error.message; return; }
+        out.innerHTML = `<b></b> <button class="btn" type="button">Copy</button>`;
+        out.querySelector("b").textContent = link(data.token);
+        out.querySelector("button").onclick = ev => { navigator.clipboard.writeText(link(data.token)); ev.currentTarget.textContent = "Copied"; };
+        loadSent();
+      };
+      $("gift-new").append(box);
+    }
+    async function loadSent() {
+      const { data } = await sb.from("site_gifts").select("token, business, created_at, opens, first_opened_at, claimed_at").order("created_at", { ascending: false }).limit(60);
+      const t = $("gift-sent"); t.innerHTML = "<tr><th>Business</th><th>Made</th><th>Opened</th><th>Claimed</th><th>Link</th></tr>";
+      for (const g of data || []) {
+        const tr = document.createElement("tr");
+        for (const x of [g.business, fmt(g.created_at), g.opens ? `${g.opens}× (first ${fmt(g.first_opened_at)})` : "Not yet", g.claimed_at ? "Yes, " + fmt(g.claimed_at) : "No"]) { const td = document.createElement("td"); td.textContent = x; tr.append(td); }
+        const td = document.createElement("td"); const b = document.createElement("button"); b.className = "btn"; b.type = "button"; b.textContent = "Copy"; b.onclick = () => { navigator.clipboard.writeText(link(g.token)); b.textContent = "Copied"; }; td.append(b); tr.append(td);
+        t.append(tr);
+      }
+      if (!data?.length) t.innerHTML = "<tr><td>No links yet.</td></tr>";
+    }
+    loadSent();
+  }
 
   const { data: { session } } = await sb.auth.getSession();
   if (!session) {
@@ -407,7 +458,7 @@
     $("who").textContent = session.user.email || "";
     const { data: admin } = await sb.from("admins").select("user_id").eq("user_id", session.user.id).maybeSingle();
     if (!admin) $("note").textContent = "This page is only for the site owner.";
-    else { $("note").textContent = ""; $("content").hidden = false; try { localStorage.setItem("ub_team", "1"); } catch (e) {} loadVisitors(); loadAgent(); loadQueue(); loadRuns(); loadNew(); loadLibrary(); }
+    else { $("note").textContent = ""; $("content").hidden = false; try { localStorage.setItem("ub_team", "1"); } catch (e) {} loadVisitors(); loadGifts(); loadAgent(); loadQueue(); loadRuns(); loadNew(); loadLibrary(); }
   }
 </script>
 </body>

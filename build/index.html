@@ -1484,7 +1484,7 @@
     ];
     let seen = false, signedIn = false;
     try { seen = !!localStorage.getItem("unbland.demo"); signedIn = Object.keys(localStorage).some(k => /^sb-.*-auth-token$/.test(k)); } catch {}
-    if (seen || signedIn) return;
+    if (seen || signedIn || /[?&]claim=/.test(location.search)) return;
     const pick = SAMPLES[Math.floor(Math.random() * SAMPLES.length)];
     const box = $("demo"), said = $("demo-said"), cover = $("demo-cover"), frame = $("demo-frame"), chip = $("demo-page");
     frame.src = pick.url;   // start loading at once, while the page itself is still settling
@@ -2427,6 +2427,7 @@
         if (user && user.id !== was) refreshPublishState();
         if (user?.id !== was) loadPixels();
         if (!user) site.id = null;
+        if (user && user.id !== was) takeClaim();
       });
     } catch { /* accounts unavailable; everything else carries on */ }
     accountUI();
@@ -2441,6 +2442,44 @@
     $("auth-msg").className = "auth-msg";
     $("auth-msg").textContent = "Sign-in didn't complete. Please try again, or use email and password.";
   });
+
+  // A site made for this person, shared as a /claim/ link: once they're signed in, copy it into their account and open it.
+  // The link is kept in this browser until it's used, so it survives the email confirmation round trip.
+  let claimBusy = false;
+  async function takeClaim() {
+    let token = new URLSearchParams(location.search).get("claim");
+    try { token = token || localStorage.getItem("unbland.claim"); if (token) localStorage.setItem("unbland.claim", token); } catch {}
+    if (!token || claimBusy) return;
+    await ready;
+    if (!sb) return;
+    for (let i = 0; i < 10 && !user; i++) await new Promise(r => setTimeout(r, 200));
+    if (!user) {
+      await openAuth("signup");
+      $("auth-msg").className = "auth-msg";
+      $("auth-msg").textContent = "Create a free account to keep your new website. It takes a few seconds.";
+      $("auth-msg").style.color = "var(--muted, #B4B0A8)";
+      return;
+    }
+    claimBusy = true;
+    const { data: id, error } = await sb.rpc("claim_gift", { p_token: token });
+    try { localStorage.removeItem("unbland.claim"); } catch {}
+    window.history.replaceState(null, "", location.pathname);
+    claimBusy = false;
+    if (error || !id) { say(/already claimed/.test(error?.message || "") ? "Someone has already claimed that website." : "Couldn't add that website to your account. Try the link again.", true); return; }
+    const { data: full } = await sb.from("sites").select("id, prompt, direction, html, chat").eq("id", id).single();
+    if (!full) return;
+    window.ubStep?.("GiftClaimed");
+    history.length = 0;
+    currentPage = "home";
+    site = { id: full.id, html: "", prompt: full.prompt || "", used: full.direction ? [full.direction] : [], chat: [] };
+    show(true);
+    setSite(full.html, false);
+    drawChat();
+    bubble("bot", "This website is yours now. Click any text or photo to change it, or tell me what to change here. When it looks right, press Publish to put it online.");
+    $("saved").textContent = "Saved";
+    refreshPublishState();
+  }
+  if (/[?&]claim=/.test(location.search)) takeClaim();
 
   // Bring back the last site after a refresh or a return from signing in, so it is never lost
   // and a reload never costs another build. Kept in this browser until "New site" is pressed.
