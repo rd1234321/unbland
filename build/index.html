@@ -459,6 +459,12 @@
     .kind .pages { padding: 6px 12px 8px; }
     .go { justify-content: center; }
     .helper { font-size: 13px; }
+    .ask > p, .box, .helper, .examples { animation-duration: .35s; animation-delay: 0s; }
+    .ask h1 .ln > span { animation-duration: .5s; }
+    .ask > p { font-size: 16px; margin-bottom: 18px; }
+    .box textarea { min-height: 96px; }
+    .examples { margin-top: 12px; }
+    .examples button { padding: 9px 14px; font-size: 14px; }
     /* Editor */
     .bar { padding: 8px 10px; gap: 6px; }
     .bar .logo { font-size: 0; gap: 0; }                     /* just the badge, to save room */
@@ -522,9 +528,9 @@
         <button class="go" id="go" type="button">Build the site <i aria-hidden="true">→</i></button>
       </div>
     </div>
-    <p class="helper"><button type="button" class="linkish" id="writer-open">Not sure what to write? Answer a few questions and we'll write the description for you.</button></p>
     <p class="msg" id="msg" role="status" aria-live="polite"></p>
     <div class="examples" id="examples"><span>Try an example:</span></div>
+    <p class="helper"><button type="button" class="linkish" id="writer-open">Not sure what to write? Answer a few questions and we'll write the description for you.</button></p>
   </main>
   <footer class="legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:hello@unblandapp.com">Contact</a></footer>
 </div>
@@ -1321,6 +1327,10 @@
     msg.classList.add("dots");
     const started = Date.now();
     let timer;
+    const goLabel = go.innerHTML;
+    const waitText = () => { const n = Math.floor((Date.now() - started) / 1000); go.textContent = n < 8 ? `Starting your site · ${n}s` : n < 25 ? `Picking a design · ${n}s` : `Writing your site · ${n}s`; };
+    waitText();
+    const waitTimer = setInterval(waitText, 1000);
     try {
       const token = await bearer();
       // For a multi-page site, the number of pages chosen is sent along with the description.
@@ -1351,11 +1361,12 @@
       if (res.headers.get("x-pixels") != null) showPixels(Number(res.headers.get("x-pixels")));
       const direction = res.headers.get("x-direction") || "";
       if (direction) try { localStorage.setItem("unbland.styles", JSON.stringify([...recent.filter(x => x !== direction), direction].slice(-4))); } catch {}
+      clearInterval(waitTimer); go.innerHTML = goLabel;
       say("");
       show(true);
       result.classList.add("building");
       chatLog.textContent = "";
-      bubble("bot", "Designing your site. You'll see it appear on the right as it's written", "wait");
+      bubble("bot", "Designing your site. You'll see it appear as it's written", "wait");
       let phase = "";
       const label = () => `${phase || `Designing${direction ? " · " + pretty(direction) : ""}`} · ${Math.floor((Date.now() - started) / 1000)}s`;
       $("status-text").textContent = label();
@@ -1404,6 +1415,7 @@
       else say(err.message || "Couldn't reach the server. Check your connection and try again.", true);
     } finally {
       clearInterval(timer);
+      clearInterval(waitTimer); go.innerHTML = goLabel;
       result.classList.remove("building");
       $("meter").style.width = "0";
       go.disabled = false;
