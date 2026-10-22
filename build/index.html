@@ -1350,6 +1350,7 @@
     if (busy) return;
     busy = true;
     if (pub.open) pub.close();   // a publish panel left open belongs to the previous site
+    pubDraft = "";              // and so does its suggested address
     setEditing(false);
     go.disabled = true;
     say("Starting");
@@ -1806,7 +1807,12 @@
       const { error } = await sb.from("published").update({ html: site.html, name }).eq("slug", site.slug);
       if (error) failed = "Couldn't update the live site. Try again.";
     } else {
-      const { error } = await sb.from("published").insert({ slug: pubDraft, site_id: site.id, name, html: site.html });
+      let { error } = await sb.from("published").insert({ slug: pubDraft, site_id: site.id, name, html: site.html });
+      // A suggested address someone else already has: pick a fresh ending and try once more.
+      if (error?.code === "23505" && pubDraft === `${slugify(siteName())}-${pubDraft.slice(-4)}`) {
+        pubDraft = `${slugify(siteName())}-${Math.random().toString(36).slice(2, 6)}`;
+        ({ error } = await sb.from("published").insert({ slug: pubDraft, site_id: site.id, name, html: site.html }));
+      }
       const cap = /publish_limit:(\d+)/.exec(error?.message || "");
       if (cap) { pub.close(); btn.disabled = false; openPlans(`Your plan has ${cap[1]} live site${cap[1] === "1" ? "" : "s"} at a time. Take another live site offline first, or choose a bigger plan.`); return; }
       if (error?.code === "23505") failed = "That address is already taken. Change it with the pencil and try again.";
