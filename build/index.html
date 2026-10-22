@@ -1347,6 +1347,7 @@
   async function design(prompt, avoid, kind = buildKind) {
     if (busy) return;
     busy = true;
+    if (pub.open) pub.close();   // a publish panel left open belongs to the previous site
     setEditing(false);
     go.disabled = true;
     say("Starting");
