@@ -1678,6 +1678,7 @@
     await ready;   // the accounts library may still be loading on a slow connection
     if (!sb) { alert("Accounts aren't available right now. Your site is still here in this browser; try again in a moment."); return; }
     authMode = mode;
+    $("auth-msg").style.color = "";   // a note from a claim link is shown in a softer color
     const up = mode === "signup";
     $("auth-title").textContent = up ? "Create your account" : "Sign in";
     $("auth-go").textContent = up ? "Create account" : "Sign in";
