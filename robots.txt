@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /lab/
+Disallow: /samples/
+Disallow: /s/
+
+Sitemap: https://unblandapp.com/sitemap.xml
