@@ -3,5 +3,6 @@ Disallow: /admin/
 Disallow: /lab/
 Disallow: /samples/
 Disallow: /s/
+Disallow: /demo/
 
 Sitemap: https://unblandapp.com/sitemap.xml

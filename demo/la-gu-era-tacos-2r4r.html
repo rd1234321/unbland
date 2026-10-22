@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>La Güera Tacos · Taco truck behind Saint Vincent's Brewing, Tucson</title>
+<meta name="description" content="La Güera Tacos: al pastor off the trompo, carne asada, birria with consommé and handmade corn tortillas. Behind Saint Vincent's Brewing in Tucson, Thursday to Sunday, 5pm to midnight.">
+<meta name="page-plan" content="menu: every taco, the quesabirria plate and aguas frescas with prices, plus how the tortillas and fillings are made | catering: parties, weddings and office lunches for 25 to 200 guests, truck or taco bar setup, how booking works and the catering inquiry form | find-us: the spot behind Saint Vincent's Brewing, opening hours Thursday to Sunday, phone and a short message form">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg:#070707;--bg2:#0f0e0b;--tx:#F7F4EA;--ac:#FFC400;--mut:rgba(247,244,234,.62);--line:rgba(255,196,0,.45);--r:4px}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--tx);font:400 17px/1.6 Inter,system-ui,sans-serif;overflow-x:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:100;opacity:.07;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+h1,h2,h3,.disp{font-family:Unbounded,sans-serif;font-weight:800;line-height:1.02;letter-spacing:-.02em}
+.wrap{width:min(1240px,100% - 48px);margin-inline:auto}
+.out{color:transparent;-webkit-text-stroke:1.5px var(--tx);position:relative;display:inline-block}
+.out.ac{-webkit-text-stroke-color:var(--ac)}
+.out::after{content:attr(data-t);position:absolute;left:0;top:0;color:var(--ac);-webkit-text-stroke:0;opacity:0;transform:translateY(6%);transition:opacity 1s ease-out,transform 1s ease-out}
+.out.lit::after{opacity:1;transform:none}
+.btn{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:0 26px;border-radius:999px;font:600 15px Inter;white-space:nowrap;border:1.5px solid var(--ac);transition:transform .3s ease-out,background .3s,color .3s}
+.btn.solid{background:var(--ac);color:#070707}
+.btn.solid:hover{background:var(--tx);border-color:var(--tx);transform:translateY(-2px)}
+.btn.ghost{color:var(--tx)}
+.btn.ghost:hover{background:var(--ac);color:#070707;transform:translateY(-2px)}
+.prog{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--ac);transform-origin:0 50%;transform:scaleX(0);z-index:60}
+header{position:fixed;inset:0 0 auto;z-index:50;height:76px;display:flex;align-items:center;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+header.scrolled{background:rgba(7,7,7,.92);border-color:var(--line)}
+.hd{display:flex;align-items:center;justify-content:space-between;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;font:800 18px Unbounded;white-space:nowrap}
+.brand svg{width:30px;height:30px;transition:transform .6s ease-out}
+.brand:hover svg{transform:rotate(90deg)}
+nav ul{display:flex;gap:34px;list-style:none}
+nav a{font-size:15px;font-weight:500;white-space:nowrap;position:relative;padding:6px 0}
+nav a::after{content:"";position:absolute;left:0;bottom:0;height:1.5px;width:100%;background:var(--ac);transform:scaleX(0);transform-origin:left;transition:transform .35s ease-out}
+nav a:hover::after{transform:scaleX(1)}
+.mbtn{display:none;background:none;border:1.5px solid var(--ac);color:var(--tx);border-radius:999px;height:44px;padding:0 18px;font:600 14px Inter;cursor:pointer}
+.side{position:fixed;left:18px;top:50%;z-index:40;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font:500 12px Unbounded;letter-spacing:.3em;text-transform:uppercase;color:var(--mut);display:flex;gap:14px;align-items:center}
+.side i{width:1px;height:60px;background:var(--ac)}
+.hero{min-height:100dvh;position:relative;display:grid;align-items:center;padding:110px 0 60px;overflow:hidden}
+.hgrid{display:grid;grid-template-columns:1.25fr .75fr;gap:56px;align-items:center}
+.hphoto{position:absolute;right:0;top:0;width:46%;height:100%;z-index:0}
+.hphoto img{width:100%;height:100%;object-fit:cover;filter:saturate(1.1) contrast(1.05);opacity:.55}
+.hphoto::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--bg) 0%,rgba(7,7,7,.55) 45%,rgba(7,7,7,.2))}
+.htxt{position:relative;z-index:2}
+.hero h1{font-size:clamp(46px,7vw,104px)}
+.hero h1 span{display:block}
+.hero p{max-width:30ch;margin:26px 0 34px;color:var(--mut);font-size:19px}
+.hbtns{display:flex;gap:14px;flex-wrap:wrap}
+.tcol{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;gap:22px}
+.trompo{width:150px;display:flex;flex-direction:column;gap:5px;position:relative;padding-top:20px}
+.trompo::before{content:"";position:absolute;left:50%;top:0;bottom:-30px;width:4px;background:var(--tx);transform:translateX(-50%);border-radius:2px;z-index:-1}
+.band{height:34px;border-radius:var(--r);background:repeating-linear-gradient(90deg,var(--c) 0 22px,var(--d) 22px 44px);background-size:88px 100%;animation:spin 2.4s linear infinite;transition:transform .6s ease-out,opacity .6s ease-out}
+.band:nth-child(3n+1){--c:#FFC400;--d:#e0a800}
+.band:nth-child(3n+2){--c:#F7F4EA;--d:#ddd6c0}
+.band:nth-child(3n){--c:#3a2a12;--d:#2a1e0d}
+.band:nth-child(1){width:100%}.band:nth-child(2){width:96%;margin:auto}.band:nth-child(3){width:92%;margin:auto}.band:nth-child(4){width:86%;margin:auto}.band:nth-child(5){width:80%;margin:auto}.band:nth-child(6){width:72%;margin:auto}.band:nth-child(7){width:62%;margin:auto}.band:nth-child(8){width:50%;margin:auto}
+.band.peel{transform:translateX(140%) rotate(14deg);opacity:0}
+@keyframes spin{to{background-position:88px 0}}
+.pill{border:1.5px solid var(--ac);border-radius:999px;padding:10px 20px;font:600 13px Inter;letter-spacing:.04em;white-space:nowrap;display:flex;align-items:center;gap:10px;background:rgba(7,7,7,.8)}
+.pill b{width:9px;height:9px;border-radius:50%;background:var(--ac);display:inline-block}
+.pill.open b{animation:pulse 1.6s ease-out infinite}
+@keyframes pulse{50%{opacity:.25;transform:scale(1.5)}}
+.drift{position:absolute;left:0;bottom:-2vw;white-space:nowrap;font:800 clamp(90px,17vw,260px)/1 Unbounded;color:transparent;-webkit-text-stroke:1.5px rgba(255,196,0,.28);animation:drift 40s linear infinite;z-index:1;pointer-events:none}
+@keyframes drift{to{transform:translateX(-50%)}}
+.statement{padding:150px 0 120px;border-top:1px solid var(--line);position:relative}
+.statement .disp{font-size:clamp(30px,4.4vw,62px);max-width:20ch}
+.statement .disp em{font-style:normal;color:var(--ac)}
+.stgrid{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:start}
+.tort{width:70px;height:70px;color:var(--ac)}
+.statement p{max-width:58ch;color:var(--mut);margin-top:30px}
+.big{font-size:clamp(60px,11vw,170px)}
+.menu{padding:110px 0;position:relative}
+.mhead{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:50px;flex-wrap:wrap}
+.mhead .lbl{font:500 12px Unbounded;letter-spacing:.3em;color:var(--ac);text-transform:uppercase;display:block;margin-bottom:16px}
+.mlay{display:grid;grid-template-columns:1fr 240px;gap:60px}
+.rows{border-top:1px solid var(--line)}
+.row{position:relative;display:grid;grid-template-columns:60px 1fr auto;align-items:center;gap:20px;padding:30px 18px;border-bottom:1px solid var(--line);overflow:hidden;cursor:pointer}
+.row::before{content:"";position:absolute;inset:0;background:var(--ac);transform:scaleX(0);transform-origin:left;transition:transform .5s cubic-bezier(.2,.7,.2,1);z-index:0}
+.row:hover::before,.row:focus-visible::before{transform:scaleX(1)}
+.row>*{position:relative;z-index:1;transition:color .3s}
+.row:hover>*{color:#070707}
+.row h3{font-size:clamp(24px,3.4vw,46px)}
+.row small{display:block;font:400 15px Inter;color:var(--mut);margin-top:6px;letter-spacing:0}
+.row:hover small{color:rgba(7,7,7,.7)}
+.row .n{font:500 13px Unbounded;color:var(--ac)}
+.row svg{width:44px;height:44px;color:var(--ac);transition:color .3s}
+.row:hover svg{color:#070707}
+.squash{animation:squash .45s ease-out}
+@keyframes squash{35%{transform:scale(1.35,.45)}70%{transform:scale(.92,1.08)}}
+.mside{position:sticky;top:120px;align-self:start;display:flex;flex-direction:column;align-items:center;gap:24px}
+.mside .trompo{width:120px}
+.mside .band{height:26px}
+.mside img{width:100%;aspect-ratio:3/4;object-fit:cover;border-radius:var(--r);border:1px solid var(--line)}
+.mfoot{margin-top:40px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;color:var(--mut)}
+.mfoot strong{font:800 28px Unbounded;color:var(--tx)}
+.band-m{border-block:1px solid var(--ac);background:var(--ac);color:#070707;overflow:hidden;padding:18px 0}
+.mq{display:flex;gap:40px;white-space:nowrap;width:max-content;animation:drift 30s linear infinite;font:800 clamp(22px,3vw,36px) Unbounded;align-items:center}
+.mq svg{width:30px;height:30px}
+.cater{padding:130px 0;position:relative;overflow:hidden}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:0;align-items:stretch;position:relative}
+.cimg{position:relative;min-height:560px}
+.cimg img{position:absolute;object-fit:cover;border-radius:var(--r)}
+.cimg .a{inset:0 18% 18% 0;width:82%;height:82%}
+.cimg .b{right:0;bottom:0;width:48%;height:48%;border:6px solid var(--bg)}
+.cword{position:absolute;left:-10px;top:42%;font-size:clamp(70px,10vw,150px);z-index:2;pointer-events:none}
+.ctxt{padding:40px 0 40px 70px;display:flex;flex-direction:column;justify-content:center;border-left:1px solid var(--line);margin-left:50px}
+.ctxt h2{font-size:clamp(34px,4vw,58px)}
+.ctxt p{color:var(--mut);margin:24px 0;max-width:46ch}
+.nums{display:grid;grid-template-columns:1fr 1fr;border-block:1px solid var(--line);margin:10px 0 34px}
+.nums div{padding:22px 0}
+.nums div+div{border-left:1px solid var(--line);padding-left:24px}
+.nums b{display:block;font:800 clamp(36px,4vw,54px) Unbounded;color:var(--ac);line-height:1}
+.nums span{font-size:14px;color:var(--mut)}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:34px}
+.chips span{border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:14px}
+.find{position:relative;min-height:88vh;display:grid;align-items:end;overflow:hidden;border-block:1px solid var(--line)}
+.find>img{position:absolute;inset:-12% 0 0;width:100%;height:124%;object-fit:cover;opacity:.4;will-change:transform}
+.find::before{content:"";position:absolute;inset:0;background:linear-gradient(0deg,var(--bg) 8%,rgba(7,7,7,.35) 70%,var(--bg));z-index:1}
+.fin{position:relative;z-index:2;padding:90px 0;display:grid;grid-template-columns:1.3fr 1fr;gap:50px;align-items:end}
+.fin h2{font-size:clamp(44px,7vw,110px)}
+.ticket{border:1.5px solid var(--ac);border-radius:var(--r);padding:30px;background:rgba(7,7,7,.85);position:relative}
+.ticket::before,.ticket::after{content:"";position:absolute;top:50%;width:22px;height:22px;border-radius:50%;background:var(--bg);border:1.5px solid var(--ac);transform:translateY(-50%)}
+.ticket::before{left:-12px;clip-path:inset(0 0 0 50%)}
+.ticket::after{right:-12px;clip-path:inset(0 50% 0 0)}
+.ticket dl{display:grid;grid-template-columns:auto 1fr;gap:12px 20px;margin-bottom:26px}
+.ticket dt{font:500 12px Unbounded;letter-spacing:.2em;text-transform:uppercase;color:var(--ac);padding-top:4px}
+.ticket dd{font-size:17px}
+.ticket hr{border:0;border-top:1.5px dashed var(--line);margin:0 0 24px}
+.close{padding:150px 0 130px;text-align:center;position:relative;overflow:hidden}
+.close .disp{font-size:clamp(40px,8vw,128px)}
+.phone{display:inline-block;margin:34px 0 30px;font:800 clamp(30px,5vw,64px) Unbounded;color:var(--ac);border-bottom:1.5px solid var(--ac);transition:transform .3s ease-out}
+.phone:hover{transform:translateY(-4px)}
+.close p{color:var(--mut);margin-bottom:30px}
+.ring{position:absolute;left:50%;top:50%;width:min(780px,140vw);aspect-ratio:1;transform:translate(-50%,-50%);color:rgba(255,196,0,.14);animation:rot 80s linear infinite;z-index:-1}
+@keyframes rot{to{transform:translate(-50%,-50%) rotate(360deg)}}
+footer{border-top:1px solid var(--ac);padding:50px 0 40px;font-size:15px;color:var(--mut)}
+.ft{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap;align-items:center}
+.ft ul{display:flex;gap:24px;list-style:none;flex-wrap:wrap}
+.ft a:hover{color:var(--ac)}
+.callfab{display:none}
+.js .rv{opacity:0;transform:translateY(40px);transition:opacity .9s ease-out,transform .9s ease-out}
+.js .rv.in{opacity:1;transform:none}
+.js .rv.d1{transition-delay:.12s}.js .rv.d2{transition-delay:.24s}.js .rv.d3{transition-delay:.36s}
+.js .hero .st{opacity:0;transform:translateY(30px);animation:up .9s ease-out forwards}
+.js .hero .st:nth-child(2){animation-delay:.15s}.js .hero .st:nth-child(3){animation-delay:.3s}.js .hero .st:nth-child(4){animation-delay:.45s}
+.js .tcol{opacity:0;animation:up 1.1s .35s ease-out forwards}
+@keyframes up{to{opacity:1;transform:none}}
+@media (max-width:1024px){
+nav{display:none;position:absolute;top:76px;left:0;right:0;background:var(--bg);border-bottom:1px solid var(--ac);padding:20px 24px 30px}
+nav.open{display:block}
+nav ul{flex-direction:column;gap:6px}
+nav a{display:block;font:800 26px Unbounded;padding:10px 0}
+.mbtn{display:block}
+.hd>.btn{display:none}
+.side{display:none}
+.hgrid{grid-template-columns:1fr auto;gap:30px}
+.hphoto{width:60%}
+.mlay{grid-template-columns:1fr}
+.mside{display:none}
+.cgrid{grid-template-columns:1fr}
+.ctxt{margin:50px 0 0;padding:40px 0 0;border-left:0;border-top:1px solid var(--line)}
+.fin{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+body{padding-bottom:80px}
+.wrap{width:calc(100% - 40px)}
+.hero{padding:100px 0 50px;align-items:start}
+.hgrid{grid-template-columns:1fr}
+.hphoto{position:relative;width:100%;height:260px;margin-top:76px;position:absolute;top:0}
+.hphoto::after{background:linear-gradient(0deg,var(--bg),rgba(7,7,7,.2))}
+.htxt{padding-top:170px}
+.hero h1{font-size:clamp(40px,12vw,56px)}
+.tcol{flex-direction:row;justify-content:flex-start}
+.trompo{width:90px}.band{height:20px}
+.row{grid-template-columns:1fr auto;padding:24px 8px}
+.row .n{display:none}
+.cimg{min-height:380px}
+.ctxt{padding-top:30px}
+.ticket{padding:24px 20px}
+.statement{padding:100px 0 80px}
+.stgrid{grid-template-columns:1fr;gap:20px}
+.callfab{display:flex;position:fixed;left:20px;right:20px;bottom:16px;z-index:55;justify-content:center;min-height:52px}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.js .rv,.js .hero .st,.js .tcol{opacity:1;transform:none}}
+</style>
+<style data-page="menu">
+.menu-pg-hero{padding:150px 0 70px;position:relative;overflow:hidden}
+.menu-pg-hero .wrap{display:grid;grid-template-columns:1fr auto;gap:50px;align-items:end}
+.menu-pg-hero h1{font-size:clamp(52px,9vw,140px)}
+.menu-pg-hero p{max-width:44ch;color:var(--mut);margin-top:26px;font-size:19px}
+.menu-pg-price{border:1.5px solid var(--ac);border-radius:var(--r);padding:26px 30px;display:grid;gap:14px;min-width:260px}
+.menu-pg-price div{display:flex;justify-content:space-between;gap:30px;align-items:baseline}
+.menu-pg-price b{font:800 28px Unbounded;color:var(--ac)}
+.menu-pg-price span{font-size:15px}
+.menu-pg-tacos{padding:90px 0;border-top:1px solid var(--line)}
+.menu-pg-tacos h2,.menu-pg-plate h2,.menu-pg-made h2,.menu-pg-faq h2{font-size:clamp(32px,4.4vw,60px);margin-bottom:44px;max-width:18ch}
+.menu-pg-list{display:grid;grid-template-columns:1fr 1fr;gap:0 70px}
+.menu-pg-item{padding:28px 0;border-bottom:1px solid var(--line)}
+.menu-pg-item h3{font-size:clamp(22px,2.4vw,30px);display:flex;justify-content:space-between;gap:20px}
+.menu-pg-item h3 span{color:var(--ac);white-space:nowrap}
+.menu-pg-item p{color:var(--mut);margin-top:12px;max-width:44ch}
+.menu-pg-plate{padding:100px 0;background:var(--ac);color:#070707}
+.menu-pg-plate .wrap{display:grid;grid-template-columns:1fr 1fr;gap:70px;align-items:center}
+.menu-pg-plate h2{margin-bottom:24px}
+.menu-pg-plate p{max-width:46ch}
+.menu-pg-plate p+p{margin-top:16px}
+.menu-pg-plate img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:var(--r)}
+.menu-pg-plate .menu-pg-cost{font:800 clamp(50px,8vw,110px) Unbounded;line-height:1;margin-bottom:20px;display:block}
+.menu-pg-made{padding:110px 0}
+.menu-pg-cols{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--line)}
+.menu-pg-cols div{padding:34px 30px 10px 0}
+.menu-pg-cols div+div{padding-left:30px;border-left:1px solid var(--line)}
+.menu-pg-cols h3{font-size:22px;margin-bottom:14px;color:var(--ac)}
+.menu-pg-cols p{color:var(--mut)}
+.menu-pg-faq{padding:100px 0 120px;border-top:1px solid var(--line)}
+.menu-pg-q{display:grid;grid-template-columns:1fr 1.4fr;gap:50px;padding:28px 0;border-bottom:1px solid var(--line)}
+.menu-pg-q h3{font-size:clamp(18px,2vw,24px);line-height:1.2}
+.menu-pg-q p{color:var(--mut);max-width:56ch}
+.menu-pg-cta{margin-top:50px;display:flex;gap:14px;flex-wrap:wrap}
+@media (max-width:1024px){
+.menu-pg-hero .wrap,.menu-pg-plate .wrap{grid-template-columns:1fr}
+.menu-pg-list{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+.menu-pg-hero{padding:120px 0 50px}
+.menu-pg-cols{grid-template-columns:1fr}
+.menu-pg-cols div+div{padding-left:0;border-left:0;border-top:1px solid var(--line)}
+.menu-pg-q{grid-template-columns:1fr;gap:12px}
+.menu-pg-plate,.menu-pg-made{padding:70px 0}
+.menu-pg-price{min-width:0}
+}
+</style><style data-page="catering">
+.catering-intro{padding:150px 0 90px;position:relative;overflow:hidden}
+.catering-ig{display:grid;grid-template-columns:1fr;gap:34px}
+.catering-intro h1{font-size:clamp(44px,8vw,120px);max-width:12ch}
+.catering-ilow{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:end;border-top:1px solid var(--line);padding-top:34px}
+.catering-ilow p{color:var(--mut);max-width:48ch}
+.catering-ilow .hbtns{justify-content:flex-end}
+.catering-two{padding:100px 0;border-top:1px solid var(--line)}
+.catering-split{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.catering-opt{padding:20px 50px 20px 0}
+.catering-opt+.catering-opt{padding:20px 0 20px 50px;border-left:1px solid var(--line)}
+.catering-opt h3{font-size:clamp(26px,3vw,40px);margin:14px 0 18px;color:var(--ac)}
+.catering-opt p{color:var(--mut);margin-bottom:14px;max-width:44ch}
+.catering-opt svg{width:48px;height:48px;color:var(--ac)}
+.catering-fit{padding:100px 0;background:var(--bg2);border-block:1px solid var(--line)}
+.catering-fit h2{font-size:clamp(32px,4.4vw,60px);margin-bottom:46px;max-width:16ch}
+.catering-list{list-style:none;counter-reset:c;border-top:1px solid var(--line)}
+.catering-list li{counter-increment:c;display:grid;grid-template-columns:70px 1fr 1.4fr;gap:24px;padding:26px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.catering-list li::before{content:"0" counter(c);font:500 13px Unbounded;color:var(--ac)}
+.catering-list b{font:800 clamp(20px,2.2vw,28px) Unbounded;letter-spacing:-.02em}
+.catering-list span{color:var(--mut)}
+.catering-how{padding:110px 0}
+.catering-how h2{font-size:clamp(32px,4.4vw,60px);margin-bottom:46px}
+.catering-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}
+.catering-steps div{border-top:3px solid var(--ac);padding-top:20px}
+.catering-steps h3{font-size:22px;margin-bottom:12px}
+.catering-steps p{color:var(--mut)}
+.catering-faq{padding:100px 0 120px;border-top:1px solid var(--line)}
+.catering-fg{display:grid;grid-template-columns:.8fr 1.2fr;gap:70px}
+.catering-fg h2{font-size:clamp(32px,4vw,56px)}
+.catering-q{border-bottom:1px solid var(--line);padding:22px 0}
+.catering-q:first-child{padding-top:0}
+.catering-q h3{font:800 18px Unbounded;letter-spacing:-.01em;margin-bottom:8px}
+.catering-q p{color:var(--mut)}
+.catering-call{padding:110px 0;text-align:center;background:var(--ac);color:#070707}
+.catering-call h2{font-size:clamp(34px,6vw,84px)}
+.catering-call a.catering-ph{display:inline-block;margin:28px 0;font:800 clamp(28px,4.4vw,56px) Unbounded;border-bottom:2px solid #070707}
+.catering-call p{margin-bottom:26px}
+.catering-call .btn{background:#070707;color:var(--ac);border-color:#070707}
+@media (max-width:1024px){
+.catering-ilow{grid-template-columns:1fr;gap:26px}
+.catering-ilow .hbtns{justify-content:flex-start}
+.catering-fg{grid-template-columns:1fr;gap:34px}
+.catering-steps{grid-template-columns:1fr;gap:30px}
+}
+@media (max-width:640px){
+.catering-intro{padding:120px 0 60px}
+.catering-split{grid-template-columns:1fr}
+.catering-opt,.catering-opt+.catering-opt{padding:30px 0;border-left:0}
+.catering-opt+.catering-opt{border-top:1px solid var(--line)}
+.catering-list li{grid-template-columns:44px 1fr;gap:6px 14px}
+.catering-list span{grid-column:2}
+.catering-two,.catering-fit,.catering-how,.catering-faq,.catering-call{padding:70px 0}
+}
+</style><style data-page="find-us">
+.fu-top{padding:150px 0 90px;position:relative;overflow:hidden}
+.fu-top .wrap{display:grid;grid-template-columns:1fr;gap:34px}
+.fu-top h1{font-size:clamp(52px,10vw,150px)}
+.fu-intro{display:grid;grid-template-columns:1fr 1fr;gap:50px;border-top:1px solid var(--line);padding-top:34px}
+.fu-intro p{color:var(--mut);max-width:44ch}
+.fu-intro .fu-big{color:var(--tx);font:800 clamp(22px,2.6vw,34px)/1.15 Unbounded}
+.fu-hours{padding:100px 0;border-block:1px solid var(--line)}
+.fu-hours h2{font-size:clamp(32px,4.4vw,62px);margin-bottom:46px}
+.fu-days{display:grid;grid-template-columns:repeat(7,1fr);border:1.5px solid var(--line);border-radius:var(--r)}
+.fu-days div{padding:24px 14px;text-align:center}
+.fu-days div+div{border-left:1px solid var(--line)}
+.fu-days b{display:block;font:500 13px Unbounded;letter-spacing:.12em}
+.fu-days span{display:block;margin-top:10px;font-size:14px;color:var(--mut)}
+.fu-days .on{background:var(--ac);color:#070707}
+.fu-days .on span{color:#070707}
+.fu-note{margin-top:26px;color:var(--mut);max-width:60ch}
+.fu-spot{padding:120px 0}
+.fu-sgrid{display:grid;grid-template-columns:.9fr 1.1fr;gap:70px;align-items:center}
+.fu-sgrid img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:var(--r);border:1px solid var(--line)}
+.fu-spot h2{font-size:clamp(30px,4vw,56px);margin-bottom:26px}
+.fu-spot p{color:var(--mut);max-width:52ch;margin-bottom:18px}
+.fu-tips{list-style:none;margin-top:30px;border-top:1px solid var(--line)}
+.fu-tips li{padding:16px 0;border-bottom:1px solid var(--line);display:grid;grid-template-columns:34px 1fr;gap:14px;align-items:start}
+.fu-tips svg{width:28px;height:28px;color:var(--ac)}
+.fu-contact{padding:120px 0;background:var(--bg2);border-top:1px solid var(--line)}
+.fu-cgrid{display:grid;grid-template-columns:1fr 1fr;gap:70px}
+.fu-contact h2{font-size:clamp(30px,4vw,56px)}
+.fu-contact .phone{margin:30px 0 20px}
+.fu-contact p{color:var(--mut);max-width:40ch}
+.fu-form{display:grid;gap:18px;align-content:start}
+.fu-form label{display:grid;gap:8px;font:500 12px Unbounded;letter-spacing:.15em;text-transform:uppercase;color:var(--ac)}
+.fu-form input,.fu-form textarea{font:400 17px Inter;color:var(--tx);background:transparent;border:0;border-bottom:1.5px solid var(--line);padding:10px 0;border-radius:0;width:100%;outline:0;letter-spacing:0;text-transform:none}
+.fu-form input:focus,.fu-form textarea:focus{border-color:var(--ac)}
+.fu-form textarea{min-height:110px;resize:vertical}
+.fu-form button{justify-self:start;cursor:pointer;background:var(--ac);color:#070707}
+.fu-faq{padding:110px 0 130px}
+.fu-faq h2{font-size:clamp(30px,4vw,56px);margin-bottom:40px}
+.fu-qs{display:grid;grid-template-columns:1fr 1fr;gap:0 60px}
+.fu-qs div{padding:26px 0;border-top:1px solid var(--line)}
+.fu-qs h3{font-size:19px;line-height:1.25;margin-bottom:10px}
+.fu-qs p{color:var(--mut)}
+@media (max-width:1024px){
+.fu-sgrid,.fu-cgrid{grid-template-columns:1fr;gap:44px}
+.fu-sgrid img{aspect-ratio:3/2}
+}
+@media (max-width:640px){
+.fu-top{padding:120px 0 60px}
+.fu-intro,.fu-qs{grid-template-columns:1fr;gap:24px}
+.fu-qs{gap:0}
+.fu-days{grid-template-columns:1fr}
+.fu-days div{display:flex;justify-content:space-between;align-items:center;text-align:left;padding:16px 18px}
+.fu-days div+div{border-left:0;border-top:1px solid var(--line)}
+.fu-days span{margin:0}
+.fu-hours,.fu-spot,.fu-contact,.fu-faq{padding:80px 0}
+}
+</style></head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="tt" viewBox="0 0 100 100"><path fill="none" stroke="currentColor" stroke-width="3" d="M50 6c5 0 6 3 10 4s7-2 11 0 3 6 6 9 7 1 9 5-1 7 0 11 5 6 5 10-4 6-5 10 2 7 0 11-6 3-9 6-2 7-6 9-7-2-11 0-6 4-10 4-6-3-10-4-7 2-11 0-3-6-6-9-7-1-9-5 1-7 0-11-5-6-5-10 4-6 5-10-2-7 0-11 6-3 9-6 2-7 6-9 7 2 11 0 6-4 10-4z"></path><circle cx="62" cy="40" r="8" fill="none" stroke="currentColor" stroke-width="3"></circle></symbol></defs></svg>
+<div class="prog" id="prog"></div>
+<div class="side" aria-hidden="true"><i></i>La Güera · Tucson · Thu to Sun<i></i></div>
+<header id="top">
+<div class="wrap hd">
+<a href="#/home" class="brand"><svg><use href="#tt" style="color:var(--ac)"></use></svg>La Güera</a>
+<nav id="nav" aria-label="Main"><ul>
+<li><a href="#/home">Home</a></li>
+<li><a href="#/menu">Menu</a></li>
+<li><a href="#/catering">Catering</a></li>
+<li><a href="#/find-us">Find Us</a></li>
+</ul></nav>
+<a href="#/find-us" class="btn solid">Find the truck</a>
+<button class="mbtn" id="mbtn" aria-expanded="false" aria-controls="nav">Menu</button>
+</div>
+</header>
+
+<main data-page="home">
+<section class="hero" id="hero">
+<div class="hphoto"><img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/4828265.jpg" alt="Tacos topped with salsa and onion on a hot griddle" width="1200" height="1600"></div>
+<div class="drift" aria-hidden="true">AL PASTOR · BIRRIA · ASADA · AL PASTOR · BIRRIA · ASADA ·</div>
+<div class="wrap hgrid">
+<div class="htxt">
+<h1><span class="st">Tacos off</span><span class="st">the <span class="out ac" data-t="trompo">trompo</span></span></h1>
+<p class="st">A taco truck behind Saint Vincent's Brewing in Tucson. Corn tortillas pressed by hand, to order, until midnight.</p>
+<div class="hbtns st"><a href="#/find-us" class="btn solid">Find the truck</a><a href="#/menu" class="btn ghost">See the menu</a></div>
+</div>
+<div class="tcol" aria-hidden="true">
+<div class="trompo" data-trompo=""><div class="band"></div><div class="band"></div><div class="band"></div><div class="band"></div><div class="band"></div><div class="band"></div><div class="band"></div><div class="band"></div></div>
+<div class="pill" id="hours"><b></b><span>Thu to Sun · 5pm to midnight</span></div>
+</div>
+</div>
+</section>
+
+<section class="statement" id="about">
+<div class="wrap stgrid">
+<svg class="tort rv"><use href="#tt"></use></svg>
+<div>
+<p class="disp rv">Lupita Ramírez runs <em>La Güera</em>: a truck, a spit of al pastor, a press, and a line of people who know where to find it.</p>
+<p class="rv d1">The tortilla is half the taco. Fresh masa pressed flat and laid straight on the comal puffs, chars in spots and stays soft enough to fold. That is why they are pressed to order here, one at a time, while the meat comes off the spit.</p>
+</div>
+</div>
+</section>
+
+<section class="menu" id="menu-teaser">
+<div class="wrap">
+<div class="mhead">
+<h2 class="big rv"><span class="out" data-t="Menu">Menu</span></h2>
+<a href="#/menu" class="btn ghost rv d1">See the menu</a>
+</div>
+<div class="mlay">
+<div class="rows">
+<a href="#/menu" class="row rv" data-row=""><span class="n">01</span><h3>Al pastor<small>Shaved off the trompo</small></h3><svg><use href="#tt"></use></svg></a>
+<a href="#/menu" class="row rv" data-row=""><span class="n">02</span><h3>Carne asada<small>Grilled beef, chopped</small></h3><svg><use href="#tt"></use></svg></a>
+<a href="#/menu" class="row rv" data-row=""><span class="n">03</span><h3>Birria<small>With consommé for dipping</small></h3><svg><use href="#tt"></use></svg></a>
+<a href="#/menu" class="row rv" data-row=""><span class="n">04</span><h3>Rajas con queso<small>The vegetarian one</small></h3><svg><use href="#tt"></use></svg></a>
+</div>
+<div class="mside" aria-hidden="true">
+<div class="trompo" data-trompo=""><div class="band"></div><div class="band"></div><div class="band"></div><div class="band"></div><div class="band"></div><div class="band"></div></div>
+<img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/5247110.jpg" alt="Stack of handmade tortillas" loading="lazy" width="600" height="800">
+</div>
+</div>
+<div class="mfoot rv"><span>Every taco, one price</span><strong>$3.50</strong></div>
+</div>
+</section>
+
+<div class="band-m" aria-hidden="true"><div class="mq">
+<span>Pressed to order</span><svg><use href="#tt"></use></svg><span>Behind Saint Vincent's Brewing</span><svg><use href="#tt"></use></svg><span>Open till midnight</span><svg><use href="#tt"></use></svg><span>Pressed to order</span><svg><use href="#tt"></use></svg><span>Behind Saint Vincent's Brewing</span><svg><use href="#tt"></use></svg><span>Open till midnight</span><svg><use href="#tt"></use></svg>
+</div></div>
+
+<section class="cater" id="catering-teaser">
+<div class="wrap cgrid">
+<div class="cimg rv">
+<img class="a" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/4858335.jpg" alt="Tacos laid out on a kitchen counter ready to serve" loading="lazy" width="900" height="900">
+<img class="b" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/4034046.jpg" alt="Cheese quesadilla cut into wedges" loading="lazy" width="600" height="600">
+<span class="cword disp out" data-t="Fiesta">Fiesta</span>
+</div>
+<div class="ctxt">
+<h2 class="rv">The truck comes to your party</h2>
+<p class="rv d1">Parties, weddings and office lunches. Bring the whole truck, or set up a taco bar where guests build their own.</p>
+<div class="nums rv d2"><div><b>25</b><span>guests, smallest</span></div><div><b>200</b><span>guests, largest</span></div></div>
+<div class="chips rv d2"><span>Parties</span><span>Weddings</span><span>Office lunches</span></div>
+<div class="rv d3"><a href="#/catering" class="btn solid">Plan catering</a></div>
+</div>
+</div>
+</section>
+
+<section class="find" id="find-teaser">
+<img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/3392100.jpg" alt="Road and lights at night" loading="lazy" width="1600" height="1000" data-par="">
+<div class="wrap fin">
+<h2 class="rv">After dark,<br><span class="out ac" data-t="out back">out back</span></h2>
+<div class="ticket rv d1">
+<dl><dt>Where</dt><dd>Behind Saint Vincent's Brewing, Tucson, Arizona</dd><dt>When</dt><dd>Thursday to Sunday, 5pm to midnight</dd></dl>
+<hr>
+<a href="#/find-us" class="btn ghost">Get directions</a>
+</div>
+</div>
+</section>
+
+<section class="close" id="call">
+<svg class="ring" aria-hidden="true"><use href="#tt"></use></svg>
+<div class="wrap">
+<p class="disp rv">Hungry<br><span class="out" data-t="tonight?">tonight?</span></p>
+<a class="phone rv d1" href="tel:+15205550148">(520) 555-0148</a>
+<p class="rv d2">Call about catering or anything on the menu.</p>
+<div class="rv d3"><a href="#/find-us" class="btn solid">Find the truck</a></div>
+</div>
+</section>
+</main><main data-page="menu" hidden="">
+<section class="menu-pg-hero">
+<div class="wrap">
+<div>
+<h1 class="rv"><span class="out ac" data-t="Menu">Menu</span></h1>
+<p class="rv d1">Four ttacos, one plate and a cold drink. Everything is made at the truck and served from 5pm until midnight, Thursday to Sunday.</p>
+</div>
+<div class="menu-pg-price rv d2">
+<div><span>Tacos</span><b>$3.50</b></div>
+<div><span>Quesabirria plate</span><b>$13</b></div>
+<div><span>Aguas frescas</span><b>$4</b></div>
+</div>
+</div>
+</section>
+
+<section class="menu-pg-tacos">
+<div class="wrap">
+<h2 class="rv">The tacos, $3.50 each</h2>
+<div class="menu-pg-list">
+<div class="menu-pg-item rv"><h3>Al pastor <span>$3.50</span></h3><p>Pork shaved off the trompo, the vertical spit that turns beside the grill. The outside crisps while the inside stays juicy.</p></div>
+<div class="menu-pg-item rv d1"><h3>Carne asada <span>$3.50</span></h3><p>Grilled beef, chopped fine and folded into a fresh tortilla.</p></div>
+<div class="menu-pg-item rv"><h3>Birria <span>$3.50</span></h3><p>Slow-cooked beef served with consommé on the side, so you can dip every bite.</p></div>
+<div class="menu-pg-item rv d1"><h3>Rajas con queso <span>$3.50</span></h3><p>Strips of roasted pepper with melted cheese. This is the vegetarian taco.</p></div>
+</div>
+</div>
+</section>
+
+<section class="menu-pg-plate">
+<div class="wrap">
+<div class="rv">
+<span class="menu-pg-cost">$13</span>
+<h2>The quesabirria plate</h2>
+<p>Birria and melted cheese pressed into a tortilla, with consommé for dipping. It is the meal for when one taco will not do.</p>
+<p>Ask at the window if you want to add an agua fresca for $4.</p>
+</div>
+<img class="rv d1" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/4034046.jpg" alt="Cheese quesadilla cut into wedges" loading="lazy" width="900" height="675">
+</div>
+</section>
+
+<section class="menu-pg-made">
+<div class="wrap">
+<h2 class="rv">What goes into a taco</h2>
+<div class="menu-pg-cols">
+<div class="rv"><h3>The tortilla</h3><p>Corn tortillas, handmade and pressed to order. Masa goes flat, hits the comal and puffs. That is why it folds without cracking.</p></div>
+<div class="rv d1"><h3>The meat</h3><p>Al pastor comes off the trompo as orders come in. Asada is grilled and chopped. Birria is cooked down until it pulls apart.</p></div>
+<div class="rv d2"><h3>The finish</h3><p>Tacos are topped with salsa and onion. Vegetarians have rajas con queso, which is built the same way as the rest.</p></div>
+</div>
+</div>
+</section>
+
+<section class="menu-pg-faq">
+<div class="wrap">
+<h2 class="rv">Before you order</h2>
+<div class="menu-pg-q rv"><h3>How many tacos is a meal?</h3><p>Most people order three. Tacos are small, so it is easy to start with two and come back to the window.</p></div>
+<div class="menu-pg-q rv"><h3>What is consommé?</h3><p>It is the rich broth the birria cooks in. You dip the taco into it, or sip it between bites.</p></div>
+<div class="menu-pg-q rv"><h3>What can a vegetarian eat?</h3><p>The rajas con queso taco is vegetarian. Ask at the window if you have any other questions about ingredients.</p></div>
+<div class="menu-pg-q rv"><h3>Feeding a crowd?</h3><p>Catering runs from 25 to 200 guests, with the truck or a taco bar. Details are on the catering page.</p></div>
+<div class="menu-pg-cta rv"><a href="#/find-us" class="btn solid">Find the truck</a><a href="#/catering" class="btn ghost">Plan catering</a></div>
+</div>
+</section>
+</main><main data-page="catering" hidden="">
+<section class="catering-intro">
+<div class="wrap catering-ig">
+<h1 class="rv">Catering, <span class="out ac" data-t="25 to 200">25 to 200</span></h1>
+<div class="catering-ilow rv d1">
+<p>Parties, weddings and office lunches. Lupita Ramírez and La Güera Tacos can bring the truck to you or set up a taco bar, for groups from 25 to 200 guests.</p>
+<div class="hbtns"><a href="tel:+15205550148" class="btn solid">Call (520) 555-0148</a></div>
+</div>
+</div>
+</section>
+
+<section class="catering-two">
+<div class="wrap catering-split">
+<div class="catering-opt rv">
+<svg><use href="#tt"></use></svg>
+<h3>The truck</h3>
+<p>The truck pulls up at your event and serves from the window, the same way it does behind the brewery.</p>
+<p>It suits a crowd that likes to wander over, order and watch the tortillas hit the comal. It needs a spot where a truck can park.</p>
+</div>
+<div class="catering-opt rv d1">
+<svg><use href="#tt"></use></svg>
+<h3>The taco bar</h3>
+<p>No truck at the door. Fillings and tortillas are set out and guests build their own plates.</p>
+<p>It suits a banquet room, an office kitchen or a backyard where a truck will not fit, and it lets everyone eat at the same time.</p>
+</div>
+</div>
+</section>
+
+<section class="catering-fit">
+<div class="wrap">
+<h2 class="rv">Which events it fits</h2>
+<ul class="catering-list">
+<li class="rv"><b>Parties</b><span>Birthdays, graduations and backyard get-togethers. Tacos are easy to eat standing up, and guests can pick their own filling.</span></li>
+<li class="rv d1"><b>Weddings</b><span>A late-night taco window is a familiar way to feed guests after the dinner, or a relaxed main meal for the whole day.</span></li>
+<li class="rv d2"><b>Office lunches</b><span>A taco bar keeps a team lunch quick. Rajas con queso covers the vegetarians in the room.</span></li>
+</ul>
+</div>
+</section>
+
+<section class="catering-how">
+<div class="wrap">
+<h2 class="rv">Planning your event</h2>
+<div class="catering-steps">
+<div class="rv"><h3>Call first</h3><p>Phone (520) 555-0148 and tell us the date, the place and roughly how many guests.</p></div>
+<div class="rv d1"><h3>Pick a setup</h3><p>Choose the truck or the taco bar. If you are unsure, say what the space looks like and we will talk it through.</p></div>
+<div class="rv d2"><h3>Settle the menu</h3><p>Choose from the fillings on the <a href="#/menu" style="color:var(--ac);border-bottom:1px solid var(--ac)">menu</a>, including a vegetarian option.</p></div>
+</div>
+</div>
+</section>
+
+<section class="catering-faq">
+<div class="wrap catering-fg">
+<h2 class="rv">Questions people ask</h2>
+<div>
+<div class="catering-q rv"><h3>How many guests can you serve?</h3><p>Catering runs from 25 guests up to 200.</p></div>
+<div class="catering-q rv"><h3>Are there vegetarian options?</h3><p>Yes. Rajas con queso is the vegetarian taco.</p></div>
+<div class="catering-q rv"><h3>How do I get a quote?</h3><p>Call and describe the event. Pricing depends on the setup and the guest count, so it is worked out in that conversation.</p></div>
+<div class="catering-q rv"><h3>What should I think about before booking?</h3><p>Know your date, your headcount and where the food will be served. For the truck, check that it can park close to your guests, and whether the venue allows outside food vendors.</p></div>
+</div>
+</div>
+</section>
+
+<section class="catering-call">
+<div class="wrap">
+<h2 class="rv">Ready to plan it?</h2>
+<a class="catering-ph rv d1" href="tel:+15205550148">(520) 555-0148</a>
+<p class="rv d2">Call about catering or anything on the menu.</p>
+<div class="rv d3"><a href="#/find-us" class="btn solid">Find the truck</a></div>
+</div>
+</section>
+</main><main data-page="find-us" hidden="">
+<section class="fu-top">
+<div class="wrap">
+<h1 class="rv">Come <span class="out ac" data-t="find us">find us</span></h1>
+<div class="fu-intro rv d1">
+<p class="fu-big">Behind Saint Vincent's Brewing, Tucson, Arizona.</p>
+<p>Walk around the back of the brewery and look for the truck. Open Thursday to Sunday, from 5pm to midnight. Call if you want to check before you come.</p>
+</div>
+</div>
+</section>
+
+<section class="fu-hours">
+<div class="wrap">
+<h2 class="rv">The week</h2>
+<div class="fu-days rv d1">
+<div><b>MON</b><span>Closed</span></div>
+<div><b>TUE</b><span>Closed</span></div>
+<div><b>WED</b><span>Closed</span></div>
+<div class="on"><b>THU</b><span>5pm to midnight</span></div>
+<div class="on"><b>FRI</b><span>5pm to midnight</span></div>
+<div class="on"><b>SAT</b><span>5pm to midnight</span></div>
+<div class="on"><b>SUN</b><span>5pm to midnight</span></div>
+</div>
+<p class="fu-note rv d2">Tortillas are pressed to order, so on a busy night expect to wait a few minutes while yours comes off the comal. It is worth it.</p>
+</div>
+</section>
+
+<section class="fu-spot">
+<div class="wrap fu-sgrid">
+<img class="rv" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/3392100.jpg" alt="Road and lights at night" loading="lazy" width="1600" height="1000">
+<div>
+<h2 class="rv">Out back, after dark</h2>
+<p class="rv d1">The truck sits behind the brewery, so you will not see it from the street. Head past the front door and keep going to the back lot.</p>
+<ul class="fu-tips rv d2">
+<li><svg><use href="#tt"></use></svg><span>Open evenings only, so plan dinner or a late bite.</span></li>
+<li><svg><use href="#tt"></use></svg><span>Going with a group? Order together so the tortillas come out at the same time.</span></li>
+<li><svg><use href="#tt"></use></svg><span>Planning a bigger gathering? See <a href="#/catering" style="color:var(--ac)">catering</a> and we can bring the truck to you.</span></li>
+</ul>
+</div>
+</div>
+</section>
+
+<section class="fu-contact">
+<div class="wrap fu-cgrid">
+<div>
+<h2 class="rv">Call the truck</h2>
+<a class="phone rv d1" href="tel:+15205550148">(520) 555-0148</a>
+<p class="rv d2">Questions about tonight, the menu or catering? Phone is the fastest way to reach Lupita. Or leave a short message and we will get back to you.</p>
+</div>
+<form class="fu-form rv d1" onsubmit="event.preventDefault();this.querySelector('button').textContent='Thank you'">
+<label>Name<input type="text" name="name" autocomplete="name" required=""></label>
+<label>Phone or email<input type="text" name="contact" required=""></label>
+<label>Message<textarea name="message" required=""></textarea></label>
+<button type="submit" class="btn solid">Send message</button>
+</form>
+</div>
+</section>
+
+<section class="fu-faq">
+<div class="wrap">
+<h2 class="rv">Before you drive over</h2>
+<div class="fu-qs">
+<div class="rv"><h3>Which nights are you open?</h3><p>Thursday, Friday, Saturday and Sunday, from 5pm to midnight.</p></div>
+<div class="rv d1"><h3>Where exactly is the truck?</h3><p>Behind Saint Vincent's Brewing in Tucson.</p></div>
+<div class="rv"><h3>Can I call ahead?</h3><p>Yes. Call (520) 555-0148 with questions about the menu or catering.</p></div>
+<div class="rv d1"><h3>Want to see what is on offer first?</h3><p>The <a href="#/menu" style="color:var(--ac)">menu</a> lists every taco, the quesabirria plate and the aguas frescas.</p></div>
+</div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap ft">
+<a href="#/home" class="brand"><svg><use href="#tt" style="color:var(--ac)"></use></svg>La Güera Tacos</a>
+<ul><li><a href="#/home">Home</a></li><li><a href="#/menu">Menu</a></li><li><a href="#/catering">Catering</a></li><li><a href="#/find-us">Find Us</a></li></ul>
+<span>Behind Saint Vincent's Brewing, Tucson · <a href="tel:+15205550148">(520) 555-0148</a></span>
+</div>
+</footer>
+<a href="tel:+15205550148" class="btn solid callfab">Call (520) 555-0148</a>
+
+<script>
+document.documentElement.classList.add('js');
+const hd=document.getElementById('top'),pr=document.getElementById('prog'),mb=document.getElementById('mbtn'),nv=document.getElementById('nav');
+mb.addEventListener('click',()=>{const o=nv.classList.toggle('open');mb.setAttribute('aria-expanded',o);mb.textContent=o?'Close':'Menu'});
+nv.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{nv.classList.remove('open');mb.setAttribute('aria-expanded','false');mb.textContent='Menu'}));
+const passed=new WeakSet();
+function peel(){document.querySelectorAll('[data-trompo]').forEach(t=>{const b=t.querySelector('.band:not(.peel)');if(!b)return;b.classList.add('peel');setTimeout(()=>{b.classList.remove('peel')},1400)})}
+function check(){
+const h=innerHeight,y=scrollY,d=document.documentElement.scrollHeight-h;
+hd.classList.toggle('scrolled',y>30);
+pr.style.transform='scaleX('+(d>0?y/d:0)+')';
+document.querySelectorAll('.rv,.out').forEach(el=>{if(el.offsetParent===null)return;const r=el.getBoundingClientRect();if(r.top<h*.88&&r.bottom>0)el.classList.add(el.classList.contains('out')?'lit':'in')});
+document.querySelectorAll('[data-row]').forEach(r=>{if(r.offsetParent===null||passed.has(r))return;if(r.getBoundingClientRect().top<h*.5){passed.add(r);peel()}});
+document.querySelectorAll('[data-par]').forEach(i=>{if(i.offsetParent===null)return;const r=i.parentElement.getBoundingClientRect();i.style.transform='translateY('+(-r.top*.12)+'px)'});
+}
+addEventListener('scroll',check,{passive:true});addEventListener('resize',check);addEventListener('load',check);setTimeout(check,300);check();
+document.querySelectorAll('[data-row]').forEach(r=>r.addEventListener('pointerdown',()=>{const s=r.querySelector('svg');s.classList.remove('squash');void s.getBoundingClientRect();s.classList.add('squash')}));
+(function(){const p=document.getElementById('hours'),n=new Date(Date.now()-7*3600000),day=n.getUTCDay(),hr=n.getUTCHours();
+const open=(day>=4&&hr>=17)||day===0&&hr>=17;
+let t;if(open)t='Open now · until midnight';else if(day>=4||day===0)t='Opens today at 5pm';else t='Opens Thursday at 5pm';
+p.querySelector('span').textContent=t;p.classList.toggle('open',open)})();
+</script>
+
+<script data-pages="">(function(){var s=document.createElement('style');s.textContent='main[data-page][hidden]{display:none!important}#__pm{position:fixed;left:14px;bottom:14px;z-index:2147483000;font:600 15px/1 system-ui,sans-serif}#__pm button{font:inherit;color:#fff;background:#141414;border:0;border-radius:999px;padding:13px 18px;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer}#__pm div{position:absolute;left:0;bottom:54px;min-width:190px;background:#141414;border-radius:14px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.4)}#__pm a{display:block;color:#fff;text-decoration:none;padding:12px 14px;border-radius:9px}#__pm a.current{background:rgba(255,255,255,.14)}';document.head.appendChild(s);var cur='home';function show(n,top){var all=document.querySelectorAll('main[data-page]'),ok=false;all.forEach(function(p){if(p.getAttribute('data-page')===n)ok=true;});if(!ok)n='home';cur=n;all.forEach(function(p){p.hidden=p.getAttribute('data-page')!==n;});document.querySelectorAll('a[href^="#/"]').forEach(function(a){var on=a.getAttribute('href')==='#/'+n;a.classList.toggle('current',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});if(top)window.scrollTo(0,0);window.dispatchEvent(new Event('scroll'));window.dispatchEvent(new Event('resize'));}function seen(e){return !!(e&&e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden');}function menu(){var box=document.getElementById('__pm');var names={},order=[];document.querySelectorAll('main[data-page]').forEach(function(p){order.push(p.getAttribute('data-page'));});var reach={};document.querySelectorAll('a[href^="#/"]').forEach(function(a){if(a.closest('#__pm'))return;var g=a.getAttribute('href').slice(2),t=a.textContent.replace(/\s+/g,' ').trim();if(t&&t.length<40&&!names[g])names[g]=t;if(seen(a))reach[g]=1;});var own=false;document.querySelectorAll('header button,nav button,header [aria-expanded]').forEach(function(b){if(seen(b))own=true;});var need=order.length>1&&!own&&order.some(function(g){return !reach[g];});if(!need){if(box)box.style.display='none';return;}if(!box){box=document.createElement('div');box.id='__pm';box.innerHTML='<div hidden></div><button type="button" aria-expanded="false">Menu</button>';document.body.appendChild(box);box.querySelector('button').onclick=function(){var d=box.querySelector('div');d.hidden=!d.hidden;this.setAttribute('aria-expanded',String(!d.hidden));};}box.style.display='';var d=box.querySelector('div');d.innerHTML='';order.forEach(function(g){var a=document.createElement('a');a.href='#/'+g;a.textContent=names[g]||(g.charAt(0).toUpperCase()+g.slice(1).replace(/-/g,' '));if(g===cur)a.className='current';d.appendChild(a);});}document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a)return;e.preventDefault();show(a.getAttribute('href').slice(2),true);var box=document.getElementById('__pm');if(box){box.querySelector('div').hidden=true;box.querySelector('button').setAttribute('aria-expanded','false');}});var t;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(menu,150);});show('home',false);menu();window.addEventListener('load',menu);})();</script></body></html>

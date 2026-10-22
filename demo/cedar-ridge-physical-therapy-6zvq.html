@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cedar Ridge Physical Therapy · Bend, Oregon</title>
+<meta name="description" content="Cedar Ridge Physical Therapy is an outpatient clinic in Bend, Oregon. One-on-one 60-minute sessions with a doctor of physical therapy. Call (541) 555-0176 to book.">
+<meta name="page-plan" content="services: what each service involves (sports injuries, back and neck pain, post-surgery rehab, running gait analysis), the 60-minute one-on-one session, insurance and the $140 self-pay rate | team: Dr. Maya Ortiz and Dr. Sam Keller, how the clinic works with no aides, general questions about physical therapy | contact: the booking form, phone, email and opening hours Monday to Friday 7am to 6pm, location in Bend">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<style>
+:root{--bg:#FDFCFA;--text:#20211F;--tint:#E9F0EA;--accent:#3F7D5C;--muted:rgba(32,33,31,.66);--r:24px;--ease:cubic-bezier(.22,.61,.36,1)}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:Manrope,system-ui,sans-serif;font-weight:400;color:var(--text);background:var(--bg);font-size:17px;line-height:1.65;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit}
+h1,h2,h3{font-weight:500;letter-spacing:-.02em;line-height:1.15}
+.wrap{width:min(1240px,100% - 64px);margin:0 auto}
+.label{font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;color:var(--accent)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:48px;padding:0 26px;border-radius:999px;background:var(--accent);color:#fff;text-decoration:none;font-weight:500;font-size:15px;white-space:nowrap;transition:transform .5s var(--ease),background .4s var(--ease)}
+.btn:hover{transform:translateY(-2px);background:#346a4d}
+.btn.ghost{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1px rgba(32,33,31,.2)}
+.btn.ghost:hover{background:var(--tint)}
+.progress{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--accent);transform-origin:0 0;transform:scaleX(0);z-index:60}
+header{position:sticky;top:0;z-index:50;background:rgba(253,252,250,.85);backdrop-filter:blur(12px);transition:box-shadow .5s var(--ease)}
+header.scrolled{box-shadow:0 8px 30px rgba(63,125,92,.08)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:76px;gap:24px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;font-weight:600;white-space:nowrap;font-size:16px}
+.brand svg{flex:none}
+nav ul{display:flex;gap:34px;list-style:none}
+nav a{text-decoration:none;font-size:15px;white-space:nowrap;position:relative;padding:6px 0}
+nav a::after{content:"";position:absolute;left:0;bottom:0;width:100%;height:1px;background:var(--accent);transform:scaleX(0);transition:transform .5s var(--ease)}
+nav a:hover::after{transform:scaleX(1)}
+.menu{display:none;width:46px;height:46px;border:0;border-radius:999px;background:var(--tint);cursor:pointer;position:relative}
+.menu span{position:absolute;left:14px;right:14px;height:1.5px;background:var(--text);transition:transform .4s var(--ease)}
+.menu span:first-child{top:19px}.menu span:last-child{top:26px}
+.menu[aria-expanded=true] span:first-child{transform:translateY(3.5px) rotate(45deg)}
+.menu[aria-expanded=true] span:last-child{transform:translateY(-3.5px) rotate(-45deg)}
+.panel{display:none}
+.trace{position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:0;overflow:visible}
+.trace path{fill:none;stroke:var(--accent);stroke-width:1.2;opacity:.55}
+main{position:relative}
+main>section{position:relative;z-index:1}
+.hero{padding:40px 0 90px}
+.hero-grid{display:grid;grid-template-columns:5fr 6fr;gap:64px;align-items:center;min-height:calc(100dvh - 160px)}
+.hero h1{font-size:clamp(36px,4vw,56px);max-width:12ch;margin:22px 0 22px}
+.hero p{max-width:40ch;color:var(--muted)}
+.actions{display:flex;gap:12px;margin-top:34px;flex-wrap:wrap}
+.hero-photo{position:relative;border-radius:var(--r);overflow:hidden;aspect-ratio:4/5;max-height:78vh;width:100%}
+.hero-photo img{width:100%;height:115%;object-fit:cover;will-change:transform}
+.hero-photo svg{position:absolute;left:0;right:0;bottom:22%;width:100%;height:60px}
+.hero-photo svg path{fill:none;stroke:#fff;stroke-width:1.5;stroke-dasharray:1400;stroke-dashoffset:1400;animation:draw 2.4s .9s var(--ease) forwards}
+.tag{position:absolute;left:24px;bottom:24px;background:rgba(253,252,250,.92);border-radius:999px;padding:10px 18px;font-size:13px}
+@keyframes draw{to{stroke-dashoffset:0}}
+.stage>*{opacity:0;transform:translateY(16px);animation:up 1.2s var(--ease) forwards}
+.stage>*:nth-child(2){animation-delay:.15s}.stage>*:nth-child(3){animation-delay:.3s}.stage>*:nth-child(4){animation-delay:.45s}
+.hero-photo{opacity:0;transform:scale(1.04);animation:settle 1.8s .2s var(--ease) forwards}
+@keyframes up{to{opacity:1;transform:none}}
+@keyframes settle{to{opacity:1;transform:none}}
+.mark{display:inline-block;vertical-align:middle;margin-right:12px}
+.mark path{fill:none;stroke:var(--accent);stroke-width:1.4;stroke-linecap:round}
+.statement{padding:110px 0}
+.statement .wrap{display:grid;grid-template-columns:1fr 2fr;gap:64px;border-top:1px solid rgba(32,33,31,.12);padding-top:44px}
+.statement h2{font-size:clamp(26px,2.8vw,38px);max-width:24ch}
+.statement h2 em{font-style:normal;color:var(--accent)}
+.facts{display:flex;gap:48px;margin-top:40px;flex-wrap:wrap}
+.facts div{font-size:14px;color:var(--muted);max-width:18ch}
+.facts strong{display:block;font-weight:500;font-size:30px;color:var(--text);letter-spacing:-.02em}
+.band{overflow:hidden;padding:28px 0;border-block:1px solid rgba(32,33,31,.08)}
+.band-track{display:flex;gap:56px;width:max-content;animation:slide 50s linear infinite}
+.band span{font-size:22px;font-weight:500;color:rgba(32,33,31,.4);white-space:nowrap;display:flex;align-items:center;gap:56px}
+.band span::after{content:"";width:28px;height:1px;background:var(--accent)}
+@keyframes slide{to{transform:translateX(-50%)}}
+.services{padding:120px 0}
+.svc-head{display:flex;justify-content:space-between;align-items:end;gap:32px;margin-bottom:48px}
+.svc-head h2{font-size:clamp(26px,2.6vw,36px)}
+.svc-photo{border-radius:var(--r);overflow:hidden;aspect-ratio:21/9;margin-bottom:56px}
+.svc-photo img{width:100%;height:100%;object-fit:cover}
+.svc-list{display:grid;grid-template-columns:repeat(3,1fr);gap:36px}
+.svc{border-top:1px solid rgba(32,33,31,.18);padding-top:22px;text-decoration:none;transition:transform .6s var(--ease)}
+.svc:hover{transform:translateY(-4px)}
+.svc h3{font-size:19px;margin:10px 0 8px}
+.svc p{font-size:15px;color:var(--muted);max-width:32ch}
+.svc .n{font-size:12px;letter-spacing:.2em;color:var(--accent)}
+.svc.more{display:flex;flex-direction:column;justify-content:space-between}
+.arrow{display:inline-flex;margin-top:18px;font-size:15px;font-weight:500;color:var(--accent);gap:8px;transition:gap .5s var(--ease)}
+.svc:hover .arrow{gap:14px}
+.team{padding:40px 0 120px}
+.team-grid{display:grid;grid-template-columns:repeat(12,1fr);gap:24px;align-items:end}
+.t1{grid-column:1/6;border-radius:var(--r);overflow:hidden;aspect-ratio:3/4}
+.t2{grid-column:6/9;border-radius:var(--r);overflow:hidden;aspect-ratio:3/4;transform:translateY(-80px)}
+.t1 img,.t2 img{width:100%;height:100%;object-fit:cover;transition:transform 1.4s var(--ease)}
+.t1:hover img,.t2:hover img{transform:scale(1.03)}
+.team-text{grid-column:9/13;padding-bottom:20px}
+.team-text h2{font-size:clamp(24px,2.4vw,32px);margin-bottom:18px}
+.team-text p{color:var(--muted);font-size:15px}
+.names{list-style:none;margin:26px 0 28px}
+.names li{display:flex;justify-content:space-between;border-top:1px solid rgba(32,33,31,.12);padding:12px 0;font-size:15px}
+.names li span{color:var(--muted)}
+.cta{padding:0 0 120px}
+.cta-band{background:var(--tint);border-radius:var(--r);padding:72px;display:grid;grid-template-columns:1.2fr 1fr;gap:48px;align-items:center;position:relative;overflow:hidden}
+.cta-band h2{font-size:clamp(26px,2.8vw,38px);margin:16px 0}
+.cta-band p{color:var(--muted);max-width:38ch}
+.phone{font-size:clamp(28px,3.4vw,46px);font-weight:500;text-decoration:none;letter-spacing:-.02em;display:inline-block;position:relative;white-space:nowrap}
+.phone::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:1.5px;background:var(--accent);transform:scaleX(.3);transition:transform .8s var(--ease)}
+.phone:hover::after{transform:scaleX(1)}
+.cta-side{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.cta-side small{font-size:14px;color:var(--muted)}
+.cta-band>svg{position:absolute;right:-40px;bottom:-30px;width:320px;opacity:.6;animation:breathe 9s ease-in-out infinite}
+.cta-band>svg path{fill:none;stroke:var(--accent);stroke-width:1}
+@keyframes breathe{50%{transform:translateY(-10px) rotate(-3deg)}}
+footer{padding:56px 0 48px;border-top:1px solid rgba(32,33,31,.1);font-size:14px;color:var(--muted)}
+.foot{display:flex;justify-content:space-between;gap:32px;flex-wrap:wrap}
+.foot a{text-decoration:none}.foot a:hover{color:var(--accent)}
+.foot ul{list-style:none;display:flex;gap:24px;flex-wrap:wrap}
+.callfix{display:none}
+.js .reveal{opacity:0;transform:translateY(20px);transition:opacity 1.2s var(--ease),transform 1.2s var(--ease)}
+.js .reveal.photo{transform:scale(1.04)}
+.js .reveal.in{opacity:1;transform:none}
+.js .t2.reveal.in{transform:translateY(-80px)}
+@media (max-width:1024px){
+nav ul{display:none}.bar .btn{display:none}.menu{display:block}
+.panel{position:absolute;top:76px;left:0;right:0;background:var(--bg);padding:12px 32px 28px;box-shadow:0 20px 40px rgba(63,125,92,.1)}
+.panel.open{display:block}
+.panel a{display:block;padding:14px 0;border-bottom:1px solid rgba(32,33,31,.08);text-decoration:none;font-size:18px}
+.hero-grid{grid-template-columns:1fr;gap:40px;min-height:0}
+.hero-photo{aspect-ratio:4/3;max-height:none;order:-1}
+.hero h1{max-width:16ch}
+.statement .wrap{grid-template-columns:1fr;gap:24px}
+.svc-list{grid-template-columns:1fr 1fr}
+.team-grid{grid-template-columns:1fr 1fr}
+.t1{grid-column:1}.t2{grid-column:2;transform:none}.js .t2.reveal.in{transform:none}
+.team-text{grid-column:1/-1}
+.cta-band{grid-template-columns:1fr;padding:56px}
+}
+@media (max-width:640px){
+.wrap{width:calc(100% - 40px)}
+.hero{padding:20px 0 64px}
+.hero-photo{aspect-ratio:1/1}
+.svc-head{flex-direction:column;align-items:start}
+.svc-photo{aspect-ratio:4/3}
+.svc-list{grid-template-columns:1fr}
+.services,.statement{padding:72px 0}
+.team-grid{grid-template-columns:1fr}.t2{grid-column:1;aspect-ratio:4/3}
+.cta-band{padding:40px 24px}
+.cta-band>svg{width:200px}
+.callfix{display:flex;position:fixed;right:16px;bottom:16px;z-index:55;box-shadow:0 10px 30px rgba(63,125,92,.25)}
+footer{padding-bottom:100px}
+.trace{display:none}
+}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}.stage>*,.hero-photo{opacity:1;transform:none}.hero-photo svg path{stroke-dashoffset:0}.js .reveal{opacity:1;transform:none}}
+</style>
+<style data-page="services">
+.services-intro{padding:72px 0 56px}
+.services-intro .wrap{display:grid;grid-template-columns:1fr;gap:28px;max-width:980px;margin:0 auto 0 auto;width:min(1240px,100% - 64px)}
+.services-intro h1{font-size:clamp(38px,5.4vw,76px);letter-spacing:-.03em;max-width:14ch}
+.services-intro h1 em{font-style:normal;color:var(--accent)}
+.services-intro p{max-width:56ch;color:var(--muted);font-size:18px}
+.services-spec{padding:32px 0 96px}
+.services-row{display:grid;grid-template-columns:90px 1fr 1.4fr;gap:40px;padding:44px 0;border-top:1px solid rgba(32,33,31,.18);align-items:start}
+.services-row:last-child{border-bottom:1px solid rgba(32,33,31,.18)}
+.services-row .n{font-size:13px;letter-spacing:.2em;color:var(--accent);padding-top:8px}
+.services-row h2{font-size:clamp(24px,2.6vw,34px)}
+.services-row p{color:var(--muted);max-width:52ch}
+.services-row ul{list-style:none;margin-top:16px}
+.services-row li{padding:9px 0 9px 26px;position:relative;font-size:15px;border-top:1px solid rgba(32,33,31,.08)}
+.services-row li::before{content:"";position:absolute;left:0;top:20px;width:14px;height:1px;background:var(--accent)}
+.services-hour{padding:0 0 96px}
+.services-hourband{background:var(--tint);border-radius:var(--r);padding:72px;display:grid;grid-template-columns:auto 1fr;gap:56px;align-items:center}
+.services-big{font-size:clamp(80px,12vw,168px);font-weight:500;letter-spacing:-.05em;line-height:.9;color:var(--accent)}
+.services-big small{display:block;font-size:clamp(18px,2vw,26px);letter-spacing:-.01em;color:var(--text);margin-top:12px}
+.services-hourband h2{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px}
+.services-hourband p{color:var(--muted);max-width:50ch}
+.services-pay{padding:0 0 120px}
+.services-paygrid{display:grid;grid-template-columns:1fr 1fr;gap:64px;border-top:1px solid rgba(32,33,31,.12);padding-top:44px}
+.services-paygrid h2{font-size:clamp(24px,2.6vw,34px);margin-bottom:16px}
+.services-paygrid p{color:var(--muted);max-width:46ch}
+.services-rate{font-size:clamp(48px,6vw,84px);font-weight:500;letter-spacing:-.04em;line-height:1}
+.services-rate span{display:block;font-size:15px;letter-spacing:0;color:var(--muted);margin-top:10px;font-weight:400}
+.services-pay .actions{margin-top:30px}
+@media (max-width:1024px){
+.services-row{grid-template-columns:60px 1fr;gap:20px 24px}
+.services-row>div:last-child{grid-column:2}
+.services-hourband{padding:48px;grid-template-columns:1fr;gap:28px}
+.services-paygrid{grid-template-columns:1fr;gap:36px}
+}
+@media (max-width:640px){
+.services-intro{padding:44px 0 32px}
+.services-intro .wrap{width:calc(100% - 40px)}
+.services-row{grid-template-columns:1fr;padding:32px 0}
+.services-row>div:last-child{grid-column:1}
+.services-hourband{padding:36px 24px}
+.services-spec,.services-hour{padding-bottom:64px}
+.services-pay{padding-bottom:96px}
+}
+</style><style data-page="team">
+.team-intro{padding:72px 0 40px}
+.team-intro .wrap{display:grid;grid-template-columns:1fr;gap:28px;border-bottom:1px solid rgba(32,33,31,.12);padding-bottom:56px}
+.team-intro h1{font-size:clamp(38px,6vw,84px);max-width:16ch;letter-spacing:-.03em}
+.team-intro h1 em{font-style:normal;color:var(--accent)}
+.team-intro p{max-width:52ch;color:var(--muted)}
+.team-duo{padding:56px 0 100px}
+.team-duo .wrap{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.team-doc{background:var(--tint);border-radius:var(--r);padding:48px 40px;display:flex;flex-direction:column;gap:14px;min-height:300px}
+.team-doc:nth-child(2){margin-top:56px}
+.team-doc .team-init{font-size:clamp(60px,8vw,110px);font-weight:500;letter-spacing:-.04em;line-height:1;color:var(--accent)}
+.team-doc h2{font-size:clamp(24px,2.4vw,32px)}
+.team-doc .team-role{font-size:14px;font-weight:600;color:var(--accent)}
+.team-doc p{max-width:38ch}
+.team-way{padding:0 0 100px}
+.team-way .wrap{display:grid;grid-template-columns:1fr 1.4fr;gap:64px;align-items:start}
+.team-way h2{font-size:clamp(26px,2.8vw,38px);max-width:16ch}
+.team-way h2 em{font-style:normal;color:var(--accent)}
+.team-way dl{display:grid;gap:0}
+.team-way dt{font-weight:500;font-size:19px;border-top:1px solid rgba(32,33,31,.18);padding-top:20px}
+.team-way dd{color:var(--muted);padding:6px 0 24px;max-width:50ch;font-size:16px}
+.team-faq{padding:0 0 100px}
+.team-faq .wrap{max-width:900px}
+.team-faq h2{font-size:clamp(26px,2.6vw,36px);margin-bottom:28px}
+.team-faq details{border-top:1px solid rgba(32,33,31,.18);padding:20px 0}
+.team-faq details:last-of-type{border-bottom:1px solid rgba(32,33,31,.18)}
+.team-faq summary{cursor:pointer;font-weight:500;font-size:18px;list-style:none;display:flex;justify-content:space-between;gap:20px;align-items:center}
+.team-faq summary::-webkit-details-marker{display:none}
+.team-faq summary::after{content:"+";color:var(--accent);font-size:24px;transition:transform .5s var(--ease)}
+.team-faq details[open] summary::after{transform:rotate(45deg)}
+.team-faq details p{color:var(--muted);margin-top:12px;max-width:62ch}
+.team-end{padding:0 0 110px}
+.team-end .wrap{display:flex;justify-content:space-between;align-items:center;gap:32px;flex-wrap:wrap}
+.team-end h2{font-size:clamp(24px,2.6vw,34px);max-width:20ch}
+@media (max-width:1024px){
+.team-way .wrap{grid-template-columns:1fr;gap:32px}
+}
+@media (max-width:640px){
+.team-intro{padding:40px 0 24px}
+.team-duo .wrap{grid-template-columns:1fr}
+.team-doc{padding:36px 26px;min-height:0}
+.team-doc:nth-child(2){margin-top:0}
+.team-duo,.team-way,.team-faq{padding-bottom:64px}
+}
+</style><style data-page="contact">
+.contact-top{padding:56px 0 40px}
+.contact-intro{display:grid;grid-template-columns:7fr 5fr;gap:64px;align-items:end}
+.contact-intro h1{font-size:clamp(36px,4.6vw,64px);max-width:13ch;margin-top:20px}
+.contact-intro p.contact-lead{color:var(--muted);max-width:40ch}
+.contact-main{padding:30px 0 120px}
+.contact-grid{display:grid;grid-template-columns:5fr 7fr;gap:72px;align-items:start}
+.contact-info{display:flex;flex-direction:column;gap:34px}
+.contact-block{border-top:1px solid rgba(32,33,31,.18);padding-top:18px}
+.contact-block h2{font-size:15px;font-weight:600;letter-spacing:0;margin-bottom:8px;color:var(--accent)}
+.contact-block a.contact-big{font-size:clamp(26px,2.8vw,38px);font-weight:500;letter-spacing:-.02em;text-decoration:none;white-space:nowrap}
+.contact-block a.contact-big:hover{color:var(--accent)}
+.contact-mail{font-size:18px;text-decoration:none;border-bottom:1px solid var(--accent);word-break:break-word}
+.contact-hours{list-style:none}
+.contact-hours li{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid rgba(32,33,31,.1);font-size:16px}
+.contact-hours li span{color:var(--muted)}
+.contact-form{background:var(--tint);border-radius:var(--r);padding:48px;position:relative;overflow:hidden}
+.contact-form h2{font-size:clamp(24px,2.4vw,32px);margin-bottom:10px}
+.contact-form>p{color:var(--muted);max-width:42ch;margin-bottom:28px;font-size:15px}
+.contact-form form{display:grid;grid-template-columns:1fr 1fr;gap:18px;position:relative;z-index:1}
+.contact-field{display:flex;flex-direction:column;gap:6px}
+.contact-field.wide{grid-column:1/-1}
+.contact-field label{font-size:14px;font-weight:500}
+.contact-field input,.contact-field select,.contact-field textarea{font:inherit;font-size:16px;color:var(--text);background:var(--bg);border:1px solid rgba(32,33,31,.18);border-radius:14px;padding:12px 16px;min-height:48px;width:100%;transition:border-color .4s var(--ease),box-shadow .4s var(--ease)}
+.contact-field textarea{min-height:120px;resize:vertical}
+.contact-field input:focus,.contact-field select:focus,.contact-field textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(63,125,92,.18)}
+.contact-submit{grid-column:1/-1;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.contact-submit small{font-size:14px;color:var(--muted)}
+.contact-form>svg{position:absolute;right:-50px;bottom:-30px;width:300px;opacity:.5;pointer-events:none}
+.contact-form>svg path{fill:none;stroke:var(--accent);stroke-width:1}
+@media (max-width:1024px){
+.contact-intro{grid-template-columns:1fr;gap:20px}
+.contact-grid{grid-template-columns:1fr;gap:48px}
+}
+@media (max-width:640px){
+.contact-top{padding:32px 0 24px}
+.contact-main{padding-bottom:72px}
+.contact-form{padding:32px 22px}
+.contact-form form{grid-template-columns:1fr}
+.contact-block a.contact-big{font-size:28px}
+}
+</style></head>
+<body>
+<div class="progress" id="progress"></div>
+<header id="top">
+<div class="wrap bar">
+<a class="brand" href="#/home"><svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><path d="M3 20c4-1 6-6 9-10s7-5 11-4" fill="none" stroke="#3F7D5C" stroke-width="1.6" stroke-linecap="round"></path><circle cx="7" cy="8" r="2.2" fill="#3F7D5C"></circle></svg>Cedar Ridge PT</a>
+<nav aria-label="Main"><ul><li><a href="#/home">Home</a></li><li><a href="#/services">Services</a></li><li><a href="#/team">Team</a></li><li><a href="#/contact">Contact</a></li></ul></nav>
+<a class="btn" href="tel:+15415550176">Book a visit</a>
+<button class="menu" aria-expanded="false" aria-controls="panel" aria-label="Open menu"><span></span><span></span></button>
+</div>
+<div class="panel" id="panel"><a href="#/home">Home</a><a href="#/services">Services</a><a href="#/team">Team</a><a href="#/contact">Contact</a></div>
+</header>
+
+<main data-page="home">
+<svg class="trace" id="trace" aria-hidden="true" preserveAspectRatio="none"><path id="tracePath" d=""></path></svg>
+
+<section class="hero" id="home">
+<div class="wrap hero-grid">
+<div class="stage">
+<p class="label">Outpatient clinic · Bend, Oregon</p>
+<h1>Move well again, one step at a time.</h1>
+<p>Cedar Ridge Physical Therapy is run by two doctors of physical therapy. Every session is one-on-one for a full 60 minutes.</p>
+<div class="actions"><a class="btn" href="tel:+15415550176">Book a visit</a><a class="btn ghost" href="#/services">Our services</a></div>
+</div>
+<div class="hero-photo">
+<img id="heroImg" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/8668706.jpg" alt="A calm physical therapy treatment room lit by daylight" width="1200" height="1500">
+<svg viewBox="0 0 1000 60" preserveAspectRatio="none" aria-hidden="true"><path d="M0 40 C120 40 160 14 260 18 S420 50 520 36 S700 10 800 22 S940 44 1000 30"></path></svg>
+<span class="tag">Monday to Friday, 7am to 6pm</span>
+</div>
+</div>
+</section>
+
+<section class="statement" id="about">
+<div class="wrap reveal">
+<p class="label"><svg class="mark" width="34" height="18" viewBox="0 0 34 18" aria-hidden="true"><path d="M2 14c5 0 7-10 13-10s8 8 17 6"></path></svg>The clinic</p>
+<div>
+<h2>Two doctors, no aides, and a full hour with <em>the person who knows your case</em>.</h2>
+<div class="facts">
+<div><strong>60 min</strong>One-on-one sessions</div>
+<div><strong>2</strong>Doctors of physical therapy</div>
+<div><strong>$140</strong>Self-pay per visit</div>
+</div>
+</div>
+</div>
+</section>
+
+<div class="band" aria-hidden="true"><div class="band-track"><span>Sports injuries</span><span>Back and neck pain</span><span>Post-surgery rehab</span><span>Running gait analysis</span><span>Sports injuries</span><span>Back and neck pain</span><span>Post-surgery rehab</span><span>Running gait analysis</span></div></div>
+
+<section class="services" id="services-teaser">
+<div class="wrap">
+<div class="svc-head reveal">
+<h2><svg class="mark" width="34" height="18" viewBox="0 0 34 18" aria-hidden="true"><path d="M2 14c5 0 7-10 13-10s8 8 17 6"></path></svg>What we treat</h2>
+<a class="btn ghost" href="#/services">Our services</a>
+</div>
+<div class="svc-photo reveal photo"><img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/1749410.jpg" alt="A runner mid-stride on an open road" width="1600" height="686" loading="lazy"></div>
+<div class="svc-list">
+<a class="svc reveal" href="#/services"><span class="n">01</span><h3>Sports injuries</h3><p>Sprains, strains and overuse problems that keep you from training.</p></a>
+<a class="svc reveal" href="#/services"><span class="n">02</span><h3>Back and neck pain</h3><p>Stiffness and pain that change how you sit, sleep and move.</p></a>
+<a class="svc reveal" href="#/services"><span class="n">03</span><h3>Post-surgery rehab</h3><p>Rebuilding strength and range of motion after an operation.</p></a>
+<a class="svc reveal" href="#/services"><span class="n">04</span><h3>Running gait analysis</h3><p>A close look at how you run, and where the strain comes from.</p></a>
+<div class="svc more reveal"><p class="n">Insurance</p><p>In network with most major insurance. Self-pay is $140 per visit.</p><a class="arrow" href="#/services">See details <span aria-hidden="true">→</span></a></div>
+<div class="svc more reveal"><p class="n">Sessions</p><p>Every visit is 60 minutes, one-on-one with a doctor of physical therapy.</p><a class="arrow" href="#/services">How it works <span aria-hidden="true">→</span></a></div>
+</div>
+</div>
+</section>
+
+<section class="team" id="team-teaser">
+<div class="wrap team-grid">
+<div class="t1 reveal photo"><img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/5624921.jpg" alt="A physical therapist working on a patient's knee" width="900" height="1200" loading="lazy"></div>
+<div class="t2 reveal photo"><img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/6371695.jpg" alt="Resistance band exercise during rehab" width="900" height="1200" loading="lazy"></div>
+<div class="team-text reveal">
+<h2>The same two people, every visit.</h2>
+<p>Recovery is easier to follow when one clinician sees the whole picture. Here, your doctor is the one in the room.</p>
+<ul class="names"><li>Dr. Maya Ortiz <span>DPT</span></li><li>Dr. Sam Keller <span>DPT</span></li></ul>
+<a class="arrow" href="#/team">Meet the team <span aria-hidden="true">→</span></a>
+</div>
+</div>
+</section>
+
+<section class="cta" id="book">
+<div class="wrap">
+<div class="cta-band reveal">
+<div>
+<p class="label">Bend, Oregon</p>
+<h2>Ready to take the first step?</h2>
+<p>Call to book a one-on-one session. Open Monday to Friday, 7am to 6pm.</p>
+</div>
+<div class="cta-side">
+<a class="phone" href="tel:+15415550176">(541) 555-0176</a>
+<small>Prefer to write? Use the contact page.</small>
+<a class="btn" href="#/contact">Contact us</a>
+</div>
+<svg viewBox="0 0 320 200" aria-hidden="true"><path d="M10 170 C70 170 90 60 160 60 S250 150 310 120"></path><path d="M40 190 C100 180 130 90 190 90 S270 160 320 150"></path></svg>
+</div>
+</div>
+</section>
+</main><main data-page="services" hidden="">
+<section class="services-intro">
+<div class="wrap stage">
+<h1>Four kinds of care, <em>one hour</em> each visit.</h1>
+<p>Here is what each service involves, how a session runs and how payment works. Every visit is with a doctor of physical therapy.</p>
+</div>
+</section>
+
+<section class="services-spec">
+<div class="wrap">
+<div class="services-row reveal">
+<span class="n">01</span>
+<h2>Sports injuries</h2>
+<div>
+<p>Sprains, strains and overuse problems usually come from load that outran the body's ability to handle it. Treatment works on the injured area and on what led to it.</p>
+<ul><li>Sprains and strains</li><li>Overuse problems such as sore tendons</li><li>Getting back to training in stages</li></ul>
+</div>
+</div>
+<div class="services-row reveal">
+<span class="n">02</span>
+<h2>Back and neck pain</h2>
+<div>
+<p>Pain in the back or neck often changes how you sit, sleep and move. Physical therapy looks at posture, strength and movement habits to find what keeps it going.</p>
+<ul><li>Stiffness and recurring pain</li><li>Trouble sitting, sleeping or lifting</li><li>Exercises you can keep doing at home</li></ul>
+</div>
+</div>
+<div class="services-row reveal">
+<span class="n">03</span>
+<h2>Post-surgery rehab</h2>
+<div>
+<p>After an operation, strength and range of motion need to come back in a sensible order. Rehab rebuilds them step by step, working with what your surgeon has advised.</p>
+<ul><li>Regaining range of motion</li><li>Rebuilding strength</li><li>Returning to daily activity</li></ul>
+</div>
+</div>
+<div class="services-row reveal">
+<span class="n">04</span>
+<h2>Running gait analysis</h2>
+<div>
+<p>A gait analysis is a close look at how you run. It helps show where strain builds up, so changes can target the cause and not only the sore spot.</p>
+<ul><li>Runners with repeated injuries</li><li>Pain that shows up at a certain distance</li><li>Anyone curious how they move</li></ul>
+</div>
+</div>
+</div>
+</section>
+
+<section class="services-hour">
+<div class="wrap">
+<div class="services-hourband reveal">
+<div class="services-big">60<small>minutes, one-on-one</small></div>
+<div>
+<h2>The session</h2>
+<p>Each visit is a full hour with a doctor of physical therapy. No aides. The person who examines you is the person who treats you, so nothing gets lost between hands.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section class="services-pay">
+<div class="wrap reveal">
+<div class="services-paygrid">
+<div>
+<h2>Insurance and self-pay</h2>
+<p>We are in network with most major insurance. If you pay on your own, the rate is the same flat amount for every visit.</p>
+<div class="actions"><a class="btn" href="tel:+15415550176">Book a visit</a><a class="btn ghost" href="#/contact">Contact us</a></div>
+</div>
+<div class="services-rate">$140<span>self-pay, per visit</span></div>
+</div>
+</div>
+</section>
+</main><main data-page="team" hidden="">
+<section class="team-intro">
+<div class="wrap stage">
+<h1>Two doctors. <em>Your doctors.</em></h1>
+<p>Cedar Ridge is run by Dr. Maya Ortiz and Dr. Sam Keller, both doctors of physical therapy. There are no aides and no hand-offs. The person who treats you is a doctor.</p>
+</div>
+</section>
+
+<section class="team-duo">
+<div class="wrap">
+<article class="team-doc reveal">
+<span class="team-init" aria-hidden="true">MO</span>
+<h2>Dr. Maya Ortiz</h2>
+<p class="team-role">Doctor of Physical Therapy</p>
+<p>Treats patients one-on-one in 60-minute sessions at the Bend clinic.</p>
+</article>
+<article class="team-doc reveal">
+<span class="team-init" aria-hidden="true">SK</span>
+<h2>Dr. Sam Keller</h2>
+<p class="team-role">Doctor of Physical Therapy</p>
+<p>Treats patients one-on-one in 60-minute sessions at the Bend clinic.</p>
+</article>
+</div>
+</section>
+
+<section class="team-way">
+<div class="wrap">
+<h2 class="reveal">How a clinic with <em>no aides</em> works</h2>
+<dl class="reveal">
+<dt>The doctor is in the room</dt>
+<dd>Exercises, hands-on work and progress checks all come from the same clinician, for the whole hour.</dd>
+<dt>One person knows your case</dt>
+<dd>You do not repeat your history to someone new each visit. Your doctor remembers what changed last week.</dd>
+<dt>Plans change as you do</dt>
+<dd>When the clinician is watching every set, the plan can be adjusted on the spot instead of waiting for the next review.</dd>
+</dl>
+</div>
+</section>
+
+<section class="team-faq">
+<div class="wrap reveal">
+<h2>Common questions about physical therapy</h2>
+<details><summary>What is a doctor of physical therapy?</summary><p>A DPT is a clinician trained to assess how you move, find what is limiting you and treat it with exercise and hands-on care.</p></details>
+<details><summary>Do I need to be in pain to come in?</summary><p>No. People also come after surgery, to return to a sport, or because something feels off and keeps getting in the way.</p></details>
+<details><summary>What should I wear?</summary><p>Clothes you can move in, and shoes you would exercise in. If you are being seen for a knee, hip or shoulder, pick something that lets the area be reached.</p></details>
+<details><summary>Will it hurt?</summary><p>Some effort and mild soreness are normal in rehab. Sharp or worsening pain is worth telling your therapist about right away.</p></details>
+</div>
+</section>
+
+<section class="team-end">
+<div class="wrap reveal">
+<h2>Book with the doctor who will treat you.</h2>
+<a class="btn" href="tel:+15415550176">Book a visit</a>
+</div>
+</section>
+</main><main data-page="contact" hidden="">
+<section class="contact-top">
+<div class="wrap contact-intro">
+<div class="stage">
+<p class="label">Bend, Oregon</p>
+<h1>Let's find you a time.</h1>
+</div>
+<p class="contact-lead reveal">The quickest way to book is to call. You can also send a note here, and tell us what is bothering you and when you are free.</p>
+</div>
+</section>
+
+<section class="contact-main">
+<div class="wrap contact-grid">
+<div class="contact-info">
+<div class="contact-block reveal">
+<h2>Call</h2>
+<a class="contact-big" href="tel:+15415550176">(541) 555-0176</a>
+</div>
+<div class="contact-block reveal">
+<h2>Hours</h2>
+<ul class="contact-hours">
+<li>Monday to Friday <span>7am to 6pm</span></li>
+<li>Saturday and Sunday <span>Closed</span></li>
+</ul>
+</div>
+<div class="contact-block reveal">
+<h2>Location</h2>
+<p>Outpatient clinic in Bend, Oregon.</p>
+</div>
+</div>
+
+<div class="contact-form reveal">
+<h2>Request a visit</h2>
+<p>Tell us a little about what brings you in. We will follow up to set a time with Dr. Ortiz or Dr. Keller.</p>
+<form onsubmit="return false">
+<div class="contact-field"><label for="contact-name">Name</label><input id="contact-name" name="name" type="text" autocomplete="name" required=""></div>
+<div class="contact-field"><label for="contact-phone">Phone</label><input id="contact-phone" name="phone" type="tel" autocomplete="tel"></div>
+<div class="contact-field wide"><label for="contact-email">Email</label><input id="contact-email" name="email" type="email" autocomplete="email" required=""></div>
+<div class="contact-field wide"><label for="contact-reason">What do you need help with?</label>
+<select id="contact-reason" name="reason">
+<option>Sports injury</option>
+<option>Back or neck pain</option>
+<option>Post-surgery rehab</option>
+<option>Running gait analysis</option>
+<option>Not sure yet</option>
+</select></div>
+<div class="contact-field wide"><label for="contact-msg">Anything we should know</label><textarea id="contact-msg" name="message"></textarea></div>
+<div class="contact-submit"><button class="btn" type="submit">Book a visit</button><small>Or call (541) 555-0176.</small></div>
+</form>
+<svg viewBox="0 0 320 200" aria-hidden="true"><path d="M10 170 C70 170 90 60 160 60 S250 150 310 120"></path><path d="M40 190 C100 180 130 90 190 90 S270 160 320 150"></path></svg>
+</div>
+</div>
+</section>
+</main>
+
+<footer>
+<div class="wrap foot">
+<div><strong style="color:var(--text);font-weight:600">Cedar Ridge Physical Therapy</strong><br>Outpatient clinic in Bend, Oregon<br>Monday to Friday, 7am to 6pm</div>
+<ul><li><a href="#/home">Home</a></li><li><a href="#/services">Services</a></li><li><a href="#/team">Team</a></li><li><a href="#/contact">Contact</a></li></ul>
+<div><a href="tel:+15415550176">(541) 555-0176</a></div>
+</div>
+</footer>
+<a class="btn callfix" href="tel:+15415550176">Book a visit</a>
+
+<script>
+document.documentElement.classList.add('js');
+const header=document.querySelector('header'),menu=document.querySelector('.menu'),panel=document.getElementById('panel'),prog=document.getElementById('progress'),hero=document.getElementById('heroImg'),trace=document.getElementById('trace'),tp=document.getElementById('tracePath');
+menu.addEventListener('click',()=>{const o=menu.getAttribute('aria-expanded')==='true';menu.setAttribute('aria-expanded',!o);panel.classList.toggle('open',!o)});
+panel.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{menu.setAttribute('aria-expanded','false');panel.classList.remove('open')}));
+let len=0;
+function buildTrace(){const m=trace.parentElement;if(!m.offsetParent&&m.offsetHeight===0)return;const w=m.offsetWidth,h=m.offsetHeight;trace.setAttribute('viewBox','0 0 '+w+' '+h);const secs=[...m.querySelectorAll(':scope>section,:scope>.band')];let x=Math.max(12,(w-1240)/2-14),d='M'+x+' 0';secs.forEach((s,i)=>{const y=s.offsetTop+s.offsetHeight,nx=i%2?Math.max(12,(w-1240)/2-14):x+18;d+=' C'+x+' '+(y-120)+' '+nx+' '+(y-60)+' '+nx+' '+y;x=nx});tp.setAttribute('d',d);len=tp.getTotalLength();tp.style.strokeDasharray=len;tp.style.strokeDashoffset=len}
+function onScroll(){const y=scrollY,max=document.documentElement.scrollHeight-innerHeight,p=max>0?y/max:0;prog.style.transform='scaleX('+p+')';header.classList.toggle('scrolled',y>10);if(len)tp.style.strokeDashoffset=len*(1-Math.min(1,p*1.15));if(hero&&hero.offsetParent&&!matchMedia('(prefers-reduced-motion: reduce)').matches)hero.style.transform='translateY('+(-y*.08)+'px)';reveal()}
+function reveal(){document.querySelectorAll('.reveal:not(.in)').forEach(el=>{if(el.offsetParent===null)return;const r=el.getBoundingClientRect();if(r.top<innerHeight*.9)el.classList.add('in')})}
+addEventListener('scroll',onScroll,{passive:true});
+addEventListener('resize',()=>{buildTrace();onScroll()});
+addEventListener('load',()=>{buildTrace();onScroll()});
+setTimeout(()=>{buildTrace();onScroll()},300);
+onScroll();
+</script>
+
+<script data-pages="">(function(){var s=document.createElement('style');s.textContent='main[data-page][hidden]{display:none!important}#__pm{position:fixed;left:14px;bottom:14px;z-index:2147483000;font:600 15px/1 system-ui,sans-serif}#__pm button{font:inherit;color:#fff;background:#141414;border:0;border-radius:999px;padding:13px 18px;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer}#__pm div{position:absolute;left:0;bottom:54px;min-width:190px;background:#141414;border-radius:14px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.4)}#__pm a{display:block;color:#fff;text-decoration:none;padding:12px 14px;border-radius:9px}#__pm a.current{background:rgba(255,255,255,.14)}';document.head.appendChild(s);var cur='home';function show(n,top){var all=document.querySelectorAll('main[data-page]'),ok=false;all.forEach(function(p){if(p.getAttribute('data-page')===n)ok=true;});if(!ok)n='home';cur=n;all.forEach(function(p){p.hidden=p.getAttribute('data-page')!==n;});document.querySelectorAll('a[href^="#/"]').forEach(function(a){var on=a.getAttribute('href')==='#/'+n;a.classList.toggle('current',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});if(top)window.scrollTo(0,0);window.dispatchEvent(new Event('scroll'));window.dispatchEvent(new Event('resize'));}function seen(e){return !!(e&&e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden');}function menu(){var box=document.getElementById('__pm');var names={},order=[];document.querySelectorAll('main[data-page]').forEach(function(p){order.push(p.getAttribute('data-page'));});var reach={};document.querySelectorAll('a[href^="#/"]').forEach(function(a){if(a.closest('#__pm'))return;var g=a.getAttribute('href').slice(2),t=a.textContent.replace(/\s+/g,' ').trim();if(t&&t.length<40&&!names[g])names[g]=t;if(seen(a))reach[g]=1;});var own=false;document.querySelectorAll('header button,nav button,header [aria-expanded]').forEach(function(b){if(seen(b))own=true;});var need=order.length>1&&!own&&order.some(function(g){return !reach[g];});if(!need){if(box)box.style.display='none';return;}if(!box){box=document.createElement('div');box.id='__pm';box.innerHTML='<div hidden></div><button type="button" aria-expanded="false">Menu</button>';document.body.appendChild(box);box.querySelector('button').onclick=function(){var d=box.querySelector('div');d.hidden=!d.hidden;this.setAttribute('aria-expanded',String(!d.hidden));};}box.style.display='';var d=box.querySelector('div');d.innerHTML='';order.forEach(function(g){var a=document.createElement('a');a.href='#/'+g;a.textContent=names[g]||(g.charAt(0).toUpperCase()+g.slice(1).replace(/-/g,' '));if(g===cur)a.className='current';d.appendChild(a);});}document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a)return;e.preventDefault();show(a.getAttribute('href').slice(2),true);var box=document.getElementById('__pm');if(box){box.querySelector('div').hidden=true;box.querySelector('button').setAttribute('aria-expanded','false');}});var t;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(menu,150);});show('home',false);menu();window.addEventListener('load',menu);})();</script></body></html>
