@@ -109,6 +109,31 @@
   }
   track();
 
+  // Safety net for phones: a wide photo squeezed into a tall box gets zoomed until nothing is recognizable.
+  // Below the first screen, give such photos a normal landscape shape instead.
+  function unzoom() {
+    if (window.innerWidth > 640) return;
+    Array.prototype.forEach.call(document.images, function (img) {
+      if (!img.naturalWidth || img.dataset.ubFit) return;
+      var r = img.getBoundingClientRect();
+      if (!r.width || !r.height || r.top + window.scrollY < window.innerHeight * 0.9) return;
+      var natural = img.naturalWidth / img.naturalHeight, box = r.width / r.height;
+      if (natural < 1.2 || box > 0.9 || getComputedStyle(img).objectFit !== "cover") return;
+      img.dataset.ubFit = "1";
+      img.style.setProperty("height", "auto", "important");
+      img.style.setProperty("aspect-ratio", "3 / 2", "important");
+      var parent = img.parentElement;
+      if (parent && Math.abs(parent.getBoundingClientRect().height - r.height) < 4) {
+        parent.style.setProperty("height", "auto", "important");
+        parent.style.setProperty("min-height", "0", "important");
+        parent.style.setProperty("aspect-ratio", "auto", "important");
+      }
+    });
+  }
+  window.addEventListener("load", unzoom);
+  document.addEventListener("load", function (e) { if (e.target && e.target.tagName === "IMG") unzoom(); }, true);   // lazy photos arrive later
+  setTimeout(unzoom, 1500);
+
   function scan() { Array.prototype.forEach.call(document.querySelectorAll("form"), setup); }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", scan); else scan();
   new MutationObserver(scan).observe(document.documentElement, { childList: true, subtree: true });
