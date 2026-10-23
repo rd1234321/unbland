@@ -28,6 +28,8 @@
     seen[event] = 1;
     try { sessionStorage.setItem("ub_steps", JSON.stringify(seen)); } catch (e) {}
     post({ p_page: null, p_source: null, p_new: false, p_event: event });
+    // The steps that show real interest also go to Meta, so ads can be aimed at people who build, not people who tap.
+    if (/^(DemoTry|ExampleTap|Typed|BuildClick|GiftClaimClick)$/.test(event)) { try { if (window.fbq) window.fbq("trackCustom", event); } catch (e) {} }
   };
   var counted = { Lead: 1, CompleteRegistration: 1, InitiateCheckout: 1, Subscribe: 1, Purchase: 1 };
   var pixel = window.ubTrack;
