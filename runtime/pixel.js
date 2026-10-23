@@ -52,3 +52,13 @@
   var page = location.pathname === "/" || location.pathname === "/index.html" ? "home" : /^\/build/.test(location.pathname) ? "build" : "other";
   post({ p_page: page, p_source: src, p_new: fresh, p_event: null });
 })();
+
+// Microsoft Clarity session recordings for unblandapp.com, so we can watch (anonymously) what visitors do.
+// Off until CLARITY_ID is filled in. Our own browsers (any that opened /admin) are never recorded.
+(function () {
+  var CLARITY_ID = "";
+  var team = false;
+  try { team = localStorage.getItem("ub_team") === "1"; } catch (e) {}
+  if (!CLARITY_ID || team) return;
+  (function (c, l, a, r, i, t, y) { c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); }; t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i; y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y); })(window, document, "clarity", "script", CLARITY_ID);
+})();
