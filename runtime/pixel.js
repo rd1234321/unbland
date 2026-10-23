@@ -56,7 +56,7 @@
 // Microsoft Clarity session recordings for unblandapp.com, so we can watch (anonymously) what visitors do.
 // Off until CLARITY_ID is filled in. Our own browsers (any that opened /admin) are never recorded.
 (function () {
-  var CLARITY_ID = "";
+  var CLARITY_ID = "z2eom71ckc";
   var team = false;
   try { team = localStorage.getItem("ub_team") === "1"; } catch (e) {}
   if (!CLARITY_ID || team) return;
