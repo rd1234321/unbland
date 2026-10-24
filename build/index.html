@@ -139,6 +139,16 @@
   .auth form { position: relative; display: grid; gap: 6px; padding: 30px 28px 24px; }
   .auth h2 { font: 400 36px/1 var(--serif); }
   .auth-sub { color: var(--muted); font-size: 14px; margin-bottom: 10px; }
+  .keep { position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%); z-index: 70; width: min(440px, calc(100% - 24px)); background: #141518; color: #F3F1EC; border: 1px solid rgba(255,255,255,.14); border-radius: 16px; padding: 18px; box-shadow: 0 18px 50px rgba(0,0,0,.5); }
+  .keep[hidden] { display: none; }
+  .keep b { display: block; font-size: 17px; margin-bottom: 4px; }
+  .keep p { color: #B4B0A8; font-size: 14px; line-height: 1.45; margin: 0 0 14px; }
+  .keep .go { width: 100%; justify-content: center; }
+  .keep .later { display: block; margin: 10px auto 0; background: none; border: 0; color: #8E8A82; font: 500 13px "Inter", sans-serif; cursor: pointer; }
+  .keep.bar { padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
+  .keep.bar b, .keep.bar p, .keep.bar .later { display: none; }
+  .keep.bar::before { content: "Not saved yet"; flex: 1; font-size: 14px; color: #DAD6CE; }
+  .keep.bar .go { width: auto; padding: 10px 16px; }
   .auth label { margin: 8px 0 0; }
   .auth input { width: 100%; background: #fff; border: 1px solid var(--ink); border-radius: 6px; padding: 10px 12px; font-size: 15px; }
   .auth .go { justify-content: center; margin-top: 12px; box-shadow: none; }
@@ -884,6 +894,12 @@
   </div>
 </dialog>
 
+<div class="keep" id="keep" hidden role="dialog" aria-label="Save your site">
+  <b>Your site is ready. Keep it?</b>
+  <p>It only lives in this browser right now. A free account saves it, lets you change anything, and puts it online with its own link.</p>
+  <button type="button" class="go" id="keep-go">Save my site, free</button>
+  <button type="button" class="later" id="keep-later">Not now</button>
+</div>
 <dialog class="auth" id="auth" aria-labelledby="auth-title">
   <form id="auth-form" method="dialog">
     <h2 id="auth-title">Sign in</h2>
@@ -1173,7 +1189,7 @@
       const data = await res.json().catch(() => ({}));
       if (data.pixels != null) showPixels(data.pixels);
       if (!res.ok) {
-        if (data.code === "signin") setTimeout(() => openAuth("signup"), 600);
+        if (data.code === "signin") setTimeout(() => openAuth("signup", "Create a free account to keep building. It takes a few seconds with Google, and your account starts with free pixels."), 600);
         if (data.code === "pixels") { showPixels(data.have); openPlans(data.error); }
         throw new Error(data.error || "Something went wrong making that change. Try again.");
       }
@@ -1399,9 +1415,9 @@
         const data = await res.json().catch(() => ({}));
         if (data.code === "signin" || data.code === "upgrade" && !user) window.ubStep?.("AskedSignup");
         else window.ubStep?.("BuildFail");
-        if (data.code === "signin") setTimeout(() => openAuth("signup"), 600);
+        if (data.code === "signin") setTimeout(() => openAuth("signup", "Create a free account to keep building. It takes a few seconds with Google, and your account starts with free pixels."), 600);
         if (data.code === "pixels") { showPixels(data.have); openPlans(data.error); }
-        if (data.code === "upgrade") { if (user) openPlans(data.error); else setTimeout(() => openAuth("signup"), 600); }
+        if (data.code === "upgrade") { if (user) openPlans(data.error); else setTimeout(() => openAuth("signup", "Create a free account to keep building. It takes a few seconds with Google, and your account starts with free pixels."), 600); }
         throw new Error(data.error || "Something went wrong starting the design. Try again.");
       }
       if (res.headers.get("x-pixels") != null) showPixels(Number(res.headers.get("x-pixels")));
@@ -1455,6 +1471,7 @@
       site = { html: "", prompt, used: [...(avoid || []), direction].filter(Boolean) };
       setSite(html, false);   // reload cleanly so entrance animations play from the top
       window.ubTrack?.("Lead", { content_name: kind });   // for ads: someone built a site
+      if (!user) setTimeout(() => { if (!user && site.html) { $("keep").classList.remove("bar"); $("keep").hidden = false; window.ubStep?.("AskedSignup"); } }, 4000);
       drawChat();
       if (kind === "multi") await buildPages(prompt, token, pagesWanted, text => { phase = text; $("status-text").textContent = label(); });
       // A second look at new designs: fixes what makes a site look template-made. Skipped quietly if it fails.
@@ -1718,7 +1735,7 @@
 
   // Sign-in window
   const auth = $("auth");
-  async function openAuth(mode = "signin") {
+  async function openAuth(mode = "signin", why = "") {
     await ready;   // the accounts library may still be loading on a slow connection
     if (!sb) { alert("Accounts aren't available right now. Your site is still here in this browser; try again in a moment."); return; }
     authMode = mode;
@@ -1730,10 +1747,14 @@
     $("auth-toggle").textContent = up ? "Sign in" : "Create an account";
     $("auth-pass").autocomplete = up ? "new-password" : "current-password";
     $("auth-msg").textContent = ""; $("auth-msg").className = "auth-msg";
+    $("auth-sub").textContent = why || "Save your sites and come back to them from any device.";
     if (!auth.open) auth.showModal();
   }
   $("auth-toggle").onclick = () => openAuth(authMode === "signup" ? "signin" : "signup");
   $("auth-close").onclick = () => auth.close();
+  // After a visitor's first site: ask them to save it with a free account; if they wave it off, a small bar stays.
+  $("keep-go").onclick = () => { $("keep").hidden = true; openAuth("signup", "Save your site and come back to it from any device. Free, no card needed."); };
+  $("keep-later").onclick = () => $("keep").classList.add("bar");
   $("auth-form").addEventListener("submit", async e => {
     e.preventDefault();
     const email = $("auth-email").value.trim(), password = $("auth-pass").value;
@@ -2468,6 +2489,7 @@
         const was = user?.id;
         user = session?.user || null;
         accountUI();
+        if (user) $("keep").hidden = true;
         if (user && user.id !== was && site.html) queueCloudSave();   // keep the site they just built
         if (user && user.id !== was) refreshPublishState();
         if (user?.id !== was) loadPixels();
