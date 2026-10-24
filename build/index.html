@@ -1439,6 +1439,26 @@
       window.ubTrack?.("Lead", { content_name: kind });   // for ads: someone built a site
       drawChat();
       if (kind === "multi") await buildPages(prompt, token, pagesWanted, text => { phase = text; $("status-text").textContent = label(); });
+      // A second look at new designs: fixes what makes a site look template-made. Skipped quietly if it fails.
+      if (kind === "new" || kind === "multi") {
+        phase = "Polishing your site"; $("status-text").textContent = label();
+        try {
+          const rv = await fetch(`${FUNCTIONS_URL}/review-site`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}`, apikey: ANON_KEY },
+            body: JSON.stringify({ html: site.html, prompt, direction })
+          });
+          const data = rv.ok ? await rv.json() : {};
+          let polished = site.html, applied = 0;
+          for (const e of data.edits || []) {
+            const at = polished.indexOf(e.find);
+            if (at < 0) continue;
+            polished = polished.slice(0, at) + e.replace + polished.slice(at + e.find.length);
+            applied++;
+          }
+          if (applied && /<\/html>\s*$/i.test(polished.trim())) setSite(polished, false);
+        } catch {}
+      }
     } catch (err) {
       if (!result.hidden && !site.html) show(false);
       if (site.html && !result.hidden) { display(site.html); drawChat(); bubble("bot", err.message, "bad"); }
