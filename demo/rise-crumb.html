@@ -1,0 +1,775 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rise &amp; Crumb | Small-batch bakery in Asheville, NC</title>
+<meta name="description" content="Rise &amp; Crumb is a small-batch bakery at 18 Haywood Road in Asheville, North Carolina. Sourdough, croissants, cinnamon buns, seasonal fruit galettes and custom cakes, baked fresh each morning. Open Wednesday to Sunday, 7am to 2pm.">
+<meta name="page-plan" content="menu: every item on the counter in detail (sourdough loaves, croissants, cinnamon buns, seasonal fruit galettes), how each is made and what changes with the seasons | cakes: custom cakes to order, how ordering works, what to decide before you ask, and the cake request form">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Manrope:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+:root{
+--bg:#0B0B0C;--band:#111113;--surface:#151517;--text:#F5F2EC;--muted:rgba(245,242,236,.6);--faint:rgba(245,242,236,.14);--rule:rgba(245,242,236,.12);--accent:#E0B25C;
+--display:"Bebas Neue",Impact,sans-serif;--body:"Manrope",system-ui,sans-serif;
+--ease:cubic-bezier(.32,.72,0,1);--r-card:2px;--r-photo:0;--r-btn:2px;
+--s1:8px;--s2:16px;--s3:24px;--s4:40px;--s5:64px;--s6:120px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:var(--body);font-size:16px;line-height:1.6;overflow-x:hidden}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+.wrap{max-width:1120px;margin:0 auto;padding:0 var(--s3)}
+.progress{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--accent);transform-origin:0 50%;transform:scaleX(0);z-index:60}
+.label{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.fno{font-family:var(--display);font-size:14px;letter-spacing:.16em;color:var(--muted)}
+.fno b{color:var(--accent);font-weight:400}
+h1,h2,h3{font-family:var(--display);font-weight:400;letter-spacing:.005em;line-height:.92;text-transform:uppercase}
+p{color:var(--muted)}
+
+.top{position:sticky;top:0;z-index:50;background:var(--text);color:var(--bg);transition:box-shadow .3s}
+.top.scrolled{box-shadow:0 1px 0 rgba(0,0,0,.4)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px;gap:var(--s3)}
+.brand{font-family:var(--display);font-size:28px;letter-spacing:.04em;white-space:nowrap}
+.nav{display:flex;gap:var(--s4);align-items:center}
+.nav a{font-size:14px;font-weight:600;white-space:nowrap}
+.nav a:hover{text-decoration:underline;text-underline-offset:4px}
+.nav .hours{font-size:12px;letter-spacing:.14em;text-transform:uppercase;opacity:.65;font-weight:600}
+.menu-btn{display:none;background:none;border:1px solid rgba(11,11,12,.3);border-radius:var(--r-btn);height:44px;padding:0 var(--s2);font:600 15px var(--body);color:var(--bg);cursor:pointer}
+.panel{display:none;background:var(--text);border-top:1px solid rgba(11,11,12,.12)}
+.panel.open{display:block}
+.panel a{display:block;color:var(--bg);font-family:var(--display);font-size:34px;padding:var(--s1) var(--s3);border-bottom:1px solid rgba(11,11,12,.1)}
+
+.tabs{display:none}
+
+.btn{display:inline-flex;align-items:center;gap:12px;height:48px;padding:0 10px 0 22px;border-radius:var(--r-btn);font:600 15px var(--body);white-space:nowrap;transition:transform .3s var(--ease),background .3s}
+.btn-p{background:var(--accent);color:#17130a}
+.btn-p:hover{background:#ebc172}
+.btn .ic{width:28px;height:28px;border-radius:50%;background:#17130a;color:var(--accent);display:grid;place-items:center}
+.btn-s{border:1px solid var(--faint);color:var(--text);padding:0 22px}
+.btn-s:hover{border-color:var(--muted)}
+
+section{position:relative;border-top:1px solid var(--rule)}
+.pad{padding:var(--s6) 0}
+.sec-head{display:flex;align-items:flex-end;gap:var(--s4);margin-bottom:var(--s5)}
+.sec-head h2{font-size:clamp(48px,6vw,84px);flex-shrink:0}
+.sec-head p{max-width:340px;padding-bottom:10px;font-size:15px}
+.sec-head .fno{margin-left:auto;padding-bottom:12px}
+
+.hero{border-top:0;padding:var(--s6) 0 var(--s5);min-height:calc(100vh - 64px);display:flex;align-items:flex-end;overflow:hidden}
+.hero .wrap{display:block;width:100%}
+.hero .wrap>div:first-child{position:relative;z-index:2;max-width:780px}
+.hero .lede{color:rgba(245,242,236,.84)}
+.hero .meta{display:flex;gap:var(--s3);align-items:center;margin-bottom:var(--s3)}
+.hero .meta i{flex:1;height:1px;background:var(--rule);max-width:120px}
+.hero h1{font-size:clamp(64px,8.6vw,132px);line-height:.86}
+.hero h1 .ln{display:block;overflow:hidden}
+.hero h1 .ln span{display:block}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero .lede{font-size:17px;max-width:440px;margin:var(--s3) 0 var(--s4)}
+.hero .ctas{display:flex;gap:var(--s2);flex-wrap:wrap}
+.stack{position:absolute;inset:0;z-index:0}
+.stack::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,12,.3) 0%,rgba(11,11,12,.1) 35%,rgba(11,11,12,.92) 100%),linear-gradient(90deg,rgba(11,11,12,.6),transparent 70%);pointer-events:none}
+.ph{overflow:hidden;border-radius:var(--r-photo);position:relative;background:var(--surface)}
+.ph img{width:100%;height:100%;object-fit:cover;transform:scale(var(--z,1.04));transition:transform .2s linear}
+.stack .a{position:absolute;inset:0;border-radius:0}
+.stack .b{position:absolute;right:var(--s4);bottom:var(--s5);width:240px;aspect-ratio:4/3;z-index:2;outline:1px solid rgba(245,242,236,.5);outline-offset:6px}
+.stack .cap{position:absolute;left:var(--s3);right:var(--s3);top:var(--s3);z-index:2;display:flex;justify-content:space-between;border-top:1px solid var(--faint);padding-top:var(--s1)}
+
+.still{height:88vh;min-height:520px;border-radius:0;display:flex;align-items:flex-end}
+.still>img{position:absolute;inset:0}
+.still::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,12,.15) 30%,rgba(11,11,12,.88))}
+.still .wrap{position:relative;z-index:2;width:100%;padding-bottom:var(--s5)}
+.still blockquote{font-family:var(--display);font-size:clamp(44px,6.4vw,96px);line-height:.92;text-transform:uppercase;max-width:900px;margin-top:var(--s2)}
+.still blockquote em{font-style:normal;color:var(--accent)}
+.frame-bar{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--faint);padding-top:var(--s2);margin-top:var(--s4)}
+
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s2)}
+.card{position:relative;aspect-ratio:3/4.4;border-radius:var(--r-card);overflow:hidden;display:block;background:var(--surface);box-shadow:inset 0 0 0 1px var(--rule);transition:transform .4s var(--ease)}
+.card:hover h3{color:var(--accent)}
+.card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scale(var(--z,1.04));transition:transform .2s linear}
+.card::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgba(11,11,12,.92))}
+.card .in{position:absolute;inset:0;z-index:2;display:flex;flex-direction:column;justify-content:space-between;padding:var(--s2)}
+.card .tp{display:flex;justify-content:space-between;border-bottom:1px solid var(--faint);padding-bottom:var(--s1)}
+.card h3{font-size:36px}
+.card .bt{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s1)}
+.card .bt p{font-size:14px;color:rgba(245,242,236,.75);margin-top:4px}
+.card .go{flex-shrink:0;width:34px;height:34px;border-radius:50%;background:var(--text);color:var(--bg);display:grid;place-items:center}
+
+.strip{overflow:hidden;padding:var(--s5) 0}
+.track{display:flex;gap:var(--s2);width:max-content;will-change:transform;padding:0 var(--s3)}
+.fr{width:380px;flex-shrink:0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:var(--s1) 0}
+.fr .ph,.fr .tx{aspect-ratio:4/3}
+.fr .tx{border-radius:var(--r-photo);background:var(--surface);padding:var(--s3);display:flex;flex-direction:column;justify-content:space-between}
+.fr .tx strong{font-family:var(--display);font-weight:400;font-size:64px;line-height:.9;text-transform:uppercase}
+.fr .tx strong em{font-style:normal;color:var(--accent)}
+.fr .ft{display:flex;justify-content:space-between;margin-top:var(--s1)}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5);align-items:center}
+.split .ph{aspect-ratio:4/5}
+.split h2{font-size:clamp(48px,6vw,84px);margin:var(--s2) 0 var(--s3)}
+.split p+p{margin-top:var(--s2)}
+.split .btn{margin-top:var(--s4)}
+
+.facts{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--rule);border-left:1px solid var(--rule)}
+.fact{border-right:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:var(--s3);min-height:240px;display:flex;flex-direction:column}
+.fact strong{font-family:var(--display);font-weight:400;font-size:52px;line-height:.95;margin:auto 0 var(--s1);text-transform:uppercase}
+.fact p{font-size:15px}
+
+.faq{max-width:820px}
+details{border-bottom:1px solid var(--rule)}
+details:first-of-type{border-top:1px solid var(--rule)}
+summary{list-style:none;cursor:pointer;display:flex;gap:var(--s3);align-items:center;padding:var(--s3) 0;font-family:var(--display);font-size:30px;line-height:1;text-transform:uppercase}
+summary::-webkit-details-marker{display:none}
+summary .n{font-size:14px;letter-spacing:.16em;color:var(--accent);width:28px;flex-shrink:0}
+summary .pl{margin-left:auto;width:16px;height:16px;position:relative;flex-shrink:0;transition:transform .4s var(--ease)}
+summary .pl::before,summary .pl::after{content:"";position:absolute;background:var(--text);left:0;top:7px;width:16px;height:2px}
+summary .pl::after{transform:rotate(90deg)}
+details[open] .pl{transform:rotate(45deg)}
+details .ans{padding:0 0 var(--s3) 52px;max-width:680px;overflow:hidden}
+
+.close{text-align:left}
+.close h2{font-size:clamp(64px,10vw,160px);line-height:.86}
+.close h2 em{font-style:normal;color:var(--accent)}
+.close .row{display:flex;justify-content:space-between;align-items:flex-end;gap:var(--s4);margin-top:var(--s4);flex-wrap:wrap}
+.close p{max-width:420px;font-size:17px}
+
+footer{padding:0 var(--s3) var(--s3)}
+.foot{max-width:1120px;margin:0 auto;border-top:1px solid var(--rule);padding:var(--s5) 0 var(--s3)}
+.foot .cols{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:var(--s4)}
+.foot .brand{font-size:40px;display:block}
+.foot p{font-size:15px;margin:var(--s1) 0 var(--s3);max-width:300px}
+.foot h4{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:var(--s2)}
+.foot li{list-style:none;font-size:15px;margin-bottom:var(--s1)}
+.foot li a:hover{color:var(--accent)}
+.foot .bot{display:flex;justify-content:space-between;border-top:1px solid var(--rule);margin-top:var(--s5);padding-top:var(--s3);font-size:13px;color:var(--muted)}
+
+.bar{display:none}
+
+.js h2.rv,.js h1.rv,.js blockquote.rv,.js .card.rv{opacity:0;transform:translateY(16px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.js .rv.in{opacity:1;transform:none}
+.js .hero h1 .ln span{transform:translateY(105%);transition:transform .9s var(--ease)}
+.js .hero h1.in .ln span{transform:none}
+.js .hero h1 .ln:nth-child(2) span{transition-delay:.12s}
+.js .hero h1 .ln:nth-child(3) span{transition-delay:.24s}
+
+@media (max-width:1024px){
+.nav{display:none}
+.menu-btn{display:block}
+.hero .wrap{grid-template-columns:1fr}
+.stack .b{display:none}
+.cards{grid-template-columns:repeat(2,1fr)}
+.facts{grid-template-columns:repeat(2,1fr)}
+.split{grid-template-columns:1fr}
+.split .ph{aspect-ratio:3/2}
+.sec-head{flex-wrap:wrap}
+.sec-head .fno{display:none}
+.foot .cols{grid-template-columns:1fr 1fr}
+}
+@media (max-width:640px){
+:root{--s6:80px;--s5:48px}
+.top .wrap{height:58px}
+.brand{font-size:24px}
+.tabs[data-page]{display:flex;gap:var(--s1);overflow-x:auto;scrollbar-width:none;padding:10px var(--s3);background:var(--bg);border-bottom:1px solid var(--rule);position:sticky;top:58px;z-index:40}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{flex-shrink:0;display:flex;align-items:center;min-height:44px;font-size:16px;font-weight:600;padding:0 14px;border:1px solid var(--faint);border-radius:2px;color:var(--muted)}
+.tabs a.on{background:var(--text);color:var(--bg);border-color:var(--text)}
+.hero{min-height:86svh;padding:var(--s6) 0 var(--s5)}
+main p,main li,footer p,footer li{font-size:16px!important}
+.hero h1{font-size:64px}
+.hero .ctas .btn{width:100%;justify-content:space-between}
+.hero .ctas .btn-s{justify-content:center}
+.stack .b{display:none}
+.still{height:auto;min-height:560px}
+.sec-head h2,.split h2{font-size:56px}
+.sec-head{margin-bottom:var(--s4)}
+.cards{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:12px;margin:0 calc(var(--s3)*-1);padding:0 var(--s3);scrollbar-width:none}
+.cards::-webkit-scrollbar{display:none}
+.card{flex:0 0 82%;aspect-ratio:4/5;scroll-snap-align:start}
+.fr{width:78vw}
+.facts{grid-template-columns:1fr}
+.fact{min-height:0}
+.fact strong{margin-top:var(--s3);font-size:44px}
+summary{font-size:24px}
+details .ans{padding-left:0}
+.close .btn{width:100%;justify-content:space-between}
+.foot{padding:var(--s4) var(--s3) var(--s3)}
+.foot .cols{grid-template-columns:1fr}
+.foot .bot{flex-direction:column;gap:var(--s1)}
+.bar{display:flex;gap:var(--s1);position:fixed;left:12px;right:12px;bottom:12px;z-index:55;padding:8px;border-radius:2px;background:var(--surface);box-shadow:inset 0 0 0 1px var(--rule)}
+.bar a{flex:1;height:46px;border-radius:var(--r-btn);display:grid;place-items:center;font-weight:600;font-size:15px;border:1px solid var(--faint)}
+.bar a.p{background:var(--accent);color:#17130a;border-color:var(--accent)}
+body{padding-bottom:84px}
+}
+@media (prefers-reduced-motion:reduce){
+html{scroll-behavior:auto}
+.js .rv,.js .hero h1 .ln span{opacity:1;transform:none;transition:none}
+.ph img,.card img{transform:none!important}
+.track{transform:none!important}
+}
+</style>
+<style data-page="menu">
+.menu-hero{border-top:0;min-height:72vh;display:flex;align-items:flex-end;text-align:left;padding:var(--s6) 0 var(--s5);background:linear-gradient(180deg,rgba(11,11,12,.25) 20%,rgba(11,11,12,.92)),url(https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/8364737.jpg) center/cover}
+.menu-hero .wrap{display:flex;flex-direction:column;align-items:flex-start;gap:var(--s3);width:100%}
+.menu-hero p{color:rgba(245,242,236,.84)}
+.menu-hero h1{font-size:clamp(56px,8vw,112px)}
+.menu-hero p{max-width:460px;font-size:17px}
+.menu-pill{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+.menu-pill::before{content:"";width:32px;height:1px;background:var(--accent)}
+.menu-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--s5);align-items:center}
+.menu-row .ph{aspect-ratio:4/3;border-radius:var(--r-card);box-shadow:inset 0 0 0 1px var(--rule)}
+.menu-row.flip .ph{order:2}
+.menu-row h2{font-size:clamp(44px,5.4vw,76px);margin:var(--s2) 0 var(--s3)}
+.menu-row p+p{margin-top:var(--s2)}
+.menu-list{list-style:none;margin-top:var(--s3);border-top:1px solid var(--rule)}
+.menu-list li{padding:var(--s2) 0;border-bottom:1px solid var(--rule);color:var(--muted);font-size:15px}
+.menu-list li b{display:block;color:var(--text);font-weight:600;font-size:16px}
+.menu-band{background:var(--band)}
+.menu-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s2)}
+.menu-step{border-top:1px solid var(--text);padding:var(--s2) 0 0;min-height:220px;display:flex;flex-direction:column}
+.menu-step .big{font-family:var(--display);font-size:84px;line-height:.9;color:var(--faint)}
+.menu-step h3{font-size:30px;margin:auto 0 var(--s1)}
+.menu-step p{font-size:15px}
+.menu-seasons{display:grid;grid-template-columns:1fr;border-top:1px solid var(--rule)}
+.menu-seasons .c{display:grid;grid-template-columns:160px 1fr 1.4fr;gap:var(--s4);align-items:baseline;padding:var(--s3) 0;border-bottom:1px solid var(--rule)}
+.menu-seasons h3{font-size:40px;margin:0}
+.menu-seasons p{font-size:15px}
+.menu-cta{position:relative;overflow:hidden}
+.menu-cta>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.menu-cta::after{content:"";position:absolute;inset:0;background:rgba(11,11,12,.8)}
+.menu-cta .wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;gap:var(--s3)}
+.menu-cta h2{font-size:clamp(48px,7vw,104px)}
+.menu-cta p{max-width:460px;font-size:17px}
+@media (max-width:1024px){
+.menu-row{grid-template-columns:1fr;gap:var(--s4)}
+.menu-row.flip .ph{order:0}
+.menu-steps{grid-template-columns:repeat(2,1fr)}
+.menu-seasons{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+.menu-hero{min-height:62svh;padding:var(--s6) 0 var(--s4)}
+.menu-row h2{font-size:48px}
+.menu-steps{grid-template-columns:1fr}
+.menu-step{min-height:0}
+.menu-seasons .c{grid-template-columns:1fr;gap:var(--s1)}
+.menu-step h3{margin-top:var(--s3)}
+}
+</style><style data-page="cakes">
+.cakes-hero{border-top:0;min-height:72vh;display:flex;align-items:flex-end;text-align:left;padding:var(--s6) 0 var(--s5);background:linear-gradient(180deg,rgba(11,11,12,.25) 20%,rgba(11,11,12,.92)),url(https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/3643259.jpg) center/cover}
+.cakes-hero .wrap{display:flex;flex-direction:column;align-items:flex-start;width:100%}
+.cakes-hero p{color:rgba(245,242,236,.84)}
+.cakes-hero h1{font-size:clamp(56px,8vw,112px);margin:var(--s3) 0 var(--s2)}
+.cakes-hero p{max-width:480px;font-size:17px}
+.cakes-pill{display:inline-flex;align-items:center;gap:10px;font-family:var(--display);font-size:16px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.cakes-pill::before{content:"";width:32px;height:1px;background:var(--accent)}
+.cakes-pill b{color:var(--accent);font-weight:600}
+.cakes-head{margin-bottom:var(--s5)}
+.cakes-head h2{font-size:clamp(44px,5.4vw,76px);margin:var(--s2) 0 var(--s2)}
+.cakes-head p{max-width:520px}
+.cakes-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s2)}
+.cakes-step{border-top:1px solid var(--text);padding:var(--s2) 0 0;min-height:220px;display:flex;flex-direction:column}
+.cakes-step .num{font-family:var(--display);font-size:96px;line-height:.9;color:var(--faint)}
+.cakes-step h3{font-size:32px;margin:auto 0 var(--s1)}
+.cakes-step p{font-size:15px}
+.cakes-decide{display:grid;grid-template-columns:repeat(3,1fr);column-gap:var(--s4);border-top:1px solid var(--rule)}
+.cakes-decide .c{border-bottom:1px solid var(--rule);padding:var(--s3) 0}
+.cakes-decide h3{font-size:30px;margin-bottom:var(--s1)}
+.cakes-decide p{font-size:15px}
+.cakes-formwrap{display:grid;grid-template-columns:1fr 1.2fr;gap:var(--s5);align-items:start}
+.cakes-formwrap h2{font-size:clamp(44px,5.4vw,76px);margin:var(--s2) 0 var(--s3)}
+.cakes-formwrap .ph{aspect-ratio:4/3;margin-top:var(--s4)}
+.cakes-card{background:var(--surface);border-radius:var(--r-card);box-shadow:inset 0 1px 0 rgba(255,255,255,.08),inset 0 0 0 1px var(--rule);padding:var(--s4)}
+.cakes-card form{display:grid;gap:var(--s2)}
+.cakes-row{display:grid;grid-template-columns:1fr 1fr;gap:var(--s2)}
+.cakes-card label{display:block;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);font-weight:600;margin-bottom:6px}
+.cakes-card input,.cakes-card select,.cakes-card textarea{width:100%;background:var(--bg);color:var(--text);border:1px solid var(--faint);border-radius:var(--r-btn);padding:13px 14px;font:500 15px var(--body)}
+.cakes-card textarea{min-height:130px;resize:vertical}
+.cakes-card input:focus,.cakes-card select:focus,.cakes-card textarea:focus{outline:none;border-color:var(--accent)}
+.cakes-card button{border:0;cursor:pointer;justify-self:start;margin-top:var(--s1)}
+.cakes-note{font-size:13px}
+.cakes-close{position:relative;overflow:hidden;text-align:center}
+.cakes-close>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cakes-close::after{content:"";position:absolute;inset:0;background:rgba(11,11,12,.82)}
+.cakes-close .wrap{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center}
+.cakes-close h2{font-size:clamp(52px,8vw,112px);margin:var(--s2) 0}
+.cakes-close p{max-width:460px;margin-bottom:var(--s4);color:rgba(245,242,236,.75)}
+@media (max-width:1024px){
+.cakes-steps{grid-template-columns:repeat(2,1fr)}
+.cakes-decide{grid-template-columns:1fr 1fr}
+.cakes-formwrap{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+.cakes-hero{min-height:62svh;padding:var(--s6) 0 var(--s4)}
+.cakes-steps,.cakes-decide,.cakes-row{grid-template-columns:1fr}
+.cakes-step{min-height:0}
+.cakes-step h3{margin-top:var(--s3)}
+.cakes-card{padding:var(--s3)}
+.cakes-card button{width:100%;justify-content:space-between}
+.cakes-close .btn{width:100%;justify-content:space-between}
+}
+</style></head>
+<body>
+<div class="progress" id="progress"></div>
+
+<header class="top" id="top">
+<div class="wrap">
+<a class="brand" href="#/home">Rise &amp; Crumb</a>
+<nav class="nav" aria-label="Main">
+<a href="#/home">Home</a>
+<a href="#/menu">Menu</a>
+<a href="#/cakes">Custom cakes</a>
+<span class="hours">Wed to Sun, 7am to 2pm</span>
+</nav>
+<button class="menu-btn" id="menuBtn" aria-expanded="false" aria-controls="panel">Menu</button>
+</div>
+<div class="panel" id="panel">
+<a href="#/home">Home</a>
+<a href="#/menu">Menu</a>
+<a href="#/cakes">Custom cakes</a>
+</div>
+</header>
+
+<nav class="tabs" data-page="home" aria-label="Sections">
+<a href="#hero">Start</a>
+<a href="#promise">Promise</a>
+<a href="#bakes">The bakes</a>
+<a href="#baker">The baker</a>
+<a href="#visit">Visit</a>
+<a href="#questions">Questions</a>
+<a href="#come-by">Come by</a>
+</nav>
+
+<main data-page="home">
+
+<section class="hero" id="hero">
+<div class="wrap">
+<div>
+<div class="meta"><span class="label">18 Haywood Road, Asheville</span><i></i><span class="fno"><b>01</b> / 07</span></div>
+<h1 class="rv-h"><span class="ln"><span>Small-batch</span></span><span class="ln"><span>bakery in</span></span><span class="ln"><span><em>Asheville</em></span></span></h1>
+<p class="lede">Sourdough, croissants, cinnamon buns, seasonal fruit galettes and custom cakes, baked fresh every morning by Lena Ortiz.</p>
+<div class="ctas">
+<a class="btn btn-p" href="#/menu">See the menu<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+<a class="btn btn-s" href="#/cakes">Order a cake</a>
+</div>
+</div>
+<div class="stack">
+<div class="ph a"><img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/4170338.jpg" alt="A crusty round sourdough loaf with a deep golden, crackled crust" width="900" height="1100"></div>
+<div class="ph b"><img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/7816517.jpg" alt="A freshly baked cinnamon bun with a spiral of spiced dough" width="600" height="600"></div>
+<div class="cap"><span class="fno">Frame <b>01A</b></span><span class="fno">Open 7am</span></div>
+</div>
+</div>
+</section>
+
+<section class="still" id="promise">
+<img class="zoom" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/2241067.jpg" alt="Close view of rustic bread loaves with floured, crackled crusts" width="1600" height="1000" loading="lazy" style="width:100%;height:100%;object-fit:cover">
+<div class="wrap">
+<span class="label rv">The promise</span>
+<blockquote class="rv">Everything on the counter is baked <em>fresh</em> that same morning.</blockquote>
+<div class="frame-bar rv"><span class="fno"><b>02</b> / 07</span><span class="fno">Wednesday to Sunday</span></div>
+</div>
+</section>
+
+<section class="pad" id="bakes">
+<div class="wrap">
+<div class="sec-head rv"><h2>The bakes</h2><p>Four things Lena makes, in small batches, before the doors open.</p><span class="fno"><b>03</b> / 07</span></div>
+<div class="cards">
+<a class="card rv" href="#/menu">
+<img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/1920144.jpg" alt="A sourdough loaf with a crisp, blistered crust" width="600" height="880" loading="lazy">
+<div class="in"><div class="tp"><span class="fno"><b>03A</b></span><span class="fno">Menu</span></div>
+<div class="bt"><div><h3>Sourdough</h3><p>Naturally leavened loaves.</p></div><span class="go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></div></div>
+</a>
+<a class="card rv" href="#/menu">
+<img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/4719023.jpg" alt="Glazed cinnamon rolls packed together in a baking pan" width="600" height="880" loading="lazy">
+<div class="in"><div class="tp"><span class="fno"><b>03B</b></span><span class="fno">Menu</span></div>
+<div class="bt"><div><h3>Croissants &amp; buns</h3><p>Laminated and rolled by hand.</p></div><span class="go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></div></div>
+</a>
+<a class="card rv" href="#/menu">
+<img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/8396728.jpg" alt="Pastry dough being rolled out with a rolling pin on a floured surface" width="600" height="880" loading="lazy">
+<div class="in"><div class="tp"><span class="fno"><b>03C</b></span><span class="fno">Menu</span></div>
+<div class="bt"><div><h3>Fruit galettes</h3><p>Whatever fruit is in season.</p></div><span class="go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></div></div>
+</a>
+<a class="card rv" href="#/cakes">
+<img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/3643259.jpg" alt="A bundt cake dusted with powdered sugar" width="600" height="880" loading="lazy">
+<div class="in"><div class="tp"><span class="fno"><b>03D</b></span><span class="fno">To order</span></div>
+<div class="bt"><div><h3>Custom cakes</h3><p>Made to order for your day.</p></div><span class="go"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></div></div>
+</a>
+</div>
+</div>
+</section>
+
+<div class="strip" aria-hidden="false">
+<div class="track" id="track">
+<div class="fr"><div class="tx"><span class="fno"><b>F1</b></span><strong>Baked<br><em>this</em> morning</strong></div><div class="ft"><span class="fno">Rise &amp; Crumb</span><span class="fno">Asheville NC</span></div></div>
+<div class="fr"><div class="ph"><img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/8364737.jpg" alt="Fresh loaves of bread on a floured board" width="760" height="570" loading="lazy" style="height:100%"></div><div class="ft"><span class="fno"><b>F2</b></span><span class="fno">Out of the oven</span></div></div>
+<div class="fr"><div class="tx"><span class="fno"><b>F3</b></span><strong>Wed<br>to <em>Sun</em></strong></div><div class="ft"><span class="fno">7am to 2pm</span><span class="fno">Five days</span></div></div>
+<div class="fr"><div class="ph"><img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/514243.jpg" alt="Cinnamon sticks and ground cinnamon on a wooden surface" width="760" height="570" loading="lazy" style="height:100%"></div><div class="ft"><span class="fno"><b>F4</b></span><span class="fno">Warm spice</span></div></div>
+<div class="fr"><div class="tx"><span class="fno"><b>F5</b></span><strong>18<br><em>Haywood</em> Rd</strong></div><div class="ft"><span class="fno">North Carolina</span><span class="fno">Walk in</span></div></div>
+</div>
+</div>
+
+<section class="pad" id="baker">
+<div class="wrap split">
+<div class="ph rv"><img class="zoom" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/1868396.jpg" alt="A baker in an apron shaping dough by hand at a floured counter" width="900" height="1100" loading="lazy" style="height:100%"></div>
+<div>
+<span class="fno rv"><b>04</b> / 07</span>
+<h2 class="rv">Lena Ortiz, baker</h2>
+<p class="rv">Rise &amp; Crumb is Lena's bakery. She bakes in small batches, which means a short list of things made carefully, every morning, rather than a long list made ahead.</p>
+<p class="rv">Small-batch baking runs on timing. Sourdough needs a long, slow fermentation, often started the day before. Croissant dough is folded around cold butter again and again to build its layers. None of it can be rushed, so the day starts long before the doors open.</p>
+<p class="rv">When something sells out, it is gone until the next bake. Coming early is the best way to get first pick.</p>
+<a class="btn btn-p rv" href="#/menu">What's on the counter<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+</div>
+</div>
+</section>
+
+<section class="pad" id="visit">
+<div class="wrap">
+<div class="sec-head rv"><h2>Visit</h2><p>The counter is open five mornings a week.</p><span class="fno"><b>05</b> / 07</span></div>
+<div class="facts">
+<div class="fact rv"><span class="fno"><b>05A</b> Days</span><strong>Wed to Sun</strong><p>Closed Monday and Tuesday.</p></div>
+<div class="fact rv"><span class="fno"><b>05B</b> Hours</span><strong>7am to 2pm</strong><p>Seven in the morning until two.</p></div>
+<div class="fact rv"><span class="fno"><b>05C</b> Address</span><strong>18 Haywood Rd</strong><p>Asheville, North Carolina.</p></div>
+<div class="fact rv"><span class="fno"><b>05D</b> The bake</span><strong>Every morning</strong><p>Everything is baked fresh that day.</p></div>
+</div>
+</div>
+</section>
+
+<section class="pad" id="questions">
+<div class="wrap">
+<div class="sec-head rv"><h2>Questions</h2><p>A few things people often ask about fresh bread and pastry.</p><span class="fno"><b>06</b> / 07</span></div>
+<div class="faq">
+<details class="rv"><summary><span class="n">01</span>How should I store a sourdough loaf?<span class="pl"></span></summary><div class="ans"><p>Keep it cut side down on a board or in a paper or cloth bag for the first day or two. Plastic softens the crust. For longer, slice it and freeze it, then toast slices straight from the freezer.</p></div></details>
+<details class="rv"><summary><span class="n">02</span>Why does sourdough taste different from regular bread?<span class="pl"></span></summary><div class="ans"><p>Sourdough rises with a natural starter of wild yeast and bacteria instead of packaged yeast. The long fermentation gives a gentle tang, a chewier crumb and a crust that stays crisp longer.</p></div></details>
+<details class="rv"><summary><span class="n">03</span>How do I refresh a croissant the next day?<span class="pl"></span></summary><div class="ans"><p>A few minutes in a moderate oven brings back the crisp outer layers. Skip the microwave, which turns laminated pastry soft and chewy.</p></div></details>
+<details class="rv"><summary><span class="n">04</span>How far ahead should I ask about a custom cake?<span class="pl"></span></summary><div class="ans"><p>Custom cakes are made to order, so the sooner the better, especially around holidays and busy weekends. The custom cakes page explains how to send a request.</p></div></details>
+</div>
+</div>
+</section>
+
+<section class="pad" id="come-by">
+<div class="wrap close">
+<span class="fno rv"><b>07</b> / 07</span>
+<h2 class="rv">See you at<br><em>7am</em></h2>
+<div class="row">
+<p class="rv">18 Haywood Road, Asheville. Wednesday to Sunday, 7am to 2pm. Planning a celebration? Ask about a custom cake.</p>
+<a class="btn btn-p rv" href="#/cakes">Order a custom cake<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+</div>
+</div>
+</section>
+
+</main><main data-page="menu" hidden="">
+
+<nav class="tabs" data-page="menu" aria-label="Sections">
+<a href="#menu-top">Start</a>
+<a href="#sourdough">Sourdough</a>
+<a href="#croissants">Croissants</a>
+<a href="#buns">Buns</a>
+<a href="#galettes">Galettes</a>
+<a href="#seasons">Seasons</a>
+<a href="#menu-cakes">Cakes</a>
+</nav>
+
+<section class="menu-hero" id="menu-top">
+<div class="wrap">
+<span class="menu-pill rv">The menu</span>
+<h1 class="rv">On the counter</h1>
+<p class="rv">Four things baked fresh each morning, and what goes into each one.</p>
+</div>
+</section>
+
+<section class="pad" id="sourdough">
+<div class="wrap menu-row">
+<div class="ph rv"><img class="zoom" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/8364737.jpg" alt="Fresh loaves of bread on a floured board" width="900" height="675" loading="lazy" style="height:100%"></div>
+<div>
+<span class="menu-pill rv">Sourdough</span>
+<h2 class="rv">Sourdough loaves</h2>
+<p class="rv">Naturally leavened loaves with a crisp, blistered crust and a chewy crumb. They rise on a natural starter, not packaged yeast.</p>
+<p class="rv">The dough ferments slowly, often starting the day before the bake. That long rise is where the gentle tang and the crust come from.</p>
+<ul class="menu-list rv">
+<li><b>Best on day one</b>Keep it cut side down on a board or in a paper bag.</li>
+<li><b>Keeps for longer</b>Slice it and freeze it, then toast slices from frozen.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section class="pad menu-band" id="croissants">
+<div class="wrap menu-row flip">
+<div class="ph rv"><img class="zoom" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/8396728.jpg" alt="Pastry dough being rolled out on a floured surface" width="900" height="675" loading="lazy" style="height:100%"></div>
+<div>
+<span class="menu-pill rv">Croissants</span>
+<h2 class="rv">Croissants</h2>
+<p class="rv">Laminated by hand. Cold butter is folded into the dough again and again, which builds the thin layers that bake up flaky and crisp.</p>
+<p class="rv">Lamination cannot be hurried, because the butter has to stay cold and the dough has to rest between folds.</p>
+<ul class="menu-list rv">
+<li><b>Next day</b>A few minutes in a moderate oven brings back the crisp layers.</li>
+<li><b>Skip the microwave</b>It turns laminated pastry soft and chewy.</li>
+</ul>
+</div>
+</div>
+</section>
+
+<section class="pad" id="buns">
+<div class="wrap menu-row">
+<div class="ph rv"><img class="zoom" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/4719023.jpg" alt="Glazed cinnamon rolls packed together in a baking pan" width="900" height="675" loading="lazy" style="height:100%"></div>
+<div>
+<span class="menu-pill rv">Cinnamon buns</span>
+<h2 class="rv">Cinnamon buns</h2>
+<p class="rv">Soft dough rolled by hand around a spiced cinnamon filling, then baked in the pan so the buns rise snug against each other.</p>
+<p class="rv">They are best warm from the morning bake. They are popular, so come early for the best chance at one.</p>
+</div>
+</div>
+</section>
+
+<section class="pad menu-band" id="galettes">
+<div class="wrap menu-row flip">
+<div class="ph rv"><img class="zoom" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/1920144.jpg" alt="A rustic baked loaf with a golden crust" width="900" height="675" loading="lazy" style="height:100%"></div>
+<div>
+<span class="menu-pill rv">Galettes</span>
+<h2 class="rv">Fruit galettes</h2>
+<p class="rv">A galette is a free-form tart: a flat round of pastry, fruit in the middle, and the edges folded up over it. No pan, no lattice, just buttery crust and fruit.</p>
+<p class="rv">The fruit is whatever is in season, so the galette on the counter changes through the year.</p>
+</div>
+</div>
+</section>
+
+<section class="pad" id="seasons">
+<div class="wrap">
+<div class="sec-head rv"><h2>How it changes</h2><p>The core bakes stay. The fruit follows the calendar.</p></div>
+<div class="menu-seasons">
+<div class="c rv"><span class="label">Always</span><h3>The steady bakes</h3><p>Sourdough, croissants and cinnamon buns are the foundation of the counter.</p></div>
+<div class="c rv"><span class="label">By season</span><h3>The galette fruit</h3><p>Galettes use the fruit that is at its best at the time, so what fills them shifts from one season to the next.</p></div>
+<div class="c rv"><span class="label">Daily</span><h3>Small batches</h3><p>Each bake is limited. When something sells out, it is gone until the next morning.</p></div>
+</div>
+</div>
+</section>
+
+<section class="pad menu-band" id="menu-how">
+<div class="wrap">
+<div class="sec-head rv"><h2>A bake day</h2><p>Why the morning starts long before 7am.</p></div>
+<div class="menu-steps">
+<div class="menu-step rv"><span class="big">01</span><h3>Ferment</h3><p>Sourdough dough rests and rises slowly, often from the day before.</p></div>
+<div class="menu-step rv"><span class="big">02</span><h3>Fold and shape</h3><p>Croissant dough is laminated with cold butter. Buns and loaves are shaped by hand.</p></div>
+<div class="menu-step rv"><span class="big">03</span><h3>Bake</h3><p>Everything goes into the oven in small batches before the doors open.</p></div>
+<div class="menu-step rv"><span class="big">04</span><h3>Open</h3><p>The counter opens at 7am, Wednesday to Sunday, and closes at 2pm.</p></div>
+</div>
+</div>
+</section>
+
+<section class="pad" id="menu-cakes">
+<div class="wrap menu-row">
+<div class="ph rv"><img class="zoom" src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/3643259.jpg" alt="A bundt cake dusted with powdered sugar" width="900" height="675" loading="lazy" style="height:100%"></div>
+<div>
+<span class="menu-pill rv">To order</span>
+<h2 class="rv">Cakes are made to order</h2>
+<p class="rv">Custom cakes are not on the counter. They are baked for a specific day, so they are ordered ahead.</p>
+<a class="btn btn-p rv" href="#/cakes" style="margin-top:var(--s4)">Order a cake<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+</div>
+</div>
+</section>
+
+<section class="pad menu-cta">
+<img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/2241067.jpg" alt="Rustic bread loaves with floured, crackled crusts" width="1600" height="900" loading="lazy">
+<div class="wrap">
+<h2 class="rv">Come early</h2>
+<p class="rv" style="color:rgba(245,242,236,.8)">18 Haywood Road, Asheville. Wednesday to Sunday, 7am to 2pm.</p>
+<a class="btn btn-p rv" href="#/home">Back to home<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+</div>
+</section>
+
+</main><main data-page="cakes" hidden="">
+
+<nav class="tabs" data-page="cakes" aria-label="Sections">
+<a href="#cakes-top">Start</a>
+<a href="#cakes-how">How it works</a>
+<a href="#cakes-decide">Decide</a>
+<a href="#cakes-request">Request</a>
+<a href="#cakes-more">Next</a>
+</nav>
+
+<section class="cakes-hero" id="cakes-top">
+<div class="wrap">
+<span class="cakes-pill rv">Custom cakes</span>
+<h1 class="rv">Cakes made to order</h1>
+<p class="rv">Tell Lena what you are celebrating and she will bake a cake for it at Rise &amp; Crumb in Asheville.</p>
+</div>
+</section>
+
+<section class="pad" id="cakes-how">
+<div class="wrap">
+<div class="cakes-head rv">
+<span class="cakes-pill"><b>01</b>&nbsp; Ordering</span>
+<h2>How it works</h2>
+<p>Custom cakes are made to order, not pulled from the counter. The process is simple and starts with a request.</p>
+</div>
+<div class="cakes-steps">
+<div class="cakes-step rv"><span class="num">1</span><h3>Send a request</h3><p>Fill in the form below with your date, the size you need and your ideas.</p></div>
+<div class="cakes-step rv"><span class="num">2</span><h3>Talk it through</h3><p>We get back to you to go over flavors, design and anything that needs working out.</p></div>
+<div class="cakes-step rv"><span class="num">3</span><h3>Confirm the details</h3><p>Once the plan is settled, your cake goes on the baking schedule for your date.</p></div>
+<div class="cakes-step rv"><span class="num">4</span><h3>Pick it up</h3><p>Collect your cake at 18 Haywood Road, Wednesday to Sunday between 7am and 2pm.</p></div>
+</div>
+</div>
+</section>
+
+<section class="pad" id="cakes-decide" style="background:var(--band)">
+<div class="wrap">
+<div class="cakes-head rv">
+<span class="cakes-pill"><b>02</b>&nbsp; Before you ask</span>
+<h2>What to decide</h2>
+<p>You do not need every answer to get started. Having a rough idea of these makes the first conversation quicker.</p>
+</div>
+<div class="cakes-decide">
+<div class="c rv"><h3>The date</h3><p>When you need the cake. Busy weekends and holidays fill up, so earlier is better.</p></div>
+<div class="c rv"><h3>The size</h3><p>How many people will be eating. Count guests, then think about whether you want leftovers.</p></div>
+<div class="c rv"><h3>The flavor</h3><p>Cake, filling and frosting are all choices. Tell us what you like and what you avoid.</p></div>
+<div class="c rv"><h3>The look</h3><p>Simple and rustic, or decorated for an occasion. A photo or a few words about the mood helps.</p></div>
+<div class="c rv"><h3>Allergies</h3><p>Mention any allergies or dietary needs up front so they can be talked through properly.</p></div>
+<div class="c rv"><h3>Pickup</h3><p>Pickup is at the bakery during opening hours. Pick a day and time that fits your event.</p></div>
+</div>
+</div>
+</section>
+
+<section class="pad" id="cakes-request">
+<div class="wrap cakes-formwrap">
+<div class="rv">
+<span class="cakes-pill"><b>03</b>&nbsp; Request</span>
+<h2>Ask for a cake</h2>
+<p>Send the details you have. A request is not a booking, it starts the conversation.</p>
+<div class="ph"><img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/3643259.jpg" alt="A bundt cake dusted with powdered sugar" width="900" height="675" loading="lazy"></div>
+</div>
+<div class="cakes-card rv">
+<form onsubmit="return false">
+<div class="cakes-row">
+<div><label for="ck-name">Name</label><input id="ck-name" name="name" type="text" autocomplete="name" required=""></div>
+<div><label for="ck-contact">Phone or email</label><input id="ck-contact" name="contact" type="text" required=""></div>
+</div>
+<div class="cakes-row">
+<div><label for="ck-date">Date needed</label><input id="ck-date" name="date" type="date" required=""></div>
+<div><label for="ck-size">Number of guests</label><input id="ck-size" name="size" type="number" min="1" inputmode="numeric"></div>
+</div>
+<div><label for="ck-occ">Occasion</label>
+<select id="ck-occ" name="occasion"><option>Birthday</option><option>Wedding or anniversary</option><option>Celebration</option><option>Other</option></select></div>
+<div><label for="ck-ideas">Flavors, look and allergies</label><textarea id="ck-ideas" name="ideas"></textarea></div>
+<button class="btn btn-p" type="submit">Send request<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></button>
+<p class="cakes-note">Prefer to talk in person? Stop by 18 Haywood Road, Wednesday to Sunday, 7am to 2pm.</p>
+</form>
+</div>
+</div>
+</section>
+
+<section class="pad" id="cakes-more" style="background:var(--band)">
+<div class="wrap">
+<div class="cakes-head rv">
+<span class="cakes-pill"><b>04</b>&nbsp; Good to know</span>
+<h2>About custom cakes</h2>
+</div>
+<div class="faq">
+<details class="rv"><summary><span class="n">01</span>How early should I ask?<span class="pl"></span></summary><div class="ans"><p>As early as you can. Each cake is made to order, so popular dates fill up first.</p></div></details>
+<details class="rv"><summary><span class="n">02</span>Do I need a finished design?<span class="pl"></span></summary><div class="ans"><p>No. A date, a rough guest count and a sense of what you like is enough to begin.</p></div></details>
+<details class="rv"><summary><span class="n">03</span>How should I store the cake?<span class="pl"></span></summary><div class="ans"><p>Keep it somewhere cool and out of direct sun. Cakes with buttercream or fresh fillings hold best in the refrigerator, then sit out for a while before serving so the flavor and texture soften.</p></div></details>
+</div>
+</div>
+</section>
+
+<section class="cakes-close pad">
+<img src="https://clssxldrgtpiajwqgghl.supabase.co/storage/v1/object/public/photos/px/4719023.jpg" alt="Glazed cinnamon rolls packed together in a baking pan" width="1600" height="1000" loading="lazy">
+<div class="wrap">
+<span class="cakes-pill rv">Something for the counter</span>
+<h2 class="rv">Not a cake day?</h2>
+<p class="rv">Loaves, croissants, buns and galettes are baked fresh every morning.</p>
+<a class="btn btn-p rv" href="#/menu">See the menu<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+</div>
+</section>
+
+</main>
+
+<footer>
+<div class="foot">
+<div class="cols">
+<div>
+<span class="brand">Rise &amp; Crumb</span>
+<p>Small-batch bakery in Asheville, North Carolina, run by baker Lena Ortiz.</p>
+<a class="btn btn-p" href="#/menu">See the menu<span class="ic"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"></path></svg></span></a>
+</div>
+<div><h4>Bakes</h4><ul><li><a href="#/menu">Sourdough loaves</a></li><li><a href="#/menu">Croissants</a></li><li><a href="#/menu">Cinnamon buns</a></li><li><a href="#/menu">Fruit galettes</a></li></ul></div>
+<div><h4>Pages</h4><ul><li><a href="#/home">Home</a></li><li><a href="#/menu">Menu</a></li><li><a href="#/cakes">Custom cakes</a></li></ul></div>
+<div><h4>Visit</h4><ul><li>18 Haywood Road</li><li>Asheville, NC</li><li>Wed to Sun</li><li>7am to 2pm</li></ul></div>
+</div>
+<div class="bot"><span>© <span id="yr">2025</span> Rise &amp; Crumb</span><span>Baked fresh each morning</span></div>
+</div>
+</footer>
+
+<div class="bar">
+<a href="#/menu">Menu</a>
+<a class="p" href="#/cakes">Order a cake</a>
+</div>
+
+<script>
+(function(){
+var d=document,w=window,root=d.documentElement;
+root.classList.add("js");
+d.getElementById("yr").textContent=new Date().getFullYear();
+var btn=d.getElementById("menuBtn"),panel=d.getElementById("panel");
+btn.addEventListener("click",function(){var o=panel.classList.toggle("open");btn.setAttribute("aria-expanded",o)});
+panel.querySelectorAll("a").forEach(function(a){a.addEventListener("click",function(){panel.classList.remove("open");btn.setAttribute("aria-expanded","false")})});
+var reduce=w.matchMedia("(prefers-reduced-motion: reduce)").matches;
+var bar=d.getElementById("progress"),top=d.getElementById("top"),track=d.getElementById("track");
+function reveal(){
+var h=w.innerHeight;
+var groups=new Map();
+d.querySelectorAll(".rv:not(.in),.rv-h:not(.in)").forEach(function(el){
+if(el.offsetParent===null&&getComputedStyle(el).position!=="fixed")return;
+var r=el.getBoundingClientRect();
+if(r.top<h*0.92&&r.bottom>0){
+var p=el.parentElement,i=groups.get(p)||0;groups.set(p,i+1);
+el.style.transitionDelay=(el.classList.contains("rv-h")?0:i*60)+"ms";
+el.classList.add("in");
+}
+});
+}
+function zoom(){
+if(reduce)return;
+var h=w.innerHeight;
+d.querySelectorAll(".zoom,.ph img,.card img").forEach(function(img){
+if(img.offsetParent===null)return;
+var r=img.getBoundingClientRect();
+if(r.bottom<0||r.top>h)return;
+var t=1-Math.min(Math.max((r.top+r.height/2)/(h+r.height/2),0),1);
+img.style.setProperty("--z",(1.12-t*0.1).toFixed(4));
+img.style.transform="scale(var(--z))";
+});
+}
+function strip(){
+if(reduce||!track||track.offsetParent===null)return;
+var r=track.getBoundingClientRect(),h=w.innerHeight;
+var p=Math.min(Math.max((h-r.top)/(h+r.height),0),1);
+var max=Math.max(track.scrollWidth-w.innerWidth,0);
+track.style.transform="translateX("+(-p*max)+"px)";
+}
+var secs=[],tabs=d.querySelectorAll(".tabs a");
+function spy(){
+var cur=null;
+tabs.forEach(function(a){var s=d.querySelector(a.getAttribute("href"));if(s&&s.offsetParent!==null&&s.getBoundingClientRect().top<w.innerHeight*0.4)cur=a});
+tabs.forEach(function(a){
+var on=a===cur;
+if(on&&!a.classList.contains("on")){a.classList.add("on");var row=a.parentElement;row.scrollTo({left:a.offsetLeft-24,behavior:"smooth"})}
+if(!on)a.classList.remove("on");
+});
+}
+function tick(){
+var max=root.scrollHeight-w.innerHeight;
+bar.style.transform="scaleX("+(max>0?w.scrollY/max:0)+")";
+top.classList.toggle("scrolled",w.scrollY>10);
+reveal();zoom();strip();spy();
+}
+var raf=0;
+function onScroll(){if(!raf)raf=requestAnimationFrame(function(){raf=0;tick()})}
+w.addEventListener("scroll",onScroll,{passive:true});
+w.addEventListener("resize",onScroll);
+w.addEventListener("load",tick);
+setTimeout(tick,120);
+tick();
+})();
+</script>
+
+<script data-pages="">(function(){var s=document.createElement('style');s.textContent='main[data-page][hidden]{display:none!important}#__pm{position:fixed;left:14px;bottom:14px;z-index:2147483000;font:600 15px/1 system-ui,sans-serif}#__pm button{font:inherit;color:#fff;background:#141414;border:0;border-radius:999px;padding:13px 18px;box-shadow:0 6px 20px rgba(0,0,0,.35);cursor:pointer}#__pm div{position:absolute;left:0;bottom:54px;min-width:190px;background:#141414;border-radius:14px;padding:8px;box-shadow:0 10px 30px rgba(0,0,0,.4)}#__pm a{display:block;color:#fff;text-decoration:none;padding:12px 14px;border-radius:9px}#__pm a.current{background:rgba(255,255,255,.14)}';document.head.appendChild(s);var cur='home';function show(n,top){var all=document.querySelectorAll('main[data-page]'),ok=false;all.forEach(function(p){if(p.getAttribute('data-page')===n)ok=true;});if(!ok)n='home';cur=n;all.forEach(function(p){p.hidden=p.getAttribute('data-page')!==n;});document.querySelectorAll('a[href^="#/"]').forEach(function(a){var on=a.getAttribute('href')==='#/'+n;a.classList.toggle('current',on);if(on)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current');});if(top)window.scrollTo(0,0);window.dispatchEvent(new Event('scroll'));window.dispatchEvent(new Event('resize'));}function seen(e){return !!(e&&e.getClientRects().length&&getComputedStyle(e).visibility!=='hidden');}function menu(){var box=document.getElementById('__pm');var names={},order=[];document.querySelectorAll('main[data-page]').forEach(function(p){order.push(p.getAttribute('data-page'));});var reach={};document.querySelectorAll('a[href^="#/"]').forEach(function(a){if(a.closest('#__pm'))return;var g=a.getAttribute('href').slice(2),t=a.textContent.replace(/\s+/g,' ').trim();if(t&&t.length<40&&!names[g])names[g]=t;if(seen(a))reach[g]=1;});var own=false;document.querySelectorAll('header button,nav button,header [aria-expanded]').forEach(function(b){if(seen(b))own=true;});var need=order.length>1&&!own&&order.some(function(g){return !reach[g];});if(!need){if(box)box.style.display='none';return;}if(!box){box=document.createElement('div');box.id='__pm';box.innerHTML='<div hidden></div><button type="button" aria-expanded="false">Menu</button>';document.body.appendChild(box);box.querySelector('button').onclick=function(){var d=box.querySelector('div');d.hidden=!d.hidden;this.setAttribute('aria-expanded',String(!d.hidden));};}box.style.display='';var d=box.querySelector('div');d.innerHTML='';order.forEach(function(g){var a=document.createElement('a');a.href='#/'+g;a.textContent=names[g]||(g.charAt(0).toUpperCase()+g.slice(1).replace(/-/g,' '));if(g===cur)a.className='current';d.appendChild(a);});}document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#/"]');if(!a)return;e.preventDefault();show(a.getAttribute('href').slice(2),true);var box=document.getElementById('__pm');if(box){box.querySelector('div').hidden=true;box.querySelector('button').setAttribute('aria-expanded','false');}});var t;window.addEventListener('resize',function(){clearTimeout(t);t=setTimeout(menu,150);});show('home',false);menu();window.addEventListener('load',menu);})();</script></body></html>

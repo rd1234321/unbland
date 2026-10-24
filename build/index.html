@@ -518,6 +518,15 @@
   .demo-go { width: 100%; max-width: 980px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
   .demo-go .go { flex: 1 1 260px; justify-content: center; }
   .demo-go button.alt { flex: 1 1 200px; border: 1px solid rgba(255,255,255,.25); background: none; color: #F3F1EC; border-radius: 10px; padding: 14px; font: 600 15px "Inter", sans-serif; cursor: pointer; }
+  .demo-pick { width: 100%; max-width: 980px; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; font-size: 13px; color: #B4B0A8; }
+  .demo-pick span { width: 100%; text-align: center; }
+  .demo-pick button { border: 1px solid rgba(255,255,255,.25); background: rgba(255,255,255,.05); color: #F3F1EC; border-radius: 999px; padding: 10px 15px; font: 600 14px "Inter", sans-serif; cursor: pointer; }
+  @media (max-width: 640px) {
+    .demo { padding: 12px 10px 14px; gap: 8px; }
+    .demo-said { font-size: 13px; min-height: 0; padding: 8px 11px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .demo-pick { gap: 6px; }
+    .demo-pick button { padding: 9px 12px; font-size: 13px; }
+  }
   @media (prefers-reduced-motion: reduce) { .demo-cover { transition: none; } }
 </style>
 </head>
@@ -528,7 +537,8 @@
   <div class="demo-top"><b>One message in. <em>A finished site out.</em></b><button type="button" class="demo-skip" id="demo-skip">Skip</button></div>
   <div class="demo-said" id="demo-said" aria-live="polite"></div>
   <div class="demo-view"><iframe id="demo-frame" title="Example site" loading="eager" tabindex="-1"></iframe><span class="demo-page" id="demo-page" hidden></span><div class="demo-cover" id="demo-cover"><span>Unbland is designing the site…</span></div></div>
-  <div class="demo-go"><button type="button" class="go" id="demo-try">Now try yours, free <i aria-hidden="true">→</i></button><button type="button" class="alt" id="demo-same">Use this example</button></div>
+  <div class="demo-go"><button type="button" class="go" id="demo-try">Now try yours, free <i aria-hidden="true">→</i></button></div>
+  <div class="demo-pick" id="demo-pick"><span>Or tap your business to see one:</span></div>
 </div>
 <div class="start" id="start">
   <div class="wall" aria-hidden="true">
@@ -557,7 +567,7 @@
       </div>
     </div>
     <p class="msg" id="msg" role="status" aria-live="polite"></p>
-    <div class="examples" id="examples"><span>Try an example:</span></div>
+    <div class="examples" id="examples"><span>Or tap your business:</span></div>
     <p class="helper"><button type="button" class="linkish" id="writer-open">Not sure what to write? Answer a few questions and we'll write the description for you.</button></p>
   </main>
   <footer class="legal"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="mailto:hello@unblandapp.com">Contact</a></footer>
@@ -902,9 +912,14 @@
   const SAVE_KEY = "unbland.site.v2";
   const TYPICAL_SIZE = 17000;   // characters in a finished site, for the progress meter
   const EXAMPLES = {
-    "Mobile detailer": "Shine Lab Detailing is a one-man mobile detailing business in Portland, OR. I come to your driveway and bring my own water and power. Reset wash is $149, Deep clean is $289, and paint correction with ceramic coating starts at $790. Open Monday to Friday 8am to 6pm and Saturday 9am to 4pm. Text (503) 555-0142.",
-    "Neighborhood cafe": "Northside Roasters is a small-batch coffee roaster with a cafe at 42 Northside Avenue in Portland. We roast every week behind the counter. House Blend is $18 a bag, the Ethiopian single origin is $22, and decaf is $20. Open weekdays 7am to 4pm and weekends 8am to 2pm. hello@northside.example",
-    "Landscaper": "Greenline Gardens does lawn care, planting and patio builds for homes around Raleigh, NC. Family run. We give free on-site quotes and handle everything from weekly mowing to full garden redesigns. Call (919) 555-0117 or email quotes@greenline.example."
+    "Lawn care": "Greenline Lawn Co. is a family-run lawn care company in Raleigh, NC. Weekly mowing, edging, aeration, weed control and leaf cleanup for homes across Raleigh and Cary. Free estimates. Call or text (919) 555-0142.",
+    "Bakery": "Rise & Crumb is a small-batch bakery in Asheville, NC. Sourdough, croissants, cinnamon buns and custom cakes, baked fresh every morning. Open Wednesday to Sunday, 7am to 2pm.",
+    "Hair salon": "Velvet Room is a hair salon in Nashville, TN. Cuts, color, balayage, silk presses and bridal hair. Appointments only, Tuesday to Saturday. Book at (615) 555-0192.",
+    "Roofing": "Summit Ridge Roofing replaces and repairs roofs across the Denver metro. Storm and hail damage, leak repair, gutters and free roof inspections. Licensed and insured. Call (303) 555-0164.",
+    "Restaurant": "Marea is a seafood restaurant on Harbor Street in Monterey, CA. Grilled whole fish, oysters and handmade pasta. Dinner Tuesday to Sunday. Reservations at (831) 555-0164.",
+    "Cleaning": "Brightway Cleaning is a family-run house cleaning service in Phoenix, AZ. Regular, deep and move-out cleaning for homes and apartments. Free quotes, open every day. Call (602) 555-0151.",
+    "Detailing": "Shine Lab Detailing is a mobile car detailing business in Portland, OR. I come to your driveway with my own water and power. Washes, interior deep cleans and ceramic coating. Text (503) 555-0142.",
+    "Tattoo": "Black Lantern is a private, appointment-only tattoo studio in Asheville, NC. Fine line, blackwork and American traditional by three resident artists. Free consultations."
   };
 
   const $ = id => document.getElementById(id);
@@ -1493,7 +1508,8 @@
     const b = document.createElement("button");
     b.type = "button";
     b.textContent = label;
-    b.onclick = () => { promptBox.value = text; promptBox.focus(); say(""); window.ubStep?.("ExampleTap"); };
+    // One tap builds an example site for that kind of business straight away; no typing needed.
+    b.onclick = () => { if (busy) return; promptBox.value = text; say(""); window.ubStep?.("ExampleTap"); build(); };
     $("examples").append(b);
   }
 
@@ -1501,8 +1517,8 @@
   // First visit: show a sample multi-page site appear right away, then tour its pages, then hand over to the real builder.
   (function demo() {
     const SAMPLES = [
-      { url: "/demo/ember-oak.html", pages: [["home", "Home"], ["menu", "Menu"], ["private-dining", "Private Dining"], ["reservations", "Reservations"]],
-        text: "Ember & Oak is a 48-seat wood-fired restaurant in Asheville, run by siblings Daniel and Marisol Reyes. Everything cooks over a 12-foot oak hearth. Dinner Wednesday to Sunday." },
+      { url: "/demo/rise-crumb.html", pages: [["home", "Home"], ["menu", "Menu"], ["cakes", "Custom cakes"]],
+        text: "Rise & Crumb is a small-batch bakery in Asheville, run by baker Lena Ortiz. Sourdough, croissants, cinnamon buns and custom cakes, baked fresh every morning. Open Wednesday to Sunday." },
     ];
     let seen = false, signedIn = false;
     try { seen = !!localStorage.getItem("unbland.demo"); signedIn = Object.keys(localStorage).some(k => /^sb-.*-auth-token$/.test(k)); } catch {}
@@ -1560,7 +1576,12 @@
     const close = () => { clearInterval(type); timers.forEach(clearTimeout); box.hidden = true; frame.removeAttribute("src"); };
     $("demo-skip").onclick = close;
     $("demo-try").onclick = () => { close(); window.ubStep?.("DemoTry"); promptBox.focus(); };
-    $("demo-same").onclick = () => { close(); window.ubStep?.("ExampleTap"); promptBox.value = pick.text; promptBox.focus(); };
+    for (const label of Object.keys(EXAMPLES)) {
+      const b = document.createElement("button");
+      b.type = "button"; b.textContent = label;
+      b.onclick = () => { close(); window.ubStep?.("ExampleTap"); promptBox.value = EXAMPLES[label]; build(); };
+      $("demo-pick").append(b);
+    }
   })();
   // Start screen extras: a glow that follows the cursor, and a placeholder that types example prompts.
   const calm = matchMedia("(prefers-reduced-motion: reduce)").matches;
