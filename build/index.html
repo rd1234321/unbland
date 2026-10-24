@@ -1427,6 +1427,8 @@
         $("meter").style.width = Math.min(96, (html.length / TYPICAL_SIZE) * 100) + "%";
       }
       doc.close();
+      // Nothing came back at all: the designer itself is down (for example the AI service), not a cut-off design.
+      if (!begun) { window.ubStep?.("BuildFail"); throw new Error("Unbland is down for a moment. Please try again in a few minutes."); }
       html = html.replace(/```\s*$/, "").trim();
       if (!/<\/html>\s*$/i.test(html)) window.ubStep?.("BuildFail");
       if (!/<\/html>\s*$/i.test(html)) throw new Error("The design was cut off before it finished. Try again.");
