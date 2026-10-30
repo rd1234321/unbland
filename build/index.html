@@ -147,7 +147,7 @@
   .keep .later { display: block; margin: 10px auto 0; background: none; border: 0; color: #8E8A82; font: 500 13px "Inter", sans-serif; cursor: pointer; }
   .keep.bar { padding: 10px 12px; display: flex; align-items: center; gap: 10px; }
   .keep.bar b, .keep.bar p, .keep.bar .later { display: none; }
-  .keep.bar::before { content: "Not saved yet"; flex: 1; font-size: 14px; color: #DAD6CE; }
+  .keep.bar::before { content: "This site isn't saved yet"; flex: 1; font-size: 14px; color: #DAD6CE; }
   .keep.bar .go { width: auto; padding: 10px 16px; }
   .auth label { margin: 8px 0 0; }
   .auth input { width: 100%; background: #fff; border: 1px solid var(--ink); border-radius: 6px; padding: 10px 12px; font-size: 15px; }
@@ -895,7 +895,7 @@
 </dialog>
 
 <div class="keep" id="keep" hidden role="dialog" aria-label="Save your site">
-  <b>Your site is ready. Keep it?</b>
+  <b>Don't lose this site</b>
   <p>It only lives in this browser right now. A free account saves it, lets you change anything, and puts it online with its own link.</p>
   <button type="button" class="go" id="keep-go">Save my site, free</button>
   <button type="button" class="later" id="keep-later">Not now</button>
@@ -1471,7 +1471,11 @@
       site = { html: "", prompt, used: [...(avoid || []), direction].filter(Boolean) };
       setSite(html, false);   // reload cleanly so entrance animations play from the top
       window.ubTrack?.("Lead", { content_name: kind });   // for ads: someone built a site
-      if (!user) setTimeout(() => { if (!user && site.html) { $("keep").classList.remove("bar"); $("keep").hidden = false; window.ubStep?.("AskedSignup"); } }, 4000);
+      // Let them look around first: a small bar right away, then the full prompt once they've had time with the site.
+      if (!user) {
+        setTimeout(() => { if (!user && site.html) { $("keep").classList.add("bar"); $("keep").hidden = false; window.ubStep?.("AskedSignup"); } }, 4000);
+        setTimeout(() => { if (!user && site.html && !keepDismissed && !$("keep").hidden) $("keep").classList.remove("bar"); }, 30000);
+      }
       drawChat();
       if (kind === "multi") await buildPages(prompt, token, pagesWanted, text => { phase = text; $("status-text").textContent = label(); });
       // A second look at new designs: fixes what makes a site look template-made. Skipped quietly if it fails.
@@ -1650,7 +1654,7 @@
   // ---- Accounts: sign in to keep sites, and a page listing them. The builder works without an account.
   const SUPABASE_URL = "https://clssxldrgtpiajwqgghl.supabase.co";
   const PUBLISHABLE_KEY = "sb_publishable_tSFjjjClxBrIPpc3j0gFyA_JuQhSiJS";   // public by design; row-level rules protect the data
-  let sb = null, user = null, cloudTimer = null, authMode = "signin", ready = Promise.resolve();
+  let keepDismissed = false, sb = null, user = null, cloudTimer = null, authMode = "signin", ready = Promise.resolve();
   const acts = name => document.querySelectorAll(`[data-act="${name}"]`);
   const siteName = () => (site.html.match(/<title>([^<]*)<\/title>/i)?.[1] || "Untitled site").replace(/&amp;/g, "&").trim().slice(0, 120);
 
@@ -1754,7 +1758,7 @@
   $("auth-close").onclick = () => auth.close();
   // After a visitor's first site: ask them to save it with a free account; if they wave it off, a small bar stays.
   $("keep-go").onclick = () => { $("keep").hidden = true; openAuth("signup", "Save your site and come back to it from any device. Free, no card needed."); };
-  $("keep-later").onclick = () => $("keep").classList.add("bar");
+  $("keep-later").onclick = () => { keepDismissed = true; $("keep").classList.add("bar"); };
   $("auth-form").addEventListener("submit", async e => {
     e.preventDefault();
     const email = $("auth-email").value.trim(), password = $("auth-pass").value;
